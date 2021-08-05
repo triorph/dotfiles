@@ -4,6 +4,9 @@ Storage of my config options from various programs
 
 ### Programs I like to have installed:
 
+- zsh (from apt)
+- oh-my-zsh (git repo from web)
+- powerline10k (git repo from web)
 - kitty (stable from web)
 - bat (from cargo)
 - lsd (from cargo)
