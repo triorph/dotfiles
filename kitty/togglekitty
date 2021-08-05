@@ -1,0 +1,20 @@
+#!/bin/zsh
+echo "Toggle Kitty called " >> /tmp/kittylog
+pid=$(ps aux |grep kitty | grep quaketerm | grep -v togglekitty | grep -v grep | grep -v kittylog| awk '{print $2}' )
+if [ -z $pid ] ; then
+    echo "PID was: $pid. No kitty found so spawning new copy." >> /tmp/kittylog
+    kitty --title=quaketerm --start-as=fullscreen & disown
+else
+    echo "Kitty PID is: $pid" >> /tmp/kittylog    
+    wid=$(xdotool search --pid $pid)
+    echo "Kitty WID is: $wid" >> /tmp/kittylog
+    map_state=$(xwininfo -id $wid | grep 'Map State'| grep "IsViewable")
+    if [ -z $map_state ]; then
+        echo "Maximising Kitty" >> /tmp/kittylog
+        xdotool windowmap $wid 
+        # xdotool key $wid CTRL+SHIFT+F11
+    else
+        echo "Minimising Kitty" >> /tmp/kittylog
+        xdotool windowunmap $wid
+    fi
+fi
