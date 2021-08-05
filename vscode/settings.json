@@ -1,0 +1,120 @@
+{
+    "atlascode.bitbucket.enabled": false,
+    "atlascode.jira.enabled": true,
+    "atlascode.jira.jqlList": [
+        {
+            "id": "1914c4b6-50e9-41ac-b0ad-351131f22bc4",
+            "enabled": true,
+            "name": "My ucdigitalsms Issues",
+            "query": "assignee = currentUser() AND resolution = Unresolved ORDER BY lastViewed DESC",
+            "siteId": "57a3a799-5402-4dff-9287-e4ceb2351e47",
+            "monitor": true
+        }
+    ],
+    "diffEditor.codeLens": true,
+    "diffEditor.renderSideBySide": true,
+    "editor.lineHeight": 20,
+    "editor.letterSpacing": 0.3,
+    "editor.cursorStyle": "line",
+    "editor.cursorWidth": 0,
+    "editor.cursorBlinking": "solid",
+    "editor.snippetSuggestions": "top",
+    "editor.glyphMargin": true,
+    // SOP's highlight matching tag setting.
+    "highlight-matching-tag.styles": {
+        "opening": {
+            "full": {
+                "highlight": "rgba(165, 153, 233, 0.3)"
+            }
+        }
+    },
+    // SOP's Import Cost Extension Settings.
+    "importCost.largePackageColor": "#EC3A37F5",
+    "importCost.mediumPackageColor": "#B362FF",
+    "importCost.smallPackageColor": "#B362FF",
+    "editor.fontFamily": "'Fira Code', 'MesloLGS Nerd Font Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "editor.fontWeight": "500",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "editor.lineNumbers": "on",
+    "editor.links": false,
+    "editor.minimap.maxColumn": 100,
+    "editor.minimap.showSlider": "always",
+    "editor.minimap.size": "fit",
+    "editor.renderFinalNewline": true,
+    "editor.renderIndentGuides": true,
+    "editor.renderLineHighlight": "all",
+    "editor.renderWhitespace": "trailing",
+    "editor.rulers": [
+        100,
+        110
+    ],
+    "editor.scrollBeyondLastLine": false,
+    "editor.stickyTabStops": true,
+    "editor.suggest.insertMode": "insert",
+    "editor.suggest.showStatusBar": true,
+    "editor.suggest.shareSuggestSelections": true,
+    "editor.suggestSelection": "first",
+    "editor.trimAutoWhitespace": true,
+    "editor.useTabStops": true,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    "files.defaultLanguage": "${activeEditorLanguage}",
+    "files.trimTrailingWhitespace": true,
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "json.format.enable": true,
+    "oneDarkPro.bold": true,
+    "powermode.enabled": false,
+    "powermode.presets": "fireworks",
+    "python.analysis.typeCheckingMode": "off",
+    "python.formatting.provider": "black",
+    "python.languageServer": "Pylance",
+    "python.linting.enabled": true,
+    "python.linting.pylamaArgs": [
+        "-i",
+        "E501,E231,E203,W605,W0612",
+        "--linters",
+        "print,mccabe,pycodestyle,pyflakes",
+        "--skip",
+        ".eggs/*,lib/django-auditlog/*",
+    ],
+    "python.linting.pylamaEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "search.experimental.searchInOpenEditors": true,
+    "terminal.explorerKind": "external",
+    "terminal.external.linuxExec": "yakuake",
+    "terminal.integrated.fontFamily": "MesloLGS Nerd Font",
+    "vsicons.dontShowNewVersionMessage": true,
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "window.zoomLevel": 2,
+    "workbench.colorTheme": "One Dark Pro",
+    "workbench.tips.enabled": true,
+    "workbench.activityBar.visible": false,
+    "workbench.editor.tabCloseButton": "off",
+    "workbench.editor.decorations.badges": true,
+    "workbench.editor.decorations.colors": true,
+    "workbench.editor.pinnedTabSizing": "shrink",
+    "workbench.editor.tabSizing": "shrink",
+    "workbench.editor.wrapTabs": true,
+    "workbench.editorAssociations": {
+        "git-rebase-todo": "default",
+        "*.ipynb": "jupyter-notebook"
+    },
+    "yaml.schemas": {
+        "file:///home/mfw56/.vscode/extensions/atlassian.atlascode-2.9.1/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+    },
+    "atlascode.jira.lastCreateSiteAndProject": {
+        "siteId": "57a3a799-5402-4dff-9287-e4ceb2351e47",
+        "projectKey": "PER"
+    },
+    "angular.experimental-ivy": true,
+    "redhat.telemetry.enabled": true,
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+}

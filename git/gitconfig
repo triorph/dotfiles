@@ -1,0 +1,72 @@
+[user]
+	email = Michael.Walsh@canterbury.ac.nz
+	name = Michael Walsh
+	signingkey = <FILLTHISOUT>
+[core]
+    # editor = code --wait --reuse-window
+    editor = nvim
+	whitespace = -trailing-space
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+[delta]
+	line-numbers = true
+	side-by-side=false
+    syntax-theme = Dracula
+    navigate = true
+[interactive]
+    diffFilter = delta --color-only
+[color]
+	ui = true
+	diff = auto
+	status = auto
+	branch = auto
+[push]
+	default = current
+[merge]
+	ff = false
+	tool = vimdiff
+[fetch]
+	recurseSubmodules = on-demand
+[log]
+	decorate = full
+[branch]
+	autosetuprebase = always
+[core]
+	attributesfile = /home/mfw56/.gitattributes
+[mergetool "vscode"]
+	cmd = code --wait $MERGED
+[mergetool "vimdiff"]
+    cmd = nvim -d  $LOCAL $REMOTE 
+[mergetool]
+	keepBackup = false
+	keepTemporaries = false
+	writeToTemp = true
+	prompt = false
+[diff]
+	mnemonicPrefix = true
+	renames = true
+	wordRegex = .
+	submodule = log
+[bulkworkspaces]
+	ucee-ms = /home/mfw56/ucee/src
+[status]
+	showUntrackedFiles = all
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = 11
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[diff-so-fancy]
+	stripLeadingSymbols = false
+[credential]
+	helper = store
