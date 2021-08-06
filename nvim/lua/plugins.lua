@@ -8,6 +8,9 @@ return require('packer').startup(function()
   use { 'glepnir/dashboard-nvim', config = function()
 	require('config/dashboard')
   end }
+  -- using packer.nvim
+use {'akinsho/nvim-bufferline.lua', requires = 'kyazdani42/nvim-web-devicons', config = function() require('config/bufferline') end}
+
 use {
   'nvim-telescope/telescope.nvim',
   requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
@@ -22,8 +25,8 @@ use {
 	    }
 	  end
 	}
-	-- Lua
-use {
+use {"hrsh7th/nvim-compe", config=function() require('config/autocomplete') end}
+	use {
   "folke/trouble.nvim",
   requires = "kyazdani42/nvim-web-devicons",
   config = function()
@@ -35,7 +38,7 @@ use {
 	'glepnir/lspsaga.nvim',
 	requires = {'neovim/nvim-lspconfig'},
 	config=function() 
-		require('lspsaga').init_lsp_saga() 
+		require('config/lsp')
 	end }
   use { '9mm/vim-closer'}
   use {'tpope/vim-endwise'}
@@ -77,11 +80,22 @@ use {
 	require('gitsigns').setup()
     end
   }
+  use {
+    'nvim-treesitter/nvim-treesitter', run = function() vim.cmd[[:TSUpdate]] end,
+    config = function() require('config/treesitter') end
+    }
+  use { 
+	  "lukas-reineke/indent-blankline.nvim",
+	  config = function() require('config/indent') end
+	}
+use {
+  'hoob3rt/lualine.nvim',
+  requires = {'kyazdani42/nvim-web-devicons', opt = true},
+  config = function() require('config/lualine') end
+}
 
-  -- You can specify multiple plugins in a single call
-  use {'tjdevries/colorbuddy.vim', {'nvim-treesitter/nvim-treesitter', opt = true}}
-
+use_rocks {'luaformatter', server = 'https://luarocks.org/dev'}
   -- You can alias plugin names
-  use {'folke/tokyonight.nvim', config = function() vim.cmd[[colorscheme tokyonight]] end}
+  use {'folke/tokyonight.nvim', config = function() require('config/colour') end}
 end)
 
