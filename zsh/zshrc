@@ -94,7 +94,6 @@ plugins=(
   alias-tips
   ssh-connect
   aws
-  zsh-256color
   miek-aliases-etc
 )
 # export ZSH_TMUX_AUTOSTART=true
