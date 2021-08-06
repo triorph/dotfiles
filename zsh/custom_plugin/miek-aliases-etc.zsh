@@ -1,6 +1,5 @@
 
 export LESS="--quit-if-one-screen --RAW-CONTROL-CHARS --no-init"
-export TERM=xterm-256color
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
