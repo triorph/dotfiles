@@ -1,12 +1,13 @@
 local key_mapper = function(mode, key, result)
-  vim.api.nvim_set_keymap(
-    mode,
-    key,
-    result,
-    {noremap = true, silent = true}
-  )
+	vim.api.nvim_set_keymap(mode, key, result, { noremap = true, silent = true })
 end
-key_mapper('i', 'jj', '<ESC>')
-key_mapper('i', 'kk', '<ESC>')
-key_mapper('i', ':w', '<ESC>:w')
-key_mapper('i', 'jk', '<ESC>')
+key_mapper("i", "jj", "<ESC>")
+key_mapper("i", "kk", "<ESC>")
+key_mapper("i", ":w", "<ESC>:w")
+key_mapper("i", "jk", "<ESC>")
+require("kommentary.config").use_extended_mappings()
+key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>")
+key_mapper("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
+key_mapper("n", "<c-/>", "<cmd>call v:lua.kommentary.go(1)<CR>")
+key_mapper("v", "<c-/>", "<cmd>call v:lua.kommentary.go(4)<CR>")
+key_mapper("n", "<F11>", "<cmd>ZenMode<CR>")
