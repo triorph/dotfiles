@@ -4,6 +4,7 @@ vim.cmd([[packadd packer.nvim]])
 return require("packer").startup(function()
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
+
 	use({
 		"tveskag/nvim-blame-line",
 		config = function()
@@ -11,24 +12,30 @@ return require("packer").startup(function()
 		end,
 	})
 
+	use({ "neomake/neomake" })
+
 	use({
 		"glepnir/dashboard-nvim",
 		config = function()
 			require("config/dashboard")
 		end,
 	})
+
 	use("b3nj5m1n/kommentary")
 
-	-- using packer.nvim
 	use({
 		"lukas-reineke/format.nvim",
 		config = function()
 			require("config/format")
 		end,
 	})
+
 	use({ "kosayoda/nvim-lightbulb" })
+
 	use({ "npxbr/glow.nvim", run = "GlowInstall" })
+
 	use({ "anott03/nvim-lspinstall" })
+
 	use({
 		"akinsho/nvim-bufferline.lua",
 		requires = "kyazdani42/nvim-web-devicons",
@@ -36,11 +43,14 @@ return require("packer").startup(function()
 			require("config/bufferline")
 		end,
 	})
+
 	use({ "windwp/nvim-autopairs" })
+
 	use({
 		"nvim-telescope/telescope.nvim",
 		requires = { { "nvim-lua/popup.nvim" }, { "nvim-lua/plenary.nvim" } },
 	})
+
 	use({
 		"folke/which-key.nvim",
 		config = function()
@@ -51,12 +61,14 @@ return require("packer").startup(function()
 			})
 		end,
 	})
+
 	use({
 		"hrsh7th/nvim-compe",
 		config = function()
 			require("config/autocomplete")
 		end,
 	})
+
 	use({
 		"folke/trouble.nvim",
 		requires = "kyazdani42/nvim-web-devicons",
@@ -72,43 +84,11 @@ return require("packer").startup(function()
 			require("config/lsp")
 		end,
 	})
-	--[[ use({ "9mm/vim-closer" })
-	use({ "tpope/vim-endwise" })
 
-	-- Load on an autocommand event
-	use({ "andymass/vim-matchup", event = "VimEnter" })
- ]]
-	-- Load on a combination of conditions: specific filetypes or commands
-	-- Also run code after load (see the "config" key)
-	--[[ use({
-		--[[ "w0rp/ale",
-		ft = {
-			"sh",
-			"zsh",
-			"bash",
-			"c",
-			"cpp",
-			"cmake",
-			"html",
-			"markdown",
-			"racket",
-			"vim",
-			"tex",
-		},
-		cmd = "ALEEnable", ]]
-	-- config = "vim.cmd[[ALEEnable]]",
-	-- })
-	-- ]]
+	-- use({ "9mm/vim-closer" })
+	-- use({ "tpope/vim-endwise" })
+	-- use({ "andymass/vim-matchup", event = "VimEnter" })
 
-	-- Plugins can have post-install/update hooks
-	--[[ use({
-		"iamcco/markdown-preview.nvim", ]]
-	--[[ run = "cd app && yarn install",
-		cmd = "MarkdownPreview",
-	})
- ]]
-
-	-- Use dependency and run lua function after load
 	use({
 		"lewis6991/gitsigns.nvim",
 		requires = { "nvim-lua/plenary.nvim" },
@@ -116,6 +96,7 @@ return require("packer").startup(function()
 			require("gitsigns").setup()
 		end,
 	})
+
 	use({
 		"nvim-treesitter/nvim-treesitter",
 		run = function()
@@ -125,12 +106,14 @@ return require("packer").startup(function()
 			require("config/treesitter")
 		end,
 	})
+
 	use({
 		"lukas-reineke/indent-blankline.nvim",
 		config = function()
 			require("config/indent")
 		end,
 	})
+
 	use({
 		"hoob3rt/lualine.nvim",
 		requires = { "kyazdani42/nvim-web-devicons", opt = true },
@@ -138,6 +121,7 @@ return require("packer").startup(function()
 			require("config/lualine")
 		end,
 	})
+
 	use({
 		"folke/twilight.nvim",
 		config = function()
@@ -148,6 +132,7 @@ return require("packer").startup(function()
 			})
 		end,
 	})
+
 	use({
 		"folke/zen-mode.nvim",
 		config = function()
@@ -160,12 +145,12 @@ return require("packer").startup(function()
 		end,
 	})
 
-	-- You can alias plugin names
 	use({
 		"folke/tokyonight.nvim",
 		config = function()
 			require("config/colour")
 		end,
 	})
+
 	use({ "ThePrimeagen/vim-be-good" })
 end)

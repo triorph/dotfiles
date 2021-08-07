@@ -39,7 +39,7 @@ end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { "pyright", "rust_analyzer", "tsserver" }
+local servers = { "pyright" }
 for _, lsp in ipairs(servers) do
 	nvim_lsp[lsp].setup({
 		on_attach = on_attach,
@@ -48,6 +48,10 @@ for _, lsp in ipairs(servers) do
 		},
 	})
 end
+
+-- LSPSaga options
+-------
+
 local opts = { silent = true, noremap = true }
 -- lsp provider to find the cursor word definition and reference
 vim.api.nvim_set_keymap("n", "gh", "<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>", opts)
@@ -56,7 +60,6 @@ vim.api.nvim_set_keymap("n", "<leader>ca", "<cmd>lua require('lspsaga.codeaction
 vim.api.nvim_set_keymap("v", "<leader>ca", ":<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>", opts)
 -- show hover doc
 vim.api.nvim_set_keymap("n", "K", "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
-
 -- scroll down hover doc or scroll in definition preview
 -- vim.api.nvim_set_keymap("n", "<C-f>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
 -- scroll up hover doc
@@ -71,8 +74,12 @@ vim.api.nvim_set_keymap("n", "gd", "<cmd>lua require'lspsaga.provider'.preview_d
 vim.api.nvim_set_keymap("n", "<leader>cd", "<cmd>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>", opts)
 -- only show diagnostic if cursor is over the area
 vim.api.nvim_set_keymap("n", "<leader>cc", "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>", opts)
-
 -- jump diagnostic
 vim.api.nvim_set_keymap("n", "[e", "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>", opts)
 vim.api.nvim_set_keymap("n", "]e", "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>", opts)
 vim.cmd([[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]])
+
+-- Neomake to use pylama (I know not technically LSP but kinda fits)
+vim.g.neomake_python_pylama_args = { "-i E501,E231,E203,W605,W0612 --linters print,mccabe,pycodestyle,pyflakes" }
+vim.g.neomake_python_enable_makers = { "pylama" }
+vim.cmd([[call neomake#configure#automake('nrwi', 500)]])

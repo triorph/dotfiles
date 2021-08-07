@@ -8,13 +8,14 @@ end
 key_mapper("i", "jj", "<ESC>")
 key_mapper("i", "kk", "<ESC>")
 key_mapper("i", "jk", "<ESC>")
+-- easy insert lines
+key_mapper("n", "<C-o>", "o<ESC>")
+
 -- telescope simple shortcuts
 key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>")
 key_mapper("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
 -- kommentary
-require("kommentary.config").use_extended_mappings()
-key_mapper("n", "<c-/>", "<cmd>call v:lua.kommentary.go(1)<CR>")
-key_mapper("v", "<c-/>", "<cmd>call v:lua.kommentary.go(4)<CR>")
+require("kommentary.config") -- .use_extended_mappings()
 -- ZenMode
 key_mapper("n", "<F11>", "<cmd>ZenMode<CR>")
 

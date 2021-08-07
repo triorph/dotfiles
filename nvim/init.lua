@@ -21,5 +21,7 @@ vim.wo.number = true
 vim.wo.relativenumber = true
 vim.wo.signcolumn = "yes"
 vim.wo.wrap = false
+-- limit the autocomplete popup menu size (a pet peeve of mine is how often the autocomplete blocks what you actually want to see)
+vim.o.pumheight = 5
 require("plugins")
 require("config/keymappings")

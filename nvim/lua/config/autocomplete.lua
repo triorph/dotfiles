@@ -1,6 +1,5 @@
 vim.o.completeopt = "menuone,noselect"
 local opts = { silent = true, noremap = true }
-
 require("compe").setup({
 	enabled = true,
 	autocomplete = true,
@@ -62,5 +61,7 @@ end
 expression_key_mapper("i", "<C-Space>", "compe#complete()")
 expression_key_mapper("i", "<CR>", "compe#confirm('<CR>')")
 expression_key_mapper("i", "<C-e>", "compe#close('<C-e>')")
+expression_key_mapper("i", "<TAB>", 'pumvisible() ? "<C-n>" : "<TAB>"')
+expression_key_mapper("i", "<S-TAB>", 'pumvisible() ? "<C-p>" : "<C-h>"')
 expression_key_mapper("i", "<C-f>", "compe#scroll({ 'delta': +4 })")
 expression_key_mapper("i", "<C-d>", "compe#scroll({ 'delta': -4 })")

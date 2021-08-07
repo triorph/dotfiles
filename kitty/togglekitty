@@ -1,17 +1,26 @@
-#!/bin/zsh
+#!/bin/bash
 echo "Toggle Kitty called " >> /tmp/kittylog
-pid=$(ps aux |grep kitty | grep quaketerm | grep -v togglekitty | grep -v grep | grep -v kittylog| awk '{print $2}' )
+window_name=$1
+extra_conf=$2
+if [ -z "$window_name" ]; then
+    window_name="quaketerm"
+fi
+if [ -z "$extra_conf" ]; then
+    extra_conf="$HOME/.config/kitty/quake-kitty.conf"
+fi
+echo "window name and extra_conf are: $window_name, $extra_conf" >> /tmp/kittylog
+pid=$(ps aux |grep kitty | grep $window_name | grep -v togglekitty | grep -v grep | grep -v kittylog| awk '{print $2}' )
 if [ -z $pid ] ; then
     echo "PID was: $pid. No kitty found so spawning new copy." >> /tmp/kittylog
-    $HOME/.local/bin/kitty --title=quaketerm --start-as=fullscreen & disown
+    $HOME/.local/bin/kitty --title=$window_name --start-as=fullscreen --config="$HOME/.config/kitty/kitty.conf" --config="$extra_conf" & disown
 else
-    echo "Kitty PID is: $pid" >> /tmp/kittylog    
+    echo "Kitty PID is: $pid" >> /tmp/kittylog
     wid=$(xdotool search --pid $pid)
     echo "Kitty WID is: $wid" >> /tmp/kittylog
     map_state=$(xwininfo -id $wid | grep 'Map State'| grep "IsViewable")
     if [ -z $map_state ]; then
         echo "Maximising Kitty" >> /tmp/kittylog
-        xdotool windowmap $wid 
+        xdotool windowmap $wid
         # xdotool key $wid CTRL+SHIFT+F11
     else
         echo "Minimising Kitty" >> /tmp/kittylog

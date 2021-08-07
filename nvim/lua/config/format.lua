@@ -26,6 +26,9 @@ require("format").setup({
 			cmd = { "stylua" },
 		},
 	},
+	json = {
+		{ cmd = { "prettier -w" } },
+	},
 	go = {
 		{
 			cmd = { "gofmt -w", "goimports -w" },
