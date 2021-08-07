@@ -71,16 +71,16 @@ return require("packer").startup(function()
 			require("config/lsp")
 		end,
 	})
-	use({ "9mm/vim-closer" })
+	--[[ use({ "9mm/vim-closer" })
 	use({ "tpope/vim-endwise" })
 
 	-- Load on an autocommand event
 	use({ "andymass/vim-matchup", event = "VimEnter" })
-
+ ]]
 	-- Load on a combination of conditions: specific filetypes or commands
 	-- Also run code after load (see the "config" key)
-	use({
-		"w0rp/ale",
+	--[[ use({
+		--[[ "w0rp/ale",
 		ft = {
 			"sh",
 			"zsh",
@@ -94,28 +94,18 @@ return require("packer").startup(function()
 			"vim",
 			"tex",
 		},
-		cmd = "ALEEnable",
-		config = "vim.cmd[[ALEEnable]]",
-	})
-
-	-- You can specify rocks in isolation
-	use_rocks("penlight")
-	use_rocks({ "lua-resty-http", "lpeg" })
+		cmd = "ALEEnable", ]]
+	-- config = "vim.cmd[[ALEEnable]]",
+	-- })
+	-- ]]
 
 	-- Plugins can have post-install/update hooks
-	use({
-		"iamcco/markdown-preview.nvim",
-		run = "cd app && yarn install",
+	--[[ use({
+		"iamcco/markdown-preview.nvim", ]]
+	--[[ run = "cd app && yarn install",
 		cmd = "MarkdownPreview",
 	})
-
-	-- Post-install/update hook with call of vimscript function with argument
-	use({
-		"glacambre/firenvim",
-		run = function()
-			vim.fn["firenvim#install"](0)
-		end,
-	})
+ ]]
 
 	-- Use dependency and run lua function after load
 	use({
