@@ -3,7 +3,7 @@ echo "Toggle Kitty called " >> /tmp/kittylog
 pid=$(ps aux |grep kitty | grep quaketerm | grep -v togglekitty | grep -v grep | grep -v kittylog| awk '{print $2}' )
 if [ -z $pid ] ; then
     echo "PID was: $pid. No kitty found so spawning new copy." >> /tmp/kittylog
-    kitty --title=quaketerm --start-as=fullscreen & disown
+    $HOME/.local/bin/kitty --title=quaketerm --start-as=fullscreen & disown
 else
     echo "Kitty PID is: $pid" >> /tmp/kittylog    
     wid=$(xdotool search --pid $pid)

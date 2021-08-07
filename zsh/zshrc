@@ -93,7 +93,6 @@ plugins=(
   fast-syntax-highlighting
   zsh-autosuggestions
   alias-tips
-  ssh-connect
   aws
   miek-aliases-etc
 )
