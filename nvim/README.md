@@ -46,4 +46,3 @@ Still not quite right, but getting much closer now.
 - Autocomplete keymaps and generally being a little less obnoxious
 - Linter support
 - Get commenting working the way I want it to
-- Yank/Paste to work with system clipboard

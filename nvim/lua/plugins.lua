@@ -27,6 +27,7 @@ return require("packer").startup(function()
 		end,
 	})
 	use({ "kosayoda/nvim-lightbulb" })
+	use({ "npxbr/glow.nvim", run = "GlowInstall" })
 	use({ "anott03/nvim-lspinstall" })
 	use({
 		"akinsho/nvim-bufferline.lua",
