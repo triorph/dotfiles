@@ -86,6 +86,8 @@ return require("packer").startup(function()
 		end,
 	})
 
+	use({ "tpope/vim-surround" })
+
 	-- use({ "9mm/vim-closer" })
 	-- use({ "tpope/vim-endwise" })
 	-- use({ "andymass/vim-matchup", event = "VimEnter" })

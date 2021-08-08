@@ -45,6 +45,6 @@ nvim
 
 Still not quite right, but getting much closer now.
 
-- Get commenting working the way I want it to (apparently it is impossible to bind to Ctrl+/ in vim, so I'm stuck with learning some new muscle memory instead. C'est la vie)
 - Linters working into some "all errors" view (like LSP does for Trouble)
 - Telescope to view sessions and switch between them
+- Improved startup time (have plugins lazy-loading now which might be enough?)

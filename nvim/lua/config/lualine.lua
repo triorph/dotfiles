@@ -1,15 +1,20 @@
 require("lualine").setup({
 	options = {
-		-- ... your lualine config
 		theme = "tokyonight",
-		-- ... your lualine config
-		tabline = {
-			lualine_a = {},
-			lualine_b = { "branch" },
-			lualine_c = { "filename" },
-			lualine_x = {},
-			lualine_y = {},
-			lualine_z = {},
-		},
 	},
+	sections = {
+		lualine_a = { "mode" },
+		lualine_b = { "branch" },
+		lualine_c = {
+			"filename",
+			{
+				"diagnostics",
+				sources = { "nvim_lsp" },
+			},
+		},
+		lualine_x = { "encoding", "fileformat", "filetype" },
+		lualine_y = { "progress" },
+		lualine_z = { "location" },
+	},
+	extensions = { "quickfix" },
 })
