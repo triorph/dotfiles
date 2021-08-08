@@ -1,8 +1,14 @@
--- This file can be loaded by calling `lua require('plugins')` from your init.vim
-vim.cmd([[packadd packer.nvim]])
-packer = require("packer")
+local present, _ = pcall(require, "packerInit")
+local packer
+
+if present then
+    packer = require "packer"
+else
+    return false
+end
+
 local use = packer.use
-return require("packer").startup(function()
+return packer.startup(function()
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
