@@ -16,6 +16,9 @@ key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>")
 key_mapper("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
 -- kommentary
 require("kommentary.config") -- .use_extended_mappings()
+vim.api.nvim_set_keymap("n", "<leader>/", "gcc", { silent = true })
+vim.api.nvim_set_keymap("v", "<leader>/", "gc", { silent = true })
+
 -- ZenMode
 key_mapper("n", "<F11>", "<cmd>ZenMode<CR>")
 
@@ -32,3 +35,10 @@ verbal_key_mapper("v", "\\P", '"+P')
 
 -- Glow markdown preview
 key_mapper("n", "<leader>p", "<cmd>Glow<CR>")
+
+-- Overwrite the packer commands to work without packer directly loaded (for lazy loading)
+vim.cmd("silent! command PackerCompile lua require 'plugins' require('packer').compile()")
+vim.cmd("silent! command PackerInstall lua require 'plugins' require('packer').install()")
+vim.cmd("silent! command PackerStatus lua require 'plugins' require('packer').status()")
+vim.cmd("silent! command PackerSync lua require 'plugins' require('packer').sync()")
+vim.cmd("silent! command PackerUpdate lua require 'plugins' require('packer').update()")
