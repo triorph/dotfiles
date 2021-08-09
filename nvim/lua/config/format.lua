@@ -27,7 +27,7 @@ require("format").setup({
 		},
 	},
 	json = {
-		{ cmd = { "prettier -w" } },
+		{ cmd = { "prettier -w --tab-width 4" } },
 	},
 	go = {
 		{
