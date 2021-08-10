@@ -47,6 +47,9 @@ require("format").setup({
 			target = "current",
 		},
 	},
+	rust = {
+		{ cmd = { "rustfmt" } },
+	},
 })
 vim.cmd([[augroup Format
     autocmd!
