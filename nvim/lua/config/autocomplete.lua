@@ -2,7 +2,7 @@ vim.o.completeopt = "menuone,noselect"
 local opts = { silent = true, noremap = true }
 require("compe").setup({
 	enabled = true,
-	autocomplete = true,
+	autocomplete = false,
 	debug = false,
 	min_length = 1,
 	preselect = "enable",
@@ -17,13 +17,8 @@ require("compe").setup({
 	source = {
 		path = true,
 		buffer = true,
-		calc = true,
 		nvim_lsp = true,
-		treesitter = true,
 		nvim_lua = true,
-		vsnip = true,
-		ultisnips = true,
-		luasnip = true,
 	},
 })
 require("nvim-autopairs.completion.compe").setup({
@@ -59,7 +54,7 @@ local expression_key_mapper = function(mode, key, expression)
 	vim.api.nvim_set_keymap(mode, key, expression, { noremap = true, silent = true, expr = true })
 end
 expression_key_mapper("i", "<C-Space>", "compe#complete()")
-expression_key_mapper("i", "<CR>", "compe#confirm('<CR>')")
+expression_key_mapper("i", "<CR>", "compe#confirm(luaeval(\"require 'nvim-autopairs'.autopairs_cr()\"))")
 expression_key_mapper("i", "<C-e>", "compe#close('<C-e>')")
 expression_key_mapper("i", "<TAB>", 'pumvisible() ? "<C-n>" : "<TAB>"')
 expression_key_mapper("i", "<S-TAB>", 'pumvisible() ? "<C-p>" : "<C-h>"')

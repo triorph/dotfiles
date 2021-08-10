@@ -2,9 +2,9 @@ local present, _ = pcall(require, "packerInit")
 local packer
 
 if present then
-    packer = require "packer"
+	packer = require("packer")
 else
-    return false
+	return false
 end
 
 local use = packer.use
@@ -80,6 +80,7 @@ return packer.startup(function()
 	})
 
 	-- Autocompletion
+	use({ "hrsh7th/vim-vsnip" })
 	use({
 		"hrsh7th/nvim-compe",
 		config = function()
