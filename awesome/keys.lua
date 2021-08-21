@@ -271,15 +271,23 @@ keys.globalkeys = gears.table.join(
 	}),
 
 	awful.key({ ctrlkey }, "`", function()
-		toggle_class("quake", "kitty -1 --class=quake", {})
+		toggle_class("quake-term", "kitty -1 --class=quake-term", {
+			width = screen_width * 0.9,
+			height = screen_height * 0.9,
+			placement = awful.placement.TOP,
+			titlebars_enabled = false,
+			class = "quake-term",
+			maximized = false,
+			floating = true,
+		})
 	end, {
 		description = "Toggle the quake mode terminal",
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey, altkey }, "d", function()
 		toggle_class(
-			"dev",
-			"kitty -1 --class=dev",
+			"dev-term",
+			"kitty -1 --class=dev-term",
 			{ floating = true, width = screen_width * 0.7, height = screen_height * 0.98 }
 		)
 	end, {
