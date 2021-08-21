@@ -12,7 +12,7 @@ echo "window name and extra_conf are: $window_name, $extra_conf" >> /tmp/kittylo
 pid=$(ps aux |grep kitty | grep $window_name | grep -v togglekitty | grep -v grep | grep -v kittylog| awk '{print $2}' )
 if [ -z $pid ] ; then
     echo "PID was: $pid. No kitty found so spawning new copy." >> /tmp/kittylog
-    $HOME/.local/bin/kitty --title=$window_name --start-as=fullscreen --config="$HOME/.config/kitty/kitty.conf" --config="$extra_conf" & disown
+    $HOME/.local/bin/kitty --title=$window_name --config="$HOME/.config/kitty/kitty.conf" --config="$extra_conf" & disown
 else
     echo "Kitty PID is: $pid" >> /tmp/kittylog
     wid=$(xdotool search --pid $pid)

@@ -15,6 +15,21 @@ altkey = "Mod1"
 ctrlkey = "Control"
 shiftkey = "Shift"
 
+function toggle_class(class, spawn_command, properties)
+	c = helpers.find_clients({ class = class }, true)
+	if c then
+		if client.focus == c then
+			c.hidden = true
+		else
+			c.hidden = false
+			c:move_to_tag(mouse.screen.selected_tag)
+			client.focus = c
+		end
+	else
+		awful.spawn(spawn_command, properties)
+	end
+end
+
 -- {{{ Mouse bindings on desktop
 keys.desktopbuttons = gears.table.join(
 	awful.button({}, 1, function()
@@ -246,20 +261,27 @@ keys.globalkeys = gears.table.join(
 	}),
 	-- Spawn floating terminal
 	awful.key({ superkey, shiftkey }, "Return", function()
-		awful.spawn(user.floating_terminal, { floating = true })
+		awful.spawn(
+			user.floating_terminal,
+			{ floating = true, width = screen_width * 0.65, height = screen_height * 0.98 }
+		)
 	end, {
 		description = "spawn floating terminal",
 		group = "launcher",
 	}),
 
 	awful.key({ ctrlkey }, "`", function()
-		awful.spawn.with_shell("$HOME/.local/bin/togglekitty quake $HOME/.config/kitty/quake-kitty.conf")
+		toggle_class("quake", "kitty -1 --class=quake", {})
 	end, {
 		description = "Toggle the quake mode terminal",
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey, altkey }, "d", function()
-		awful.spawn.with_shell("$HOME/.local/bin/togglekitty dev")
+		toggle_class(
+			"dev",
+			"kitty -1 --class=dev",
+			{ floating = true, width = screen_width * 0.7, height = screen_height * 0.98 }
+		)
 	end, {
 		description = "Toggle the dev mode terminal",
 		group = "launcher",
@@ -809,7 +831,7 @@ keys.clientkeys = gears.table.join(
 	}),
 	-- N for normal size (good for terminals)
 	awful.key({ superkey, ctrlkey }, "n", function(c)
-		helpers.float_and_resize(c, screen_width * 0.45, screen_height * 0.5)
+		helpers.float_and_resize(c, screen_width * 0.65, screen_height * 0.75)
 	end, {
 		description = "normal mode",
 		group = "client",
