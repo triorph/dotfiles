@@ -1,0 +1,35 @@
+#!/bin/bash
+# Sets your background to a random (or specifiec by index) picture from a WallHaven
+# collection.
+#
+# You'll need a ~/.config/wallhaven.json file, it needs to looklike
+# {
+#   "file_location": "/.wallpaper"  # from $HOME directory on
+#   "username": "",
+#   "api_key": "",
+#   "collection_id": "",
+# }
+#
+# collections are specified by username/collection_id. If it is your own
+# private collection, then you will also need to specify an api_key to have
+# permissions to access it. If it is a public collection, then you shold be
+# able to leave the API key blank
+config=$(cat $HOME/.config/wallhaven.json | jq)
+target_file=$HOME$(echo $config | jq -er ".file_location")
+api_key=$(echo $config | jq -er ".api_key")
+username=$(echo $config | jq -er ".username")
+collection_id=$(echo $config | jq -er ".collection_id")
+url="https://wallhaven.cc./api/v1/collections/$username/$collection_id/?apikey=$api_key"
+result=$(curl -s "$url" | jq)
+total=$(echo $result | jq -er ".meta.total")
+per_page=$(echo $result | jq -er ".meta.per_page")
+index=$1
+if [ -z $index ] ; then
+    index=$(($RANDOM % 30))
+fi
+page=$((1 + $index / $per_page))
+new_index=$(($index % $per_page))
+new_result=$(curl -s "$url&page=$page" | jq)
+filepath=$(echo $new_result | jq -er ".data[$new_index].path")
+curl -o $target_file -sL "$filepath"
+feh --bg-fill "$target_file"

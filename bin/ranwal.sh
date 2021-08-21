@@ -1,3 +1,3 @@
 #!/bin/bash
-wal -i ~/Wallpapers -q
+wal -t -s -i ~/Wallpapers -q
 feh --bg-fill `jq -er ".wallpaper" ~/.cache/wal/colors.json`
