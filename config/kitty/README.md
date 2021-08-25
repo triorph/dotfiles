@@ -5,6 +5,7 @@ Kitty as a terminal editor.
 diff.conf and dracula.conf are just the files for the Dracula theme.
 
 Also includes a script `togglekitty` that allows kitty to work in a quake-mode style (like yakuake).
+(Note: with awesome WM this is no longer needed. Togglekitty is more of a hack for ubuntu (that didn't seem to work with 21.04 anyway))
 
 To install togglekitty:
 
