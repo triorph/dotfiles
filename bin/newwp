@@ -33,3 +33,6 @@ new_result=$(curl -s "$url&page=$page" | jq)
 filepath=$(echo $new_result | jq -er ".data[$new_index].path")
 curl -o $target_file -sL "$filepath"
 feh --bg-fill "$target_file"
+config=$(echo $config | jq ". + {current_selection: $index, filepath: \"$filepath\"}")
+echo $config | jq > /tmp/wallhaven.json
+mv /tmp/wallhaven.json $HOME/.config/wallhaven.json
