@@ -115,6 +115,7 @@ return packer.startup(function()
 			require("config/indent")
 		end,
 	})
+	use({ "mechatroner/rainbow_csv" })
 
 	-- Look pretty
 	use({
