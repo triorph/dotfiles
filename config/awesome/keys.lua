@@ -15,8 +15,8 @@ altkey = "Mod1"
 ctrlkey = "Control"
 shiftkey = "Shift"
 
-function toggle_class(class, spawn_command, properties)
-	c = helpers.find_clients({ class = class }, true)
+function toggle_class(search_property, spawn_command, properties)
+	c = helpers.find_clients(search_property, true)
 	if c then
 		if client.focus == c then
 			c.hidden = true
@@ -271,7 +271,7 @@ keys.globalkeys = gears.table.join(
 	}),
 
 	awful.key({ ctrlkey }, "`", function()
-		toggle_class("quake-term", "kitty -1 --class=quake-term", {
+		toggle_class({ class = "quake-term" }, "kitty -1 --class=quake-term", {
 			width = screen_width * 0.9,
 			height = screen_height * 0.9,
 			placement = awful.placement.TOP,
@@ -286,12 +286,23 @@ keys.globalkeys = gears.table.join(
 	}),
 	awful.key({ ctrlkey, altkey }, "d", function()
 		toggle_class(
-			"dev-term",
+			{ class = "dev-term" },
 			"kitty -1 --class=dev-term",
 			{ floating = true, width = screen_width * 0.7, height = screen_height * 0.98 }
 		)
 	end, {
 		description = "Toggle the dev mode terminal",
+		group = "launcher",
+	}),
+
+	awful.key({ ctrlkey }, "Tab", function()
+		toggle_class(
+			{ name = ".*bsidian.*" },
+			"obsidian --class=obsidian-main",
+			{ floating = true, width = screen_width * 0.9, height = screen_height * 0.9, class = "obsidian-main" }
+		)
+	end, {
+		description = "Toggle obsidian in and out",
 		group = "launcher",
 	}),
 
