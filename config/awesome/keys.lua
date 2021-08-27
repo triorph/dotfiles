@@ -297,9 +297,9 @@ keys.globalkeys = gears.table.join(
 
 	awful.key({ ctrlkey }, "Tab", function()
 		toggle_class(
-			{ name = ".*bsidian.*" },
-			"obsidian --class=obsidian-main",
-			{ floating = true, width = screen_width * 0.9, height = screen_height * 0.9, class = "obsidian-main" }
+			{ class = "obsidian" },
+			"obsidian",
+			{ floating = true, width = screen_width * 0.9, height = screen_height * 0.9 }
 		)
 	end, {
 		description = "Toggle obsidian in and out",
