@@ -16,6 +16,7 @@ ctrlkey = "Control"
 shiftkey = "Shift"
 
 function toggle_class(search_property, spawn_command, properties)
+	-- naughty.notify({ text = spawn_command })
 	c = helpers.find_clients(search_property, true)
 	if c then
 		if client.focus == c then
@@ -26,7 +27,9 @@ function toggle_class(search_property, spawn_command, properties)
 			client.focus = c
 		end
 	else
-		awful.spawn(spawn_command, properties)
+		naughty.notify({ text = "Spawning " .. spawn_command })
+		pid = awful.spawn(spawn_command, properties)
+		-- naughty.notify({ text = tostring(pid) })
 	end
 end
 
