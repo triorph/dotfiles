@@ -282,6 +282,7 @@ keys.globalkeys = gears.table.join(
 			class = "quake-term",
 			maximized = false,
 			floating = true,
+			opacity = 0.95,
 		})
 	end, {
 		description = "Toggle the quake mode terminal",
@@ -291,7 +292,7 @@ keys.globalkeys = gears.table.join(
 		toggle_class(
 			{ class = "dev-term" },
 			"kitty -1 --class=dev-term",
-			{ floating = true, width = screen_width * 0.7, height = screen_height * 0.98 }
+			{ floating = true, width = screen_width * 0.7, height = screen_height * 0.98, opacity = 0.95 }
 		)
 	end, {
 		description = "Toggle the dev mode terminal",
@@ -888,13 +889,13 @@ keys.clientkeys = gears.table.join(
 
 	-- Change client opacity
 	awful.key({ ctrlkey, superkey }, "o", function(c)
-		c.opacity = c.opacity - 0.1
+		c.opacity = c.opacity - 0.05
 	end, {
 		description = "decrease client opacity",
 		group = "client",
 	}),
 	awful.key({ superkey, shiftkey }, "o", function(c)
-		c.opacity = c.opacity + 0.1
+		c.opacity = c.opacity + 0.05
 	end, {
 		description = "increase client opacity",
 		group = "client",
