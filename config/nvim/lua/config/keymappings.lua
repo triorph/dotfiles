@@ -8,8 +8,6 @@ end
 key_mapper("i", "jj", "<ESC>")
 key_mapper("i", "kk", "<ESC>")
 key_mapper("i", "jk", "<ESC>")
--- easy insert lines
-key_mapper("n", "<C-o>", "o<ESC>")
 
 -- telescope simple shortcuts
 key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>")
