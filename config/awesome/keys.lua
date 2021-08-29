@@ -289,11 +289,13 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey, altkey }, "d", function()
-		toggle_class(
-			{ class = "dev-term" },
-			"kitty -1 --class=dev-term",
-			{ floating = true, width = screen_width * 0.7, height = screen_height * 0.98, opacity = 0.95 }
-		)
+		toggle_class({ class = "dev-term" }, "kitty -1 --class=dev-term", {
+			floating = true,
+			titlebars_enabled = false,
+			width = screen_width * 0.85,
+			height = screen_height * 0.95,
+			opacity = 0.95,
+		})
 	end, {
 		description = "Toggle the dev mode terminal",
 		group = "launcher",
@@ -774,7 +776,7 @@ keys.clientkeys = gears.table.join(
 	awful.key({ superkey }, "c", function(c)
 		awful.placement.centered(c, { honor_workarea = true, honor_padding = true })
 		helpers.single_double_tap(nil, function()
-			helpers.float_and_resize(c, screen_width * 0.65, screen_height * 0.98)
+			helpers.float_and_resize(c, screen_width * 0.85, screen_height * 0.970)
 		end)
 	end),
 
