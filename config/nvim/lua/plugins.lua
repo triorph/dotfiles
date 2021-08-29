@@ -151,7 +151,12 @@ return packer.startup(function()
 	use({ "tpope/vim-surround" })
 	use({ "wellle/targets.vim" })
 	use({ "justinmk/vim-sneak" })
-	use({ "takac/vim-hardtime" })
+	use({
+		"takac/vim-hardtime",
+		config = function()
+			vim.g.hardtime_default_on = 1
+		end,
+	})
 	use({ "unblevable/quick-scope" })
 	-- use({ "tpope/vim-endwise" })
 	use({ "andymass/vim-matchup", event = "VimEnter" })
