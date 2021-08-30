@@ -10,7 +10,6 @@ else
    export XIVIEWER='eog'
 fi
 
-source ~/ucee/venv/bin/activate
 alias gca="git commit -v -a"
 alias gca!="git commit -v -a --amend --reset-author"
 alias ls="lsd --group-dirs first"
