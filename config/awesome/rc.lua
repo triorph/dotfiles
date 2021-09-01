@@ -36,7 +36,7 @@ local bar_themes = {
 	"ephemeral", -- 4 -- Taglist, start button, tasklist, and more buttons
 	"amarena", -- 5 -- Minimal taglist and dock with autohide
 }
-local bar_theme = bar_themes[5]
+local bar_theme = bar_themes[4]
 
 -- ===================================================================
 -- Affects which icon theme will be used by widgets that display image icons.
@@ -214,7 +214,7 @@ require("elemental.bar." .. bar_theme)
 -- Exit screen
 require("elemental.exit_screen." .. exit_screen_theme)
 -- Sidebar
-require("elemental.sidebar." .. sidebar_theme)
+-- require("elemental.sidebar." .. sidebar_theme)
 -- Dashboard (previously called: Start screen)
 require("elemental.dashboard." .. dashboard_theme)
 -- Lock screen
