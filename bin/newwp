@@ -25,7 +25,7 @@ total=$(echo $result | jq -er ".meta.total")
 per_page=$(echo $result | jq -er ".meta.per_page")
 index=$1
 if [ -z $index ] ; then
-    index=$(($RANDOM % 30))
+    index=$(($RANDOM % total))
 fi
 page=$((1 + $index / $per_page))
 new_index=$(($index % $per_page))
