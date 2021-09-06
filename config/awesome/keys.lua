@@ -420,7 +420,7 @@ keys.globalkeys = gears.table.join(
 
 	-- Run
 	awful.key({ superkey }, "r", function()
-		awful.spawn.with_shell("rofi_with_path -matching fuzzy -show run")
+		awful.spawn.with_shell("rofi -matching fuzzy -show run")
 	end, {
 		description = "rofi launcher",
 		group = "launcher",
