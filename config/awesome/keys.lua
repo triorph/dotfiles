@@ -420,13 +420,10 @@ keys.globalkeys = gears.table.join(
 
 	-- Run
 	awful.key({ superkey }, "r", function()
-		-- Not all sidebars have a prompt
-		if sidebar_activate_prompt then
-			sidebar_activate_prompt("run")
-		end
+		awful.spawn.with_shell("rofi_with_path -matching fuzzy -show run")
 	end, {
-		description = "activate sidebar run prompt",
-		group = "awesome",
+		description = "rofi launcher",
+		group = "launcher",
 	}),
 	-- Web search
 	awful.key({ superkey }, "g", function()
