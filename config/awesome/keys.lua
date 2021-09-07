@@ -272,7 +272,17 @@ keys.globalkeys = gears.table.join(
 		description = "spawn floating terminal",
 		group = "launcher",
 	}),
-
+	awful.key({ ctrlkey, altkey }, "Tab", function()
+		toggle_class({ class = "Firefox" }, "firefox", {
+			floating = true,
+			opacity = 0.95,
+			width = screen_width * 0.8,
+			height = screen_height * 0.95,
+		})
+	end, {
+		description = "Toggle firefox",
+		group = "launcher",
+	}),
 	awful.key({ ctrlkey }, "`", function()
 		toggle_class({ class = "quake-term" }, "kitty -1 --class=quake-term", {
 			width = screen_width * 0.9,
