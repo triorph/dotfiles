@@ -154,7 +154,7 @@ return packer.startup(function()
 	use({
 		"takac/vim-hardtime",
 		config = function()
-			vim.g.hardtime_default_on = 1
+			vim.g.hardtime_default_on = 0
 		end,
 	})
 	use({ "unblevable/quick-scope" })
