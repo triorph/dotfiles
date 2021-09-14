@@ -4,5 +4,5 @@ vim.g.indent_blankline_filetype_exclude = { "dashboard" }
 
 require("indent_blankline").setup({
 	char = "|",
-	buftype_exclude = { "terminal", "dashboard" },
+	buftype_exclude = { "terminal", "dashboard", "startify", "alpha" },
 })

@@ -12,6 +12,12 @@ return packer.startup(function()
 	-- Packer can manage itself
 	use("wbthomason/packer.nvim")
 
+	use({
+		"lewis6991/impatient.nvim",
+		config = function()
+			require("impatient").enable_profile()
+		end,
+	})
 	-- git integration
 	use({
 		"tveskag/nvim-blame-line",
@@ -45,7 +51,6 @@ return packer.startup(function()
 		end,
 	})
 	use({ "kosayoda/nvim-lightbulb" })
-	use({ "anott03/nvim-lspinstall" })
 	use({
 		"folke/trouble.nvim",
 		requires = "kyazdani42/nvim-web-devicons",
@@ -79,13 +84,6 @@ return packer.startup(function()
 	})
 
 	-- Autocompletion
-	--[[ use({ "hrsh7th/vim-vsnip" })
-	use({
-		"hrsh7th/nvim-compe",
-		config = function()
-			require("config/autocomplete")
-		end,
-	}) ]]
 	use({
 		"ms-jpq/coq_nvim",
 		branch = "coq",
@@ -126,7 +124,8 @@ return packer.startup(function()
 
 	-- Look pretty
 	use({
-		"glepnir/dashboard-nvim",
+		"goolord/alpha-nvim",
+		requires = { "kyazdani42/nvim-web-devicons" },
 		config = function()
 			require("config/dashboard")
 		end,
@@ -146,34 +145,43 @@ return packer.startup(function()
 		end,
 	})
 	use({
+		"beauwilliams/focus.nvim",
+		config = function()
+			require("focus").setup()
+		end,
+	})
+
+	-- colour schemes
+	use({
 		"folke/tokyonight.nvim",
 		config = function()
 			require("config/colour")
 		end,
 	})
-	use("EdenEast/nightfox.nvim")
+	use({ "EdenEast/nightfox.nvim" })
+	use({ "Pocco81/Catppuccino.nvim" })
+	use({ "morhetz/gruvbox" })
 
 	-- Copy/Paste
 	use({
 		"AckslD/nvim-neoclip.lua",
 		config = function()
 			require("neoclip").setup()
+			require("telescope").load_extension("neoclip")
 		end,
 	})
 
 	-- Misc utils
-	use({ "npxbr/glow.nvim", run = "GlowInstall" })
-	use({ "windwp/nvim-autopairs" })
-	use({ "tpope/vim-surround" })
-	use({ "wellle/targets.vim" })
-	use({ "ggandor/lightspeed.nvim" })
-	use({
+	use({ "npxbr/glow.nvim", run = "GlowInstall" }) -- markdown preview
+	use({ "tpope/vim-surround" }) -- the ability to edit surrounding things, like quotes or brackets
+	use({ "wellle/targets.vim" }) -- more text objects, like "inside argument"
+	use({ "ggandor/lightspeed.nvim" }) -- alternative to EasyMotion or Sneak for faster movement
+	--[[ use({ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
 		config = function()
 			vim.g.hardtime_default_on = 0
 		end,
-	})
-	-- use({ "tpope/vim-endwise" })
+	}) ]]
 	use({ "andymass/vim-matchup", event = "VimEnter" })
 	use({ "ThePrimeagen/vim-be-good" })
 end)

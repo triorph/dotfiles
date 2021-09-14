@@ -8,7 +8,8 @@ end
 key_mapper("i", "jj", "<ESC>")
 key_mapper("i", "kk", "<ESC>")
 key_mapper("i", "jk", "<ESC>")
-
+-- split windows
+key_mapper("n", "<c-l>", ":lua require('focus').split_nicely()<CR>")
 -- telescope simple shortcuts
 key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>")
 key_mapper("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
