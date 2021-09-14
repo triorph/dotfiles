@@ -8,6 +8,8 @@ end
 key_mapper("i", "jj", "<ESC>")
 key_mapper("i", "kk", "<ESC>")
 key_mapper("i", "jk", "<ESC>")
+-- CHADTree
+key_mapper("n", "<F3>", "<cmd>CHADopen<CR>")
 -- split windows
 key_mapper("n", "<c-l>", ":lua require('focus').split_nicely()<CR>")
 -- telescope simple shortcuts

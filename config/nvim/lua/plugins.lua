@@ -77,10 +77,38 @@ return packer.startup(function()
 		end,
 	})
 
+	--filetree
+	use({
+		"ms-jpq/chadtree",
+		branch = "chad",
+		config = function()
+			require("config/chadtree")
+		end,
+	})
+
 	-- Fuzzy search/file find
 	use({
 		"nvim-telescope/telescope.nvim",
 		requires = { { "nvim-lua/popup.nvim" }, { "nvim-lua/plenary.nvim" } },
+		config = function()
+			require("telescope").load_extension("mapper")
+			require("telescope").load_extension("neoclip")
+		end,
+	})
+	use({
+		"lazytanuki/nvim-mapper",
+		config = function()
+			require("nvim-mapper").setup({})
+		end,
+		before = "telescope.nvim",
+	})
+	-- Copy/Paste
+	use({
+		"AckslD/nvim-neoclip.lua",
+		config = function()
+			require("neoclip").setup()
+		end,
+		before = "telescope.nvim",
 	})
 
 	-- Autocompletion
@@ -162,20 +190,19 @@ return packer.startup(function()
 	use({ "Pocco81/Catppuccino.nvim" })
 	use({ "morhetz/gruvbox" })
 
-	-- Copy/Paste
-	use({
-		"AckslD/nvim-neoclip.lua",
-		config = function()
-			require("neoclip").setup()
-			require("telescope").load_extension("neoclip")
-		end,
-	})
-
 	-- Misc utils
 	use({ "npxbr/glow.nvim", run = "GlowInstall" }) -- markdown preview
 	use({ "tpope/vim-surround" }) -- the ability to edit surrounding things, like quotes or brackets
 	use({ "wellle/targets.vim" }) -- more text objects, like "inside argument"
-	use({ "ggandor/lightspeed.nvim" }) -- alternative to EasyMotion or Sneak for faster movement
+	use({ -- alternative to EasyMotion or Sneak for faster movement
+		"ggandor/lightspeed.nvim",
+		config = function()
+			require("lightspeed").setup({
+				instant_repeat_fwd_key = ";",
+				instant_repeat_bwd_key = ",",
+			})
+		end,
+	})
 	--[[ use({ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
 		config = function()
