@@ -1,5 +1,5 @@
 vim.g.mapleader = " "
-vim.g.python3_host_prog = "$HOME/ucee/venv/bin/python3"
+vim.g.python3_host_prog = vim.env.HOME .. "/ucee/venv/bin/python"
 vim.o.termguicolors = true
 vim.o.syntax = "on"
 vim.o.errorbells = false

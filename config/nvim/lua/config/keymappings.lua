@@ -12,6 +12,7 @@ key_mapper("i", "jk", "<ESC>")
 -- telescope simple shortcuts
 key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>")
 key_mapper("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
+key_mapper("n", "<leader>p", "<cmd>Telescope neoclip<CR>")
 -- kommentary
 require("kommentary.config") -- .use_extended_mappings()
 vim.api.nvim_set_keymap("n", "<leader>/", "gcc", { silent = true })
@@ -32,7 +33,7 @@ verbal_key_mapper("v", "\\p", '"+p')
 verbal_key_mapper("v", "\\P", '"+P')
 
 -- Glow markdown preview
-key_mapper("n", "<leader>p", "<cmd>Glow<CR>")
+key_mapper("n", "<leader>vg", "<cmd>Glow<CR>")
 
 -- Overwrite the packer commands to work without packer directly loaded (for lazy loading)
 vim.cmd("silent! command PackerCompile lua require 'plugins' require('packer').compile()")

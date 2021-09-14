@@ -30,7 +30,6 @@ return packer.startup(function()
 	-- Code formatting and linting
 	use({ "neomake/neomake" })
 	use({
-
 		"lukas-reineke/format.nvim",
 		config = function()
 			require("config/format")
@@ -80,9 +79,17 @@ return packer.startup(function()
 	})
 
 	-- Autocompletion
-	use({ "hrsh7th/vim-vsnip" })
+	--[[ use({ "hrsh7th/vim-vsnip" })
 	use({
 		"hrsh7th/nvim-compe",
+		config = function()
+			require("config/autocomplete")
+		end,
+	}) ]]
+	use({
+		"ms-jpq/coq_nvim",
+		branch = "coq",
+		requires = { { "ms-jpq/coq.artifacts", branch = "artifacts" } },
 		config = function()
 			require("config/autocomplete")
 		end,
@@ -144,20 +151,28 @@ return packer.startup(function()
 			require("config/colour")
 		end,
 	})
+	use("EdenEast/nightfox.nvim")
+
+	-- Copy/Paste
+	use({
+		"AckslD/nvim-neoclip.lua",
+		config = function()
+			require("neoclip").setup()
+		end,
+	})
 
 	-- Misc utils
 	use({ "npxbr/glow.nvim", run = "GlowInstall" })
 	use({ "windwp/nvim-autopairs" })
 	use({ "tpope/vim-surround" })
 	use({ "wellle/targets.vim" })
-	use({ "justinmk/vim-sneak" })
+	use({ "ggandor/lightspeed.nvim" })
 	use({
 		"takac/vim-hardtime",
 		config = function()
 			vim.g.hardtime_default_on = 0
 		end,
 	})
-	use({ "unblevable/quick-scope" })
 	-- use({ "tpope/vim-endwise" })
 	use({ "andymass/vim-matchup", event = "VimEnter" })
 	use({ "ThePrimeagen/vim-be-good" })
