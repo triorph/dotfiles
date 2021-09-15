@@ -1,6 +1,6 @@
 require("lualine").setup({
 	options = {
-		theme = "nightfox",
+		theme = "tokyonight",
 		-- theme = "gruvbox",
 		-- theme = "tokyonight",
 		-- theme = "catppuccino",
