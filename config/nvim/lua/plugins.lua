@@ -10,14 +10,8 @@ end
 local use = packer.use
 return packer.startup(function()
 	-- Packer can manage itself
-	use("wbthomason/packer.nvim")
+	use("wbthomason/packer.nvim") -- manage plugins
 
-	use({
-		"lewis6991/impatient.nvim",
-		config = function()
-			require("impatient").enable_profile()
-		end,
-	})
 	-- git integration
 	use({
 		"tveskag/nvim-blame-line",
@@ -34,8 +28,8 @@ return packer.startup(function()
 	})
 
 	-- Code formatting and linting
-	use({ "neomake/neomake" })
-	use({
+	use({ "neomake/neomake" }) -- used for pylama (is this still working?)
+	use({ -- autoformat your code on save
 		"lukas-reineke/format.nvim",
 		config = function()
 			require("config/format")
@@ -43,15 +37,15 @@ return packer.startup(function()
 	})
 
 	-- Language Server Processing(?)
-	use({
+	use({ -- better LSP handling, and setup configs
 		"glepnir/lspsaga.nvim",
 		requires = { "neovim/nvim-lspconfig" },
 		config = function()
 			require("config/lsp")
 		end,
 	})
-	use({ "kosayoda/nvim-lightbulb" })
-	use({
+	use({ "kosayoda/nvim-lightbulb" }) -- puts lightbulbs when a code action is available
+	use({ -- takes care of showing LSP problems at the bottom of the screen
 		"folke/trouble.nvim",
 		requires = "kyazdani42/nvim-web-devicons",
 		config = function()
@@ -87,7 +81,7 @@ return packer.startup(function()
 	})
 
 	-- Fuzzy search/file find
-	use({
+	use({ -- awesome plugin that lets you open a window to fuzzy-find things
 		"nvim-telescope/telescope.nvim",
 		requires = { { "nvim-lua/popup.nvim" }, { "nvim-lua/plenary.nvim" } },
 		config = function()
@@ -95,7 +89,7 @@ return packer.startup(function()
 			require("telescope").load_extension("neoclip")
 		end,
 	})
-	use({
+	use({ -- see your keymappings in telescope
 		"lazytanuki/nvim-mapper",
 		config = function()
 			require("nvim-mapper").setup({})
@@ -103,7 +97,7 @@ return packer.startup(function()
 		before = "telescope.nvim",
 	})
 	-- Copy/Paste
-	use({
+	use({ -- store all yanks and allow you to open up a history in telescope
 		"AckslD/nvim-neoclip.lua",
 		config = function()
 			require("neoclip").setup()
@@ -112,7 +106,7 @@ return packer.startup(function()
 	})
 
 	-- Autocompletion
-	use({
+	use({ -- super fast autocomplete
 		"ms-jpq/coq_nvim",
 		branch = "coq",
 		requires = { { "ms-jpq/coq.artifacts", branch = "artifacts" } },
@@ -122,10 +116,10 @@ return packer.startup(function()
 	})
 
 	-- Comments
-	use("b3nj5m1n/kommentary")
+	use("b3nj5m1n/kommentary") -- autocommenting of code
 
 	-- help
-	use({
+	use({ -- after a pause, bring up a popup that shows what commands you have available after pressing a key
 		"folke/which-key.nvim",
 		config = function()
 			require("which-key").setup({})
@@ -133,7 +127,7 @@ return packer.startup(function()
 	})
 
 	-- Highlight code
-	use({
+	use({ -- treesitter - better highlighting of variables
 		"nvim-treesitter/nvim-treesitter",
 		run = function()
 			vim.cmd([[:TSUpdate]])
@@ -142,29 +136,29 @@ return packer.startup(function()
 			require("config/treesitter")
 		end,
 	})
-	use({
+	use({ -- show indentation levels
 		"lukas-reineke/indent-blankline.nvim",
 		config = function()
 			require("config/indent")
 		end,
 	})
-	use({ "mechatroner/rainbow_csv" })
+	use({ "mechatroner/rainbow_csv" }) -- syntax highlighting of columns for CSV files
 
 	-- Look pretty
-	use({
+	use({ -- dashboard
 		"goolord/alpha-nvim",
 		requires = { "kyazdani42/nvim-web-devicons" },
 		config = function()
 			require("config/dashboard")
 		end,
 	})
-	use({
+	use({ -- only show colour for what's active
 		"folke/twilight.nvim",
 		config = function()
 			require("twilight").setup({})
 		end,
 	})
-	use({
+	use({ -- F11 to go all in on focus
 		"folke/zen-mode.nvim",
 		config = function()
 			require("zen-mode").setup({
@@ -172,10 +166,20 @@ return packer.startup(function()
 			})
 		end,
 	})
-	use({
+	use({ -- fibonacci window splitting (doesn't interact well with bufferline though)
 		"beauwilliams/focus.nvim",
 		config = function()
 			require("focus").setup()
+		end,
+	})
+	use({ -- smooth scrolling
+		"karb94/neoscroll.nvim",
+		config = function()
+			require("neoscroll").setup()
+			local t = {}
+			t["<C-u>"] = { "scroll", { "-vim.wo.scroll", "true", "100" } }
+			t["<C-d>"] = { "scroll", { "vim.wo.scroll", "true", "100" } }
+			require("neoscroll.config").set_mappings(t)
 		end,
 	})
 
@@ -201,6 +205,12 @@ return packer.startup(function()
 				instant_repeat_fwd_key = ";",
 				instant_repeat_bwd_key = ",",
 			})
+		end,
+	})
+	use({ -- faster caching, and profile your plugins
+		"lewis6991/impatient.nvim",
+		config = function()
+			require("impatient").enable_profile()
 		end,
 	})
 	--[[ use({ -- disable repeatedly hjkl keys, to force you to get used to other options.

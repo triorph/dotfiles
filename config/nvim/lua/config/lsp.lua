@@ -49,7 +49,7 @@ for _, lsp in ipairs(servers) do
 		},
 	}))
 end
-local sumneko_root_path = vim.env.HOME .. ".local/share/lua-language-server"
+local sumneko_root_path = vim.env.HOME .. "/.local/share/lua-language-server"
 local system_name = "Linux"
 local runtime_path = vim.split(package.path, ";")
 local sumneko_binary = sumneko_root_path .. "/bin/" .. system_name .. "/lua-language-server"
