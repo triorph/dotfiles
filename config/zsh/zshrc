@@ -53,3 +53,5 @@ source $ZSH/oh-my-zsh.sh
 export ARCHFLAGS="-arch x86_64"
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+alias luamake=/home/mfw56/.local/share/lua-language-server/3rd/luamake/luamake

@@ -13,9 +13,13 @@ key_mapper("n", "<F3>", "<cmd>CHADopen<CR>")
 -- split windows
 key_mapper("n", "<c-l>", ":lua require('focus').split_nicely()<CR>")
 -- telescope simple shortcuts
+key_mapper("n", "<c-x>", "<cmd>Telescope buffers<CR>")
 key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>")
 key_mapper("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
 key_mapper("n", "<leader>p", "<cmd>Telescope neoclip<CR>")
+key_mapper("n", "<leader>tp", "<cmd>Telescope find_files<CR>")
+key_mapper("n", "<leader>tf", "<cmd>Telescope live_grep<CR>")
+key_mapper("n", "<leader>tb", "<cmd>Telescope buffers<CR>")
 -- kommentary
 require("kommentary.config") -- .use_extended_mappings()
 vim.api.nvim_set_keymap("n", "<leader>/", "gcc", { silent = true })
@@ -38,7 +42,7 @@ verbal_key_mapper("v", "\\P", '"+P')
 -- Glow markdown preview
 key_mapper("n", "<leader>vg", "<cmd>Glow<CR>")
 
--- Overwrite the packer commands to work without packer directly loaded (for lazy loading)
+-- Overwrite the packer commands to work without packer directly loaded (for lazy loading) (borrowed from nvchad)
 vim.cmd("silent! command PackerCompile lua require 'plugins' require('packer').compile()")
 vim.cmd("silent! command PackerInstall lua require 'plugins' require('packer').install()")
 vim.cmd("silent! command PackerStatus lua require 'plugins' require('packer').status()")

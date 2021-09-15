@@ -49,6 +49,39 @@ for _, lsp in ipairs(servers) do
 		},
 	}))
 end
+local sumneko_root_path = vim.env.HOME .. ".local/share/lua-language-server"
+local system_name = "Linux"
+local runtime_path = vim.split(package.path, ";")
+local sumneko_binary = sumneko_root_path .. "/bin/" .. system_name .. "/lua-language-server"
+nvim_lsp.sumneko_lua.setup(coq.lsp_ensure_capabilities({
+	on_attach = on_attach,
+	flags = {
+		debounce_text_changes = 150,
+	},
+	settings = {
+		Lua = {
+			runtime = {
+				-- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+				version = "LuaJIT",
+				-- Setup your lua path
+				path = runtime_path,
+			},
+			diagnostics = {
+				-- Get the language server to recognize the `vim` global
+				globals = { "vim" },
+			},
+			workspace = {
+				-- Make the server aware of Neovim runtime files
+				library = vim.api.nvim_get_runtime_file("", true),
+			},
+			-- Do not send telemetry data containing a randomized but unique identifier
+			telemetry = {
+				enable = false,
+			},
+		},
+	},
+	cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
+}))
 
 nvim_lsp.rust_analyzer.setup(coq.lsp_ensure_capabilities({
 	on_attach = on_attach,

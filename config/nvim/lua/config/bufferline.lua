@@ -44,3 +44,4 @@ vim.api.nvim_set_keymap("n", "<leader>6", "<cmd>BufferLineGoToBuffer 6<CR>", { s
 vim.api.nvim_set_keymap("n", "<leader>7", "<cmd>BufferLineGoToBuffer 7<CR>", { silent = true, noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>8", "<cmd>BufferLineGoToBuffer 8<CR>", { silent = true, noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>9", "<cmd>BufferLineGoToBuffer 9<CR>", { silent = true, noremap = true })
+vim.api.nvim_set_keymap("n", "<leader><leader>", "<c-^>", { silent = true, noremap = true })
