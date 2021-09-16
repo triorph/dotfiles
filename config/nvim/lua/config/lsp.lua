@@ -73,6 +73,8 @@ nvim_lsp.sumneko_lua.setup(coq.lsp_ensure_capabilities({
 			workspace = {
 				-- Make the server aware of Neovim runtime files
 				library = vim.api.nvim_get_runtime_file("", true),
+				preloadFileSize = 200,
+				checkThirdParty = false,
 			},
 			-- Do not send telemetry data containing a randomized but unique identifier
 			telemetry = {

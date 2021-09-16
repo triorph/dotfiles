@@ -152,6 +152,26 @@ return packer.startup(function()
 			require("config/dashboard")
 		end,
 	})
+	use({
+		"wfxr/minimap.vim",
+		config = function()
+			vim.g.minimap_width = 15
+			vim.g.minimap_auto_start = 1
+			vim.g.minimap_auto_start_win_enter = 1
+			vim.g.minimap_block_filetypes = { "CHADtree", "alpha" }
+			vim.g.minimap_block_buftypes =
+				{
+					"nofile",
+					"nowrite",
+					"quickfix",
+					"terminal",
+					"prompt",
+					"alpha",
+					"CHADtree",
+				}
+			vim.g.minimap_close_filetypes = { "alpha" }
+		end,
+	})
 	use({ -- only show colour for what's active
 		"folke/twilight.nvim",
 		config = function()
