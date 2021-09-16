@@ -1,8 +1,6 @@
--- vim.g.indent_blankline_char_highlight_list = {"Error", "Function"}
-vim.g.indent_blankline_show_current_context = true
-vim.g.indent_blankline_filetype_exclude = { "dashboard", "alpha", "CHADTree" }
-
 require("indent_blankline").setup({
 	char = "|",
+	show_current_context = true,
 	buftype_exclude = { "terminal", "dashboard", "startify", "alpha" },
+	filetype_exclude = { "dashboard", "alpha", "CHADTree" },
 })
