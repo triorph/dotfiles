@@ -6,7 +6,11 @@ if present then
 else
 	return false
 end
-
+-- to still try:
+-- ahmedkhalf/project.nvim  (project management)
+-- rmagatti/goto-preview  (popups of definition previews etc..)
+-- nvim-treesitter/nvim-treesitter-textobjects  (defined text objects to work on treesitter info)
+-- famiu/feline.nvim (alternative to lualine)
 local use = packer.use
 return packer.startup(function()
 	-- Packer can manage itself
