@@ -14,13 +14,6 @@ require("format").setup({
 			cmd = { "black" },
 		},
 	},
-	vimwiki = {
-		{
-			cmd = { "prettier -w --parser babel" },
-			start_pattern = "^{{{javascript$",
-			end_pattern = "^}}}$",
-		},
-	},
 	lua = {
 		{
 			cmd = { "stylua" },
@@ -28,12 +21,6 @@ require("format").setup({
 	},
 	json = {
 		{ cmd = { "prettier -w --tab-width 4" } },
-	},
-	go = {
-		{
-			cmd = { "gofmt -w", "goimports -w" },
-			tempfile_postfix = ".tmp",
-		},
 	},
 	javascript = {
 		{ cmd = { "prettier -w", "./node_modules/.bin/eslint --fix" } },
