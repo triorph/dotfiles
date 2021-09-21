@@ -6,6 +6,7 @@
 vim.g.tokyonight_style = "night" -- options are storm, night and day
 vim.g.tokyonight_italic_functions = true
 vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
+vim.g.tokyonight_italic_comments = true
 -- local nightfox = require("nightfox")
 --[[ nightfox.setup({
 	fox = "nightfox", -- options are "nordfox", "nightfox", and "palefox"
