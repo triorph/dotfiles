@@ -327,9 +327,6 @@ keys.globalkeys = gears.table.join(
 
 	-- Quit Awesome
 	-- Logout, Shutdown, Restart, Suspend, Lock
-	awful.key({ superkey }, "l", function()
-		lock_screen_show()
-	end, { description = "Lock awesome", group = "awesome" }),
 	awful.key({ superkey, shiftkey }, "x", function()
 		exit_screen_show()
 	end, {
@@ -661,9 +658,15 @@ keys.globalkeys = gears.table.join(
 	}),
 	-- Set floating layout
 	awful.key({ superkey, shiftkey }, "s", function()
-		awful.layout.set(awful.layout.suit.floating)
+		awful.layout.set(awful.layout.suit.spiral)
+		helpers.single_double_tap(nil, function()
+			local clients = awful.screen.focused().clients
+			for _, c in pairs(clients) do
+				c.floating = false
+			end
+		end)
 	end, {
-		description = "set floating layout",
+		description = "set tiled layout",
 		group = "tag",
 	}),
 	-- Dashboard
