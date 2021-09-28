@@ -176,18 +176,6 @@ return packer.startup(function()
 			require("focus").setup()
 		end,
 	})
-	use({ -- smooth scrolling
-		"karb94/neoscroll.nvim",
-		config = function()
-			require("neoscroll").setup({
-				mappings = { "<C-u>", "<C-d>" },
-			})
-			local t = {}
-			t["<C-u>"] = { "scroll", { "-vim.wo.scroll", "true", "100" } }
-			t["<C-d>"] = { "scroll", { "vim.wo.scroll", "true", "100" } }
-			require("neoscroll.config").set_mappings(t)
-		end,
-	})
 
 	-- colour schemes
 	use({
@@ -204,7 +192,7 @@ return packer.startup(function()
 	use({ "npxbr/glow.nvim", run = "GlowInstall" }) -- markdown preview
 	use({ "tpope/vim-surround" }) -- the ability to edit surrounding things, like quotes or brackets
 	use({ "wellle/targets.vim" }) -- more text objects, like "inside argument"
-	use({ "windwp/nvim-autopairs" })  --auto-close brackets etc..
+	use({ "windwp/nvim-autopairs" }) --auto-close brackets etc..
 	use({ -- alternative to EasyMotion or Sneak for faster movement
 		"ggandor/lightspeed.nvim",
 		config = function()

@@ -284,8 +284,9 @@ keys.globalkeys = gears.table.join(
 		toggle_class({ class = "Firefox" }, "firefox", {
 			floating = true,
 			opacity = 0.95,
+			titlebars_enabled = false,
 			width = screen_width * 0.8,
-			height = screen_height * 0.95,
+			height = screen_height * 0.92,
 		})
 	end, {
 		description = "Toggle firefox",
@@ -311,7 +312,7 @@ keys.globalkeys = gears.table.join(
 			floating = true,
 			titlebars_enabled = false,
 			width = screen_width * 0.85,
-			height = screen_height * 0.95,
+			height = screen_height * 0.92,
 			opacity = 0.95,
 		})
 	end, {
@@ -323,7 +324,7 @@ keys.globalkeys = gears.table.join(
 		toggle_class(
 			{ class = "obsidian" },
 			"obsidian",
-			{ floating = true, width = screen_width * 0.9, height = screen_height * 0.9 }
+			{ floating = true, width = screen_width * 0.9, height = screen_height * 0.9, titlebars_enabled = false }
 		)
 	end, {
 		description = "Toggle obsidian in and out",
@@ -794,7 +795,7 @@ keys.clientkeys = gears.table.join(
 	awful.key({ superkey }, "c", function(c)
 		awful.placement.centered(c, { honor_workarea = true, honor_padding = true })
 		helpers.single_double_tap(nil, function()
-			helpers.float_and_resize(c, screen_width * 0.85, screen_height * 0.970)
+			helpers.float_and_resize(c, screen_width * 0.85, screen_height * 0.920)
 		end)
 	end),
 
