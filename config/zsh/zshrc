@@ -41,7 +41,6 @@ plugins=(
   git-auto-fetch
   docker
   tmux
-  zsh_reload
   fast-syntax-highlighting
   zsh-autosuggestions
   alias-tips
