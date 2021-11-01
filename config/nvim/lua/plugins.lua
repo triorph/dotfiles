@@ -202,12 +202,12 @@ return packer.startup(function()
 			})
 		end,
 	})
-	use({ -- faster caching, and profile your plugins
+	--[[ use({ -- faster caching, and profile your plugins
 		"lewis6991/impatient.nvim",
 		config = function()
 			require("impatient").enable_profile()
 		end,
-	})
+	}) ]]
 	--[[ use({ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
 		config = function()
