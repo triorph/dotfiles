@@ -281,7 +281,7 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey, altkey }, "Tab", function()
-		toggle_class({ class = "Firefox" }, "firefox", {
+		toggle_class({ class = "firefox" }, "firefox", {
 			floating = true,
 			opacity = 0.95,
 			titlebars_enabled = false,
