@@ -11,8 +11,9 @@
 # - copy config files and setup systemctl
 # - install paru
 # - install remaining aur packages
+# - install the virtualbox guest additions from ISO
 echo "Step 1: Install base pacman packages"
-pacman -Sy base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware lightdm lightdm-gtk-greeter kitty tmux zsh rustup
+pacman -Sy base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers
 rustup install stable
 rustup default stable
 echo ""
@@ -57,4 +58,16 @@ su -m $USER -c "paru -S \
     awesome-git rofi lm_sensors acpid jq fortune-mod redshift mpd mpc maim feh light-git pulseaudio inotify-tools xdotool picom\
 tmux zsh bat mcfly git-delta-git lsd zoxide tty-clock pomo nvm docker python3 python-pip python-virtualenv xsel
 firefox kitty obsidian"
-
+echo ""
+echo "Step 6 complete"
+echo ""
+echo "Step 7: Install the virtualbox guest additions"
+echo "Manual step: Insert the guest additions (press enter when done)"
+read varname
+mkdir /media/cdrom
+mount /dev/sr0 /media/cdrom
+/media/cdrom/VBoxLinuxAdditions.run
+echo ""
+echo "Step 7 complete"
+echo ""
+echo "Setup and install complete! You probably need to reboot for your changes to take effect"
