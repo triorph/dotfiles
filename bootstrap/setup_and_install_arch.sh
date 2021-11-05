@@ -13,9 +13,7 @@
 # - install remaining aur packages
 # - install the virtualbox guest additions from ISO
 echo "Step 1: Install base pacman packages"
-pacman -Sy base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers
-rustup install stable
-rustup default stable
+pacman -Sy base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers grub ninja unzip
 echo ""
 echo "Step 1 completed"
 echo ""
@@ -23,14 +21,14 @@ echo "Step 2: Create user, assign password and add to sudo group"
 echo "Please provide a username:"
 read USER
 echo "Creating user $USER"
-useradd USER
+useradd -m $USER
 echo "Please give a password for this user:"
 passwd $USER
 groupadd sudo
 groupadd docker
 groupadd autologin
 groupadd nopasswdlogin
-sudo usermod -aG sudo docker autologin nopasswdlogin $USER
+usermod -aG sudo docker autologin nopasswdlogin $USER
 echo ""
 echo "Step 2 complete"
 echo ""
@@ -50,11 +48,12 @@ echo ""
 echo "Step 3 complete"
 echo ""
 echo "Step 4: install paru"
-su -m $USER -c "git clone https://aur.archlinux.org/paru.git;cd paru;makepkg -si"
+HOME=/home/$USER su -m $USER -c "rustup install default;rustup default stable"
+HOME=/home/$USER su -m $USER -c "git clone https://aur.archlinux.org/paru.git /home/$USER/paru;cd /home/$USER/paru;makepkg -si"
 echo ""
 echo "Step 5: Install remaining AUR packages"
 echo ""
-su -m $USER -c "paru -S \
+HOME=/home/$USER su -m $USER -c "paru -S \
     awesome-git rofi lm_sensors acpid jq fortune-mod redshift mpd mpc maim feh light-git pulseaudio inotify-tools xdotool picom\
 tmux zsh bat mcfly git-delta-git lsd zoxide tty-clock pomo nvm docker python3 python-pip python-virtualenv xsel
 firefox kitty obsidian"

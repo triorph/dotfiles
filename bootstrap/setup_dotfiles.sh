@@ -14,6 +14,9 @@
 # - setup ucee tool
 # - setup neovim (manual step)
 # - set rofi theme (manual step)
+# - Install LSPs
+# - clone studentfirst aws repo (manual step)
+# - Install AWS CLI, pulumi
 echo ""
 echo "This script should be run in a way that you can use multiple terminals at once."
 echo "Either in a Window Manager, or with access to terminal multiplexing with something like tmux."
@@ -126,5 +129,41 @@ echo "Manual step: open rofi-theme-selector and choose the theme you want (I usu
 echo "Press enter once done"
 read varname
 echo ""
+echo "Step 10: Install LSPs"
+echo ""
+npm install -g pyright
+npm install -g typescript-language-server
+curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
+chmod +x ~/.local/bin/rust-analyzer
+echo "Manual step: Install the sumneko_lua LSP and symlink to correct place"
+read varname
+echo ""
+echo "Step 10 complete"
+echo ""
+echo "Step 11: Clone studentfirst repo"
+source ~/ucee/venv/bin/activate
+pip install git-remote-codecommit
+echo "Manual step: paste AWS credentials into a terminal and then run"
+echo "git clone codecommit::ap-southeast-2://studentfirst"
+echo "(if this doesn't work, you may need to make sure you have sourced the ucee venv)"
+echo "(source ~/ucee/venv/bin/activate)"
+echo ""
+read varname
+echo "Step 11 complete"
+echo ""
+echo "Step 12: Install AWS CLI and pulumi"
+echo ""
+curl -fsSL https://get.pulumi.com | sh
+echo "Manual step: Please make sure the studentfirst repository has checked out a valid branch with the file dockerfile_requirements.txt present"
+read varname
+less ~/studentfirst/dockerfile_requirements.txt | grep -v cli | xargs pip install
+cd /tmp
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+cd ~/
+echo "Step 12 complete"
+echo ""
 echo "Setup complete! You may have to restart your window-manager / reboot for this to take effect"
 echo ""
+
