@@ -9,7 +9,7 @@ From a minimal arch installation, end up with everything installed.
 
 Installs:
 base:
-base base-devel neovim git openssh archlinux-keyring fuse
+base base-devel neovim git openssh archlinux-keyring fuse sudo 
 
 package management:
 paru rustup
