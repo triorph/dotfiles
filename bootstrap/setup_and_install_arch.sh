@@ -15,7 +15,8 @@
 echo "Step 1: Install base pacman packages"
 pacman -Sy --needed \
     base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware \
-    lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers grub ninja unzip
+    lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers grub ninja unzip xterm \
+    dhcpcd
 echo ""
 echo "Step 1 completed"
 echo ""

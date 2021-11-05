@@ -42,12 +42,15 @@ git clone https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/theme
 git clone https://github.com/davidde/git ~/.oh-my-zsh/custom/plugins/git
 git clone https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-tips
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone git@github.com:triorph/fast-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/git
+git clone git@github.com:triorph/fast-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
 git clone git@github.com:triorph/obsidian.git ~/obsidian
 git clone git@its-git.canterbury.ac.nz:student-first/ucee.git ~/ucee
+git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
+cd ~/otherrepos/lua-language-server
+git submodule update --init --recursive
 cd ~/dotfiles
 git remote remove origin
-git remote add origin git@github.com/triorph/dotfiles.git
+git remote add origin git@github.com:/triorph/dotfiles.git
 echo ""
 echo "Step 3 complete."
 echo ""
@@ -82,6 +85,10 @@ mkdir ~/.config/picom
 touch ~/.config/picom/picom.conf
 mkdir -p ~/.local/share/rofi/themes/
 cp ~/otherrepos/rofi-themes-collection/themes/* ~/.local/share/rofi/themes
+curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage > ~/.local/bin/nvim
+chmod a+x ~/.local/bin/nvim
+echo "Changing shell to zsh (may require password)"
+chsh -s /bin/zsh
 echo ""
 echo "Step 4 complete."
 echo ""
@@ -93,12 +100,15 @@ echo "Step 5 complete"
 echo ""
 echo "Step 6: Add user to groups (requires sudo access)"
 echo ""
-sudo usermod -aG docker nologinpasswd autologin $USER
+sudo usermod -aG docker $USER
+sudo usermod -aG nopasswdlogin $USER
+sudo usermod -aG autologin $USER
 echo ""
 echo "Step 6 complete"
 echo ""
 echo "Step 7: Setup nvm"
 sh /usr/share/nvm/init-nvm.sh
+. ~/.nvm/nvm.sh
 nvm install --lts
 echo ""
 echo "Step 7 complete"
@@ -107,6 +117,7 @@ echo "Step 8: setup ucee tool"
 echo ""
 cd ~/ucee
 ./bootstrap.sh
+pip install thefuck
 cd ~/
 echo ""
 echo "Step 7 complete"
@@ -136,6 +147,15 @@ npm install -g typescript-language-server
 curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
 chmod +x ~/.local/bin/rust-analyzer
 echo "Manual step: Install the sumneko_lua LSP and symlink to correct place"
+echo ""
+echo "cd ~/otherrepos/lua-language-server"
+echo "cd 3rd/luamake"
+echo "./compile/install.sh"
+echo "cd ../../"
+echo "3rd/luamake/luamake rebuild"
+echo "ln -s ~/otherrepos/lua-language-server ~/.local/share/lua-language-server"
+echo ""
+echo "Press enter to continue"
 read varname
 echo ""
 echo "Step 10 complete"
@@ -145,7 +165,7 @@ source ~/ucee/venv/bin/activate
 pip install git-remote-codecommit
 echo "Manual step: paste AWS credentials into a terminal (sourced from https://d-9767036a81.awsapps.com/start#/ ) and then run"
 echo ""
-echo "git clone codecommit::ap-southeast-2://studentfirst"
+echo "git clone codecommit::ap-southeast-2://studentfirst --branch dev"
 echo "(if this doesn't work, you may need to make sure you have sourced the ucee venv)"
 echo "(source ~/ucee/venv/bin/activate)"
 echo ""
@@ -156,6 +176,7 @@ echo "Step 12: Install AWS CLI and pulumi"
 echo ""
 curl -fsSL https://get.pulumi.com | sh
 echo "Manual step: Please make sure the studentfirst repository has checked out a valid branch with the file dockerfile_requirements.txt present"
+echo "press enter to continue"
 read varname
 less ~/studentfirst/dockerfile_requirements.txt | grep -v cli | xargs pip install
 cd /tmp
