@@ -74,8 +74,8 @@ keys.desktopbuttons = gears.table.join(
 	end),
 
 	-- Scrolling - Switch tags
-	awful.button({}, 4, awful.tag.viewprev),
-	awful.button({}, 5, awful.tag.viewnext),
+	--[[ awful.button({}, 4, awful.tag.viewprev),
+	awful.button({}, 5, awful.tag.viewnext), ]]
 
 	-- Side buttons - Control volume
 	awful.button({}, 9, function()
