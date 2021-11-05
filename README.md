@@ -2,30 +2,11 @@
 
 Storage of my config options from various programs
 
-### Programs I like to have installed:
+Currently running ArchLinux in a VM, using awesome-wm, kitty, neovim, obsidian and firefox as my main daily tools.
 
-- zsh (from apt)
-- oh-my-zsh (git repo from web)
-- powerline10k (git repo from web)
-- kitty (stable from web)
-- bat (from cargo)
-- lsd (from cargo)
-- fd (from apt)
-- ripgrep (from cargo)
-- mcfly (from cargo)
-- zoxide (from apt)
-- tmux (from apt)
-- git (from apt)
-- neovim (stable from web)
-- delta (stable from web)
-- VS Code (from snap)
-- ipython3 (from apt)
-- black (from pip)
-- thefuck (from pip)
-- jq (from apt)
-- pylama (from pip)
-- aws cli 2 (from web tarball)
-- aws session-plugin-manager (deb from web)
-- cargo (from apt)
-- prettier (from npm)
-- npm/node (stable from web)
+Folder layout:
+- bin (executable scripts)
+- fonts
+- config (all my config files)
+- bootstrap (scripts to setup a new VM based on the things I like to have installed)
+

@@ -16,7 +16,7 @@ echo "Step 1: Install base pacman packages"
 pacman -Sy --needed \
     base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware \
     lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers grub ninja unzip xterm \
-    dhcpcd
+    dhcpcd docker
 echo ""
 echo "Step 1 completed"
 echo ""
@@ -52,6 +52,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 cp ~/dotfiles/bootstrap/00-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf
 systemctl enable lightdm
 systemctl enable systemd-networkd
+systemctl enable docker
 echo "BTW: /etc/lightdm/lightdm.conf is only setup for miek as the user. You may need to manually edit this yourself"
 echo "press enter to do this/acknowledge"
 read varname
@@ -60,7 +61,6 @@ echo "Step 3 complete"
 echo ""
 echo "Step 4: install paru"
 HOME=/home/$USER sudo -i -u $USER << EOF
-rustup install default
 rustup default stable
 EOF
 HOME=/home/$USER sudo -i -u $USER << EOF
@@ -74,8 +74,8 @@ echo ""
 HOME=/home/$USER sudo -i -u $USER << EOF
 paru -S --noconfirm --needed\
     awesome-git rofi lm_sensors acpid jq fortune-mod redshift mpd mpc maim feh light-git pulseaudio inotify-tools xdotool picom \
-    tmux zsh bat mcfly git-delta-git lsd zoxide tty-clock pomo nvm docker python3 python-pip python-virtualenv xsel \
-    firefox kitty obsidian
+    tmux zsh bat mcfly git-delta-git lsd zoxide tty-clock pomo nvm python3 python-pip python-virtualenv xsel \
+    firefox kitty obsidian stylua
 EOF
 echo ""
 echo "Step 6 complete"

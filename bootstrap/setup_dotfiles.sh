@@ -46,6 +46,7 @@ git clone git@github.com:triorph/fast-syntax-highlighting.git ~/.oh-my-zsh/custo
 git clone git@github.com:triorph/obsidian.git ~/obsidian
 git clone git@its-git.canterbury.ac.nz:student-first/ucee.git ~/ucee
 git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 cd ~/otherrepos/lua-language-server
 git submodule update --init --recursive
 cd ~/dotfiles
@@ -67,17 +68,18 @@ rm ~/.config/awesome/keys.lua
 rm ~/.config/awesome/rc.lua
 ln -s ~/dotfiles/config/awesome/keys.lua ~/.config/awesome/keys.lua
 ln -s ~/dotfiles/config/awesome/rc.lua ~/.config/awesome/rc.lua
-ln -s ~/dotfiles/config/bat ~/.config/bat
+ln -s ~/dotfiles/config/bat ~/.config
 ln -s ~/dotfiles/config/git/gitattributes ~/.gitattributes
 cp ~/dotfiles/config/git/gitconfig ~/.gitconfig
 ln -s ~/dotfiles/config/git/ignore ~/.config/git/ignore
 ln -s ~/dotfiles/config/kitty/dracula.conf ~/.config/kitty/dracula.conf
 ln -s ~/dotfiles/config/kitty/kitty.conf ~/.config/kitty/kitty.conf
-ln -s ~/dotfiles/config/nvim ~/.config/nvim
-ln -s ~/dotfiles/config/tmux/tmux.conf ~/.tmux
-ln -s ~/dotfiles/config/zsh/custom_plugin ~/.oh-my-zsh/custom/plugins/miek-aliases-etc
+ln -s ~/dotfiles/config/nvim ~/.config
+ln -s ~/dotfiles/config/tmux/tmux.conf ~/.tmux.conf
+ln -s ~/dotfiles/config/zsh/miek-aliases-etc ~/.oh-my-zsh/custom/plugins
 ln -s ~/dotfiles/config/zsh/p10k.zsh ~/.p10k.zsh
 ln -s ~/dotfiles/config/zsh/zshrc ~/.zshrc
+ln -s ~/dotfiles/config/zsh/zshenv ~/.zshenv
 mkdir ~/.fonts
 cp -rv ~/otherrepos/elenapandotfiles/misc/fonts/* ~/.fonts
 cp -rv ~/dotfiles/fonts/* ~/.fonts
@@ -87,6 +89,7 @@ mkdir -p ~/.local/share/rofi/themes/
 cp ~/otherrepos/rofi-themes-collection/themes/* ~/.local/share/rofi/themes
 curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage > ~/.local/bin/nvim
 chmod a+x ~/.local/bin/nvim
+echo "source ~/.zshenv" > ~/.xprofile
 echo "Changing shell to zsh (may require password)"
 chsh -s /bin/zsh
 echo ""

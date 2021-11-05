@@ -8,12 +8,16 @@ ln -s dotfiles/nvim ~/.config/nvim
 
 You'll have to manually install packer to your nvim local/share folder, then the init.lua should work.
 
-Not quite sure on the exact steps we have to run to get Packer to work, but I usually type
-
+The first time you run, you need to manually run some commands to get stuff working:
 ```
-:PackerInstall
-:wq
-nvim
+:lua require("plugins")
+:PackerSync
+:COQdeps
+:CHADdeps
+```
+then wait for them to finish, quit and open again to run:
+```
+:COQsnips compile
 :PackerCompile
 ```
 
@@ -30,7 +34,9 @@ nvim
 - which-key to see what options are available after you press your leader
 - bufferline shows your buffers like they are tabs at the top of the screen
 - lualine for a basic status line at the bottom of the screen
-- nvim-compe for command line completion (still working on getting keymappings right for this)
+- COQ for fast autocomplete
+- CHAD for a filetree if wanted (rarely used)
+- lightspeed for character based movement
 - kommentary to handle toggling comments in code (still working on getting keymappings right for this)
 - Treesitter for correct tagging of words for colour schemes and code completeness
 - IndentBlankLine for better viewing your indentation

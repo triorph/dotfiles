@@ -27,6 +27,9 @@ window tools:
 firefox kitty obsidian
 
 
+note: some of these things (especially the slow to compile rust CLI tools) could probably wait
+until some further step after setup_dotfiles.sh, but what we have works
+
 
 ## setup_dotfiles.sh
 
@@ -35,25 +38,5 @@ setup the various dotfiles to work.
 
 Take some inspiration from "do nothing scripting" for the manual steps.
 
-Steps are:
-- Setup ssh key (id_rsa from bitwarden)
-- copy wallhaven.json from bitwarden
-- clone git repos below
-- copy/symlink files from dotfiles and elenapandotfiles to correct locations in home
-- Add user to groups
-- setup nvm
-- setup ucee tool
-- setup neovim
-- set rofi theme
+TO DO: Handle symlinking folders that already exist a bit better
 
-git repos to clone:
-https://github.com/elenapan/dotfiles.git ~/otherrepos/elenapandotfiles
-https://github.com/lr-tech/rofi-themes-collection ~/otherrepos/rofi-themes-collection
-https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
-https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
-https://github.com/davidde/git ~/.oh-my-zsh/custom/plugins/git
-https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-tips
-https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git@github.com:triorph/fast-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/git
-git@github.com:triorph/obsidian ~/obsidian
-git@its-git.canterbury.ac.nz:student-first/ucee.git ~/ucee
