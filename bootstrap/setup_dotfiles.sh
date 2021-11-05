@@ -143,7 +143,8 @@ echo ""
 echo "Step 11: Clone studentfirst repo"
 source ~/ucee/venv/bin/activate
 pip install git-remote-codecommit
-echo "Manual step: paste AWS credentials into a terminal and then run"
+echo "Manual step: paste AWS credentials into a terminal (sourced from https://d-9767036a81.awsapps.com/start#/ ) and then run"
+echo ""
 echo "git clone codecommit::ap-southeast-2://studentfirst"
 echo "(if this doesn't work, you may need to make sure you have sourced the ucee venv)"
 echo "(source ~/ucee/venv/bin/activate)"

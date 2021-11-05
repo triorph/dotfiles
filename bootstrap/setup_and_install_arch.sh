@@ -13,7 +13,9 @@
 # - install remaining aur packages
 # - install the virtualbox guest additions from ISO
 echo "Step 1: Install base pacman packages"
-pacman -Sy base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers grub ninja unzip
+pacman -Sy --needed \
+    base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware \
+    lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers grub ninja unzip
 echo ""
 echo "Step 1 completed"
 echo ""
@@ -28,7 +30,10 @@ groupadd sudo
 groupadd docker
 groupadd autologin
 groupadd nopasswdlogin
-usermod -aG sudo docker autologin nopasswdlogin $USER
+usermod -aG sudo $USER
+usermod -aG docker $USER
+usermod -aG autologin $USER
+usermod -aG nopasswdlogin $USER
 echo ""
 echo "Step 2 complete"
 echo ""
@@ -40,23 +45,37 @@ chmod 400 /etc/sudoers
 cp ~/dotfiles/bootstrap/lightdm.conf /etc/lightdm/lightdm.conf
 cp ~/dotfiles/bootstrap/lightdm-pam /etc/pam.d/lightdm
 cp ~/dotfiles/bootstrap/grub /etc/default/grub
+grub-install /dev/sda
+mkdir /boot/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 cp ~/dotfiles/bootstrap/00-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf
 systemctl enable lightdm
 systemctl enable systemd-networkd
+echo "BTW: /etc/lightdm/lightdm.conf is only setup for miek as the user. You may need to manually edit this yourself"
+echo "press enter to do this/acknowledge"
+read varname
 echo ""
 echo "Step 3 complete"
 echo ""
 echo "Step 4: install paru"
-HOME=/home/$USER su -m $USER -c "rustup install default;rustup default stable"
-HOME=/home/$USER su -m $USER -c "git clone https://aur.archlinux.org/paru.git /home/$USER/paru;cd /home/$USER/paru;makepkg -si"
+HOME=/home/$USER sudo -i -u $USER << EOF
+rustup install default
+rustup default stable
+EOF
+HOME=/home/$USER sudo -i -u $USER << EOF
+git clone https://aur.archlinux.org/paru.git /home/$USER/paru
+cd /home/$USER/paru
+makepkg -si --noconfirm
+EOF
 echo ""
 echo "Step 5: Install remaining AUR packages"
 echo ""
-HOME=/home/$USER su -m $USER -c "paru -S \
-    awesome-git rofi lm_sensors acpid jq fortune-mod redshift mpd mpc maim feh light-git pulseaudio inotify-tools xdotool picom\
-tmux zsh bat mcfly git-delta-git lsd zoxide tty-clock pomo nvm docker python3 python-pip python-virtualenv xsel
-firefox kitty obsidian"
+HOME=/home/$USER sudo -i -u $USER << EOF
+paru -S --noconfirm --needed\
+    awesome-git rofi lm_sensors acpid jq fortune-mod redshift mpd mpc maim feh light-git pulseaudio inotify-tools xdotool picom \
+    tmux zsh bat mcfly git-delta-git lsd zoxide tty-clock pomo nvm docker python3 python-pip python-virtualenv xsel \
+    firefox kitty obsidian
+EOF
 echo ""
 echo "Step 6 complete"
 echo ""
