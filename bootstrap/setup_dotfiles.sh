@@ -40,8 +40,11 @@ git clone https://github.com/davidde/git ~/.oh-my-zsh/custom/plugins/git
 git clone https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-tips
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone git@github.com:triorph/fast-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/git
-git clone git@github.com:triorph/obsidian ~/obsidian
+git clone git@github.com:triorph/obsidian.git ~/obsidian
 git clone git@its-git.canterbury.ac.nz:student-first/ucee.git ~/ucee
+cd ~/dotfiles
+git remote remove origin
+git remote add origin git@github.com/triorph/dotfiles.git
 echo ""
 echo "Step 3 complete."
 echo ""
