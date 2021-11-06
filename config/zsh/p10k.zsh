@@ -392,7 +392,7 @@
     # If local branch name or tag is at most 32 characters long, show it in full.
     # Otherwise show the first 12 … the last 12.
     # Tip: To always show local branch name in full without truncation, delete the next line.
-    (( $#where > 32 )) && where[23,-3]="…"
+    (( $#where > 50 )) && where[43,-3]="…"
 
     res+="${clean}${where//\%/%%}"  # escape %
 

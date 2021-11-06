@@ -42,7 +42,7 @@ git clone https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/theme
 git clone https://github.com/davidde/git ~/.oh-my-zsh/custom/plugins/git
 git clone https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-tips
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone git@github.com:triorph/fast-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
+git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
 git clone git@github.com:triorph/obsidian.git ~/obsidian
 git clone git@its-git.canterbury.ac.nz:student-first/ucee.git ~/ucee
 git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
