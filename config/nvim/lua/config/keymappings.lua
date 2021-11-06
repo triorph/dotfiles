@@ -42,6 +42,10 @@ verbal_key_mapper("v", "\\P", '"+P')
 -- Glow markdown preview
 key_mapper("n", "<leader>vg", "<cmd>Glow<CR>")
 
+-- primagen move visual chunk
+key_mapper("v", "J", ":m '>+1<CR>gv=gv")
+key_mapper("v", "K", ":m '<-2<CR>gv=gv")
+
 -- Overwrite the packer commands to work without packer directly loaded (for lazy loading) (borrowed from nvchad)
 vim.cmd("silent! command PackerCompile lua require 'plugins' require('packer').compile()")
 vim.cmd("silent! command PackerInstall lua require 'plugins' require('packer').install()")
