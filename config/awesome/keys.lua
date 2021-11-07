@@ -22,8 +22,10 @@ function toggle_class(search_property, spawn_command, properties)
 		if client.focus == c then
 			c.hidden = true
 		else
+            if c.hidden == true or c.screen == mouse.screen then
+                c:move_to_tag(mouse.screen.selected_tag)
+            end
 			c.hidden = false
-			c:move_to_tag(mouse.screen.selected_tag)
 			client.focus = c
 		end
 	else
