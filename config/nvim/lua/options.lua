@@ -19,10 +19,12 @@ vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 vim.o.expandtab = true
+vim.o.smarttab = true
 vim.wo.number = true
 vim.wo.relativenumber = true
 vim.wo.signcolumn = "yes"
 vim.wo.wrap = false
+vim.g.pyindent_open_paren = vim.o.shiftwidth
 -- limit the autocomplete popup menu size (a pet peeve of mine is how often the autocomplete blocks what you actually want to see)
 vim.o.pumheight = 5
 
@@ -52,4 +54,4 @@ for _, plugin in pairs(disabled_built_ins) do
 	vim.g["loaded_" .. plugin] = 1
 end
 
-vim.cmd[[ ab breakpiont breakpoint ]]
+vim.cmd([[ ab breakpiont breakpoint ]])
