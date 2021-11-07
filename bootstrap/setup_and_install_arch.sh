@@ -75,7 +75,7 @@ HOME=/home/$USER sudo -i -u $USER << EOF
 paru -S --noconfirm --needed\
     awesome-git rofi lm_sensors acpid jq fortune-mod redshift mpd mpc maim feh light-git pulseaudio inotify-tools xdotool picom \
     tmux zsh bat mcfly git-delta-git lsd zoxide tty-clock pomo nvm python3 python-pip python-virtualenv xsel \
-    firefox kitty obsidian stylua
+    firefox kitty obsidian stylua ripgrep fd
 EOF
 echo ""
 echo "Step 6 complete"
