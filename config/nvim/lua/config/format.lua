@@ -1,7 +1,4 @@
 require("format").setup({
-	["*"] = {
-		{ cmd = { "sed -i 's/[ \t]*$//'" } }, -- remove trailing whitespace
-	},
 	vim = {
 		{
 			cmd = { "luafmt -w replace" },
@@ -45,3 +42,9 @@ vim.cmd([[augroup Format
     autocmd!
     autocmd BufWritePost * FormatWrite
 augroup END]])
+
+-- remove trailing whitespaces in vim as a BufWritePre
+vim.cmd([[
+    autocmd BufWritePre * :%s/\s\+$//e
+    ]])
+
