@@ -276,7 +276,7 @@ keys.globalkeys = gears.table.join(
 	awful.key({ superkey, shiftkey }, "Return", function()
 		awful.spawn(
 			user.floating_terminal,
-			{ floating = true, width = screen_width * 0.65, height = screen_height * 0.98 }
+			{ floating = true, width = mouse.screen.workarea.width * 0.65, height = mouse.screen.workarea.height * 0.98 }
 		)
 	end, {
 		description = "spawn floating terminal",
@@ -287,8 +287,8 @@ keys.globalkeys = gears.table.join(
 			floating = true,
 			opacity = 0.95,
 			titlebars_enabled = false,
-			width = screen_width * 0.8,
-			height = screen_height * 0.92,
+			width = mouse.screen.workarea.width * 0.8,
+			height = mouse.screen.workarea.height * 0.92,
 		})
 	end, {
 		description = "Toggle firefox",
@@ -296,8 +296,8 @@ keys.globalkeys = gears.table.join(
 	}),
 	awful.key({ ctrlkey }, "`", function()
 		toggle_class({ class = "quake-term" }, "kitty -1 --class=quake-term", {
-			width = screen_width * 0.9,
-			height = screen_height * 0.9,
+			width = mouse.screen.workarea.width * 0.9,
+			height = mouse.screen.workarea.height * 0.9,
 			placement = awful.placement.TOP,
 			titlebars_enabled = false,
 			class = "quake-term",
@@ -313,8 +313,8 @@ keys.globalkeys = gears.table.join(
 		toggle_class({ class = "dev-term" }, "kitty -1 --class=dev-term", {
 			floating = true,
 			titlebars_enabled = false,
-			width = screen_width * 0.85,
-			height = screen_height * 0.92,
+			width = mouse.screen.workarea.width * 0.85,
+			height = mouse.screen.workarea.height * 0.92,
 			opacity = 0.95,
 		})
 	end, {
@@ -326,7 +326,7 @@ keys.globalkeys = gears.table.join(
 		toggle_class(
 			{ class = "obsidian" },
 			"obsidian",
-			{ floating = true, width = screen_width * 0.9, height = screen_height * 0.9, titlebars_enabled = false }
+			{ floating = true, width = mouse.screen.workarea.width * 0.9, height = mouse.screen.workarea.height * 0.9, titlebars_enabled = false }
 		)
 	end, {
 		description = "Toggle obsidian in and out",
@@ -797,7 +797,7 @@ keys.clientkeys = gears.table.join(
 	awful.key({ superkey }, "c", function(c)
 		awful.placement.centered(c, { honor_workarea = true, honor_padding = true })
 		helpers.single_double_tap(nil, function()
-			helpers.float_and_resize(c, screen_width * 0.85, screen_height * 0.920)
+			helpers.float_and_resize(c, mouse.screen.workarea.width * 0.85, mouse.screen.workarea.height * 0.920)
 		end)
 	end),
 
@@ -856,28 +856,28 @@ keys.clientkeys = gears.table.join(
 
 	-- F for focused view
 	awful.key({ superkey, ctrlkey }, "f", function(c)
-		helpers.float_and_resize(c, screen_width * 0.7, screen_height * 0.75)
+		helpers.float_and_resize(c, mouse.screen.workarea.width * 0.7, mouse.screen.workarea.height * 0.75)
 	end, {
 		description = "focus mode",
 		group = "client",
 	}),
 	-- V for vertical view
 	awful.key({ superkey, ctrlkey }, "v", function(c)
-		helpers.float_and_resize(c, screen_width * 0.65, screen_height * 0.95)
+		helpers.float_and_resize(c, mouse.screen.workarea.width * 0.65, mouse.screen.workarea.height * 0.95)
 	end, {
 		description = "focus mode",
 		group = "client",
 	}),
 	-- T for tiny window
 	awful.key({ superkey, ctrlkey }, "t", function(c)
-		helpers.float_and_resize(c, screen_width * 0.3, screen_height * 0.35)
+		helpers.float_and_resize(c, mouse.screen.workarea.width * 0.3, mouse.screen.workarea.height * 0.35)
 	end, {
 		description = "tiny mode",
 		group = "client",
 	}),
 	-- N for normal size (good for terminals)
 	awful.key({ superkey, ctrlkey }, "n", function(c)
-		helpers.float_and_resize(c, screen_width * 0.65, screen_height * 0.75)
+		helpers.float_and_resize(c, mouse.screen.workarea.width * 0.65, mouse.screen.workarea.height * 0.75)
 	end, {
 		description = "normal mode",
 		group = "client",
