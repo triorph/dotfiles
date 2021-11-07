@@ -22,9 +22,9 @@ function toggle_class(search_property, spawn_command, properties)
 		if client.focus == c then
 			c.hidden = true
 		else
-            if c.hidden == true or c.screen == mouse.screen then
-                c:move_to_tag(mouse.screen.selected_tag)
-            end
+			if c.hidden == true or c.screen == mouse.screen then
+				c:move_to_tag(mouse.screen.selected_tag)
+			end
 			c.hidden = false
 			client.focus = c
 		end
@@ -263,7 +263,10 @@ keys.globalkeys = gears.table.join(
 
 	awful.key({ superkey }, "x", function()
 		awful.tag.history.restore()
-	end, { description = "go back", group = "tag" }),
+	end, {
+		description = "go back",
+		group = "tag",
+	}),
 
 	-- Spawn terminal
 	awful.key({ superkey }, "Return", function()
@@ -276,7 +279,11 @@ keys.globalkeys = gears.table.join(
 	awful.key({ superkey, shiftkey }, "Return", function()
 		awful.spawn(
 			user.floating_terminal,
-			{ floating = true, width = mouse.screen.workarea.width * 0.65, height = mouse.screen.workarea.height * 0.98 }
+			{
+				floating = true,
+				width = mouse.screen.workarea.width * 0.65,
+				height = mouse.screen.workarea.height * 0.98,
+			}
 		)
 	end, {
 		description = "spawn floating terminal",
@@ -326,7 +333,12 @@ keys.globalkeys = gears.table.join(
 		toggle_class(
 			{ class = "obsidian" },
 			"obsidian",
-			{ floating = true, width = mouse.screen.workarea.width * 0.9, height = mouse.screen.workarea.height * 0.9, titlebars_enabled = false }
+			{
+				floating = true,
+				width = mouse.screen.workarea.width * 0.9,
+				height = mouse.screen.workarea.height * 0.9,
+				titlebars_enabled = false,
+			}
 		)
 	end, {
 		description = "Toggle obsidian in and out",
@@ -636,7 +648,10 @@ keys.globalkeys = gears.table.join(
 	}),
 	awful.key({ superkey }, "q", function()
 		apps.scratchpad()
-	end, { description = "scratchpad", group = "launcher" }),
+	end, {
+		description = "scratchpad",
+		group = "launcher",
+	}),
 	-- Max layout
 	-- Single tap: Set max layout
 	-- Double tap: Also disable floating for ALL visible clients in the tag

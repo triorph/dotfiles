@@ -185,8 +185,10 @@ return packer.startup(function()
 		end,
 	})
 	use({ "EdenEast/nightfox.nvim" })
-	use({ "Pocco81/Catppuccino.nvim" })
+	use({ "Pocco81/Catppuccino.nvim", branch = "dev-remaster" })
 	use({ "morhetz/gruvbox" })
+	use({ "rose-pine/neovim" })
+	use({ "rockerBOO/boo-colorscheme-nvim" })
 
 	-- Misc utils
 	use({ "npxbr/glow.nvim", run = "GlowInstall" }) -- markdown preview
