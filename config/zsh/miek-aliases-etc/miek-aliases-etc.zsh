@@ -24,4 +24,5 @@ alias xgrepfull="fd -tf .py . | xargs grep --color=always -R -n -H -C 5 --exclud
 alias edit="$EDITOR"
 alias diff="delta"
 alias df="duf | less"
+alias icat="kitty +kitten icat"
 eval "$(mcfly init zsh)"

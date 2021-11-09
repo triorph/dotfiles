@@ -15,8 +15,8 @@
 echo "Step 1: Install base pacman packages"
 pacman -Sy --needed \
     base base-devel neovim git openssh fuse sudo archlinux-keyring xorg xf86-video-vmware \
-    lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers grub ninja unzip xterm \
-    dhcpcd docker
+    lightdm lightdm-gtk-greeter kitty tmux zsh rustup linux-headers grub unzip xterm \
+    dhcpcd
 echo ""
 echo "Step 1 completed"
 echo ""
@@ -73,9 +73,8 @@ echo "Step 5: Install remaining AUR packages"
 echo ""
 HOME=/home/$USER sudo -i -u $USER << EOF
 paru -S --noconfirm --needed\
-    awesome-git rofi lm_sensors acpid jq fortune-mod redshift mpd mpc maim feh light-git pulseaudio inotify-tools xdotool picom \
-    tmux zsh bat mcfly git-delta-git lsd zoxide tty-clock pomo nvm python3 python-pip python-virtualenv xsel \
-    firefox kitty obsidian stylua ripgrep fd
+    awesome-git rofi acpid jq feh pulseaudio inotify-tools xdotool picom \
+    xsel firefox kitty
 EOF
 echo ""
 echo "Step 6 complete"

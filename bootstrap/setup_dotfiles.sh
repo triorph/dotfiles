@@ -62,8 +62,8 @@ mkdir ~/.local/bin
 mkdir ~/.config/kitty
 mkdir ~/.config/git
 ln -s ~/dotfiles/bin/newwp ~/.local/bin/newwp
-cp -rv ~/otherrepos/elenapandotfiles/config/awesome ~/.config/awesome
-cp -rv ~/otherrepos/elenapandotfiles/bin/* ~/.local/bin/
+cp -r ~/otherrepos/elenapandotfiles/config/awesome ~/.config/awesome
+cp -r ~/otherrepos/elenapandotfiles/bin/* ~/.local/bin/
 rm ~/.config/awesome/keys.lua
 rm ~/.config/awesome/rc.lua
 ln -s ~/dotfiles/config/awesome/keys.lua ~/.config/awesome/keys.lua
@@ -81,14 +81,16 @@ ln -s ~/dotfiles/config/zsh/p10k.zsh ~/.p10k.zsh
 ln -s ~/dotfiles/config/zsh/zshrc ~/.zshrc
 ln -s ~/dotfiles/config/zsh/zshenv ~/.zshenv
 mkdir ~/.fonts
-cp -rv ~/otherrepos/elenapandotfiles/misc/fonts/* ~/.fonts
-cp -rv ~/dotfiles/fonts/* ~/.fonts
+cp -r ~/otherrepos/elenapandotfiles/misc/fonts/* ~/.fonts
+cp -r ~/dotfiles/fonts/* ~/.fonts
 mkdir ~/.config/picom
 touch ~/.config/picom/picom.conf
 mkdir -p ~/.local/share/rofi/themes/
 cp ~/otherrepos/rofi-themes-collection/themes/* ~/.local/share/rofi/themes
-curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage > ~/.local/bin/nvim
-chmod a+x ~/.local/bin/nvim
+if [[ ! -f ~/.local/bin/nvim ]]; then
+    curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage > ~/.local/bin/nvim
+    chmod a+x ~/.local/bin/nvim
+fi
 echo "source ~/.zshenv" > ~/.xprofile
 echo "Changing shell to zsh (may require password)"
 chsh -s /bin/zsh
@@ -118,10 +120,12 @@ echo "Step 7 complete"
 echo ""
 echo "Step 8: setup ucee tool"
 echo ""
-cd ~/ucee
-./bootstrap.sh
-pip install thefuck
-cd ~/
+if [[ ! -d ~/ucee/venv ]]; then
+    cd ~/ucee
+    ./bootstrap.sh
+    pip install thefuck
+    cd ~/
+fi
 echo ""
 echo "Step 7 complete"
 echo ""
@@ -147,8 +151,10 @@ echo "Step 10: Install LSPs"
 echo ""
 npm install -g pyright
 npm install -g typescript-language-server
-curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
-chmod +x ~/.local/bin/rust-analyzer
+if [[ ! -f ~/.local/bin/rust-analyzer ]]; then
+    curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
+    chmod +x ~/.local/bin/rust-analyzer
+fi
 echo "Manual step: Install the sumneko_lua LSP and symlink to correct place"
 echo ""
 echo "cd ~/otherrepos/lua-language-server"
