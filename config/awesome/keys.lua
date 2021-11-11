@@ -15,9 +15,17 @@ altkey = "Mod1"
 ctrlkey = "Control"
 shiftkey = "Shift"
 
-function toggle_class(search_property, spawn_command, properties)
-	-- naughty.notify({ text = spawn_command })
-	c = helpers.find_clients(search_property, true)
+function get_client(class, secondary_search_property)
+	c = helpers.find_clients({ class = class }, true)
+	if not c and secondary_search_property then
+		c = helpers.find_clients(secondary_search_property, true)
+		c.class = class
+	end
+	return c
+end
+
+function toggle_class(class, spawn_command, properties, secondary_search_property)
+	c = get_client(class, secondary_search_property)
 	if c then
 		if client.focus == c then
 			c.hidden = true
@@ -299,19 +307,21 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey, altkey }, "Tab", function()
-		toggle_class({ class = "firefox" }, "firefox", {
+		toggle_class("web", "firefox", {
 			floating = true,
 			opacity = 0.95,
 			titlebars_enabled = false,
 			width = mouse.screen.workarea.width * 0.8,
 			height = mouse.screen.workarea.height * 0.92,
+		}, {
+			class = "firefox",
 		})
 	end, {
 		description = "Toggle firefox",
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey }, "`", function()
-		toggle_class({ class = "quake-term" }, "kitty -1 --class=quake-term", {
+		toggle_class("quake-term", "kitty -1 --class=quake-term", {
 			width = mouse.screen.workarea.width * 0.9,
 			height = mouse.screen.workarea.height * 0.9,
 			placement = awful.placement.TOP,
@@ -326,7 +336,7 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey, altkey }, "d", function()
-		toggle_class({ class = "dev-term" }, "kitty -1 --class=dev-term", {
+		toggle_class("dev-term", "kitty -1 --class=dev-term", {
 			floating = true,
 			titlebars_enabled = false,
 			width = mouse.screen.workarea.width * 0.85,
@@ -339,7 +349,7 @@ keys.globalkeys = gears.table.join(
 	}),
 
 	awful.key({ ctrlkey }, "Tab", function()
-		toggle_class({ class = "obsidian" }, "obsidian", {
+		toggle_class("obsidian", "obsidian", {
 			floating = true,
 			width = mouse.screen.workarea.width * 0.9,
 			height = mouse.screen.workarea.height * 0.9,
