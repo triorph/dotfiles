@@ -231,6 +231,18 @@ keys.globalkeys = gears.table.join(
 		helpers.resize_dwim(client.focus, "right")
 	end),
 
+	awful.key({ altkey, ctrlkey }, "1", function()
+		awful.screen.focus(1)
+	end, {
+		description = "adjust to monitor 1",
+		group = "screen",
+	}),
+	awful.key({ altkey, ctrlkey }, "2", function()
+		awful.screen.focus(2)
+	end, {
+		description = "adjust to monitor 1",
+		group = "screen",
+	}),
 	-- No need for these (single screen setup)
 	awful.key({ superkey, ctrlkey }, "j", function()
 		awful.screen.focus_relative(1)
@@ -277,14 +289,11 @@ keys.globalkeys = gears.table.join(
 	}),
 	-- Spawn floating terminal
 	awful.key({ superkey, shiftkey }, "Return", function()
-		awful.spawn(
-			user.floating_terminal,
-			{
-				floating = true,
-				width = mouse.screen.workarea.width * 0.65,
-				height = mouse.screen.workarea.height * 0.98,
-			}
-		)
+		awful.spawn(user.floating_terminal, {
+			floating = true,
+			width = mouse.screen.workarea.width * 0.65,
+			height = mouse.screen.workarea.height * 0.98,
+		})
 	end, {
 		description = "spawn floating terminal",
 		group = "launcher",
@@ -330,16 +339,12 @@ keys.globalkeys = gears.table.join(
 	}),
 
 	awful.key({ ctrlkey }, "Tab", function()
-		toggle_class(
-			{ class = "obsidian" },
-			"obsidian",
-			{
-				floating = true,
-				width = mouse.screen.workarea.width * 0.9,
-				height = mouse.screen.workarea.height * 0.9,
-				titlebars_enabled = false,
-			}
-		)
+		toggle_class({ class = "obsidian" }, "obsidian", {
+			floating = true,
+			width = mouse.screen.workarea.width * 0.9,
+			height = mouse.screen.workarea.height * 0.9,
+			titlebars_enabled = false,
+		})
 	end, {
 		description = "Toggle obsidian in and out",
 		group = "launcher",
