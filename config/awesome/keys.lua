@@ -19,7 +19,9 @@ function get_client(class, secondary_search_property)
 	c = helpers.find_clients({ class = class }, true)
 	if not c and secondary_search_property then
 		c = helpers.find_clients(secondary_search_property, true)
-		c.class = class
+		if c then
+			c.class = class
+		end
 	end
 	return c
 end
@@ -307,7 +309,7 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey, altkey }, "Tab", function()
-		toggle_class("web", "firefox", {
+		toggle_class("Firefox", "firefox", {
 			floating = true,
 			opacity = 0.95,
 			titlebars_enabled = false,
