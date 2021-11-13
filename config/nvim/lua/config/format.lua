@@ -25,6 +25,10 @@ require("format").setup({
 	typescript = {
 		{ cmd = { "prettier -w", "./node_modules/.bin/eslint --fix" } },
 	},
+	html = {
+		{ cmd = { "prettier -w" } },
+	},
+	css = { { cmd = { "prettier -w" } } },
 	markdown = {
 		{ cmd = { "prettier -w" } },
 		{
