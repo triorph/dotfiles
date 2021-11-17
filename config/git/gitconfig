@@ -39,7 +39,7 @@
 [mergetool "vscode"]
 	cmd = code --wait $MERGED
 [mergetool "vimdiff"]
-    cmd = nvim -d  $LOCAL $REMOTE 
+    cmd = nvim -d  $LOCAL $MERGED $REMOTE
 [mergetool]
 	keepBackup = false
 	keepTemporaries = false

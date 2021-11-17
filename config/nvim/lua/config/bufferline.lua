@@ -34,7 +34,6 @@ require("bufferline").setup({
 		sort_by = "id",
 	},
 })
-vim.api.nvim_set_keymap("n", "<leader>b", "<cmd>BufferLinePick<CR>", { silent = true, noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>1", "<cmd>BufferLineGoToBuffer 1<CR>", { silent = true, noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>2", "<cmd>BufferLineGoToBuffer 2<CR>", { silent = true, noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>3", "<cmd>BufferLineGoToBuffer 3<CR>", { silent = true, noremap = true })

@@ -13,9 +13,9 @@ key_mapper("n", "<F3>", "<cmd>CHADopen<CR>")
 -- split windows
 key_mapper("n", "<c-l>", ":lua require('focus').split_nicely()<CR>")
 -- telescope simple shortcuts
-key_mapper("n", "<c-x>", "<cmd>Telescope buffers<CR>")
-key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>")
-key_mapper("n", "<c-f>", "<cmd>Telescope live_grep<CR>")
+key_mapper("n", "<leader>b", "<cmd>Telescope buffers<CR>")
+--[[ key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>") -- lets try not using these 2 so I can keep their original usage available
+key_mapper("n", "<c-f>", "<cmd>Telescope live_grep<CR>") ]]
 key_mapper("n", "<leader>p", "<cmd>Telescope neoclip<CR>")
 key_mapper("n", "<leader>tp", "<cmd>Telescope find_files<CR>")
 key_mapper("n", "<leader>tf", "<cmd>Telescope live_grep<CR>")
