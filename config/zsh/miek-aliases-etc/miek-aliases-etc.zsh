@@ -4,7 +4,7 @@ export LESS="--quit-if-one-screen --RAW-CONTROL-CHARS --no-init"
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
    export EDITOR='nvim'
-   export XIVIEWER=''
+   export XIVIEWER='icat'
 else
    export EDITOR='nvim'
    export XIVIEWER='eog'
@@ -25,4 +25,5 @@ alias edit="$EDITOR"
 alias diff="delta"
 alias df="duf | less"
 alias icat="kitty +kitten icat"
+alias plint="pylama --linters=print,mccabe,pycodestyle,pyflakes --ignore=E501,W0612,W605,E231,E203"
 eval "$(mcfly init zsh)"
