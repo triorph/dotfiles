@@ -124,7 +124,7 @@ vim.api.nvim_set_keymap("v", "<leader>ca", ":<C-U>lua require('lspsaga.codeactio
 -- show hover doc
 vim.api.nvim_set_keymap("n", "K", "<cmd>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
 -- scroll down hover doc or scroll in definition preview
--- vim.api.nvim_set_keymap("n", "<C-f>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
+vim.api.nvim_set_keymap("n", "<C-f>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
 -- scroll up hover doc
 vim.api.nvim_set_keymap("n", "<C-b>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
 -- signature help

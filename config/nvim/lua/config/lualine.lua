@@ -1,3 +1,7 @@
+local function lint_results()
+	local bufnr = vim.g.actual_curbuf
+	return vim.fn["neomake#statusline#get"](bufnr)
+end
 require("lualine").setup({
 	options = {
 		theme = "tokyonight",
@@ -13,6 +17,9 @@ require("lualine").setup({
 			{
 				"diagnostics",
 				sources = { "nvim_lsp" },
+			},
+			{
+				lint_results,
 			},
 		},
 		lualine_x = { "encoding", "fileformat", "filetype" },
