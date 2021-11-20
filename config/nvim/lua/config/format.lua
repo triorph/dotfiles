@@ -44,7 +44,7 @@ require("format").setup({
 })
 vim.cmd([[augroup Format
     autocmd!
-    autocmd BufWritePost * FormatWrite
+    autocmd BufWritePre * FormatWrite
 augroup END]])
 
 -- remove trailing whitespaces in vim as a BufWritePre

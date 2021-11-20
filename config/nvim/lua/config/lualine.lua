@@ -4,10 +4,11 @@ local function lint_results()
 end
 require("lualine").setup({
 	options = {
-		theme = "tokyonight",
+		-- theme = "tokyonight",
 		-- theme = "gruvbox",
 		-- theme = "tokyonight",
 		-- theme = "catppuccino",
+		theme = "rose-pine",
 	},
 	sections = {
 		lualine_a = { "mode" },

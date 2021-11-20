@@ -1,7 +1,6 @@
 vim.o.completeopt = "menuone,noselect"
 vim.g.coq_settings = { ["auto_start"] = "shut-up", ["clients.lsp.weight_adjust"] = 1.5 }
 
-local opts = { silent = true, noremap = true }
 local remap = vim.api.nvim_set_keymap
 local npairs = require("nvim-autopairs")
 local Rule = require("nvim-autopairs.rule")
@@ -10,6 +9,8 @@ npairs.setup({
 	map_bs = false,
 	check_ts = true,
 	ignored_next_char = "[%w%.]",
+	enable_check_bracket_line = true,
+	fast_wrap = {},
 })
 
 require("nvim-treesitter.configs").setup({
@@ -17,7 +18,7 @@ require("nvim-treesitter.configs").setup({
 	autopairs = { enable = true },
 })
 
-vim.g.coq_settings = { keymap = { recommended = false } }
+vim.g.coq_settings = { keymap = { recommended = true } }
 
 -- these mappings are coq recommended mappings unrelated to nvim-autopairs
 remap("i", "<esc>", [[pumvisible() ? "<c-e><esc>" : "<esc>"]], { expr = true, noremap = true })

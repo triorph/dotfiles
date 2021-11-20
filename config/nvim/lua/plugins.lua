@@ -195,6 +195,12 @@ return packer.startup(function()
 	use({ "tpope/vim-surround" }) -- the ability to edit surrounding things, like quotes or brackets
 	use({ "wellle/targets.vim" }) -- more text objects, like "inside argument"
 	use({ "windwp/nvim-autopairs" }) --auto-close brackets etc..
+	use({
+		"windwp/nvim-ts-autotag",
+		config = function()
+			require("nvim-ts-autotag").setup()
+		end,
+	}) -- auto-close html tags etc..
 	use({ -- alternative to EasyMotion or Sneak for faster movement
 		"ggandor/lightspeed.nvim",
 		config = function()
