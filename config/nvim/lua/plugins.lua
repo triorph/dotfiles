@@ -11,6 +11,10 @@ end
 -- rmagatti/goto-preview  (popups of definition previews etc..)
 -- nvim-treesitter/nvim-treesitter-textobjects  (defined text objects to work on treesitter info)
 -- famiu/feline.nvim (alternative to lualine)
+-- RRethy/nvim-treesitter-textsubjects (expand your selection out or in via treesitter block)
+-- echasnovski/mini.nvim#minisurround (lua alternative to vim-surround that supports treesitter)
+-- mfussenegger/nvim-lint potential LSP-based alternative to Neomake (which I've never liked)
+-- gelguy/wilder.nvim nice menu for ex-commands
 local use = packer.use
 return packer.startup(function()
 	-- Packer can manage itself
