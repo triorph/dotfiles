@@ -1,5 +1,5 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
+
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -29,24 +29,46 @@ DISABLE_MAGIC_FUNCTIONS="true"
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  git
-  zoxide
-  bgnotify
-  common-aliases
-  colored-man-pages
-  command-not-found
-  thefuck
-  python
-  git-auto-fetch
-  docker
-  tmux
-  fast-syntax-highlighting
-  zsh-autosuggestions
-  alias-tips
-  aws
-  miek-aliases-etc
-)
+if [[ $EUID == 0 ]]; then
+    # Plugins for root user (same as main but no zoxide)
+     plugins=(
+      git
+      bgnotify
+      common-aliases
+      colored-man-pages
+      command-not-found
+      thefuck
+      python
+      git-auto-fetch
+      docker
+      tmux
+      fast-syntax-highlighting
+      zsh-autosuggestions
+      alias-tips
+      aws
+      miek-aliases-etc
+    )
+else
+    # Plugins for regular user
+    plugins=(
+      git
+      zoxide
+      bgnotify
+      common-aliases
+      colored-man-pages
+      command-not-found
+      thefuck
+      python
+      git-auto-fetch
+      docker
+      tmux
+      fast-syntax-highlighting
+      zsh-autosuggestions
+      alias-tips
+      aws
+      miek-aliases-etc
+    )
+fi
 # Uncomment the following line to have your zsh autostart/join a tmux session
 # export ZSH_TMUX_AUTOSTART=true
 source $ZSH/oh-my-zsh.sh
