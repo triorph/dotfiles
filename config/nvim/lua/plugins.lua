@@ -68,7 +68,7 @@ return packer.startup(function()
 
 	-- statusline at the bottom of the screen
 	use({
-		"hoob3rt/lualine.nvim",
+		"nvim-lualine/lualine.nvim",
 		requires = { "kyazdani42/nvim-web-devicons", opt = true },
 		config = function()
 			require("config/lualine")
