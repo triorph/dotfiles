@@ -42,10 +42,16 @@ return packer.startup(function()
 
 	-- Language Server Processing(?)
 	use({ -- better LSP handling, and setup configs
-		"glepnir/lspsaga.nvim",
+		"tami5/lspsaga.nvim",
 		requires = { "neovim/nvim-lspconfig" },
 		config = function()
 			require("config/lsp")
+		end,
+	})
+	use({
+		"ray-x/lsp_signature.nvim",
+		config = function()
+			require("lsp_signature").setup()
 		end,
 	})
 	use({ "kosayoda/nvim-lightbulb" }) -- puts lightbulbs when a code action is available
@@ -159,7 +165,13 @@ return packer.startup(function()
 	use({ -- only show colour for what's active
 		"folke/twilight.nvim",
 		config = function()
-			require("twilight").setup({})
+			require("twilight").setup({
+				context = 20, -- amount of lines we will try to show around the current line
+				expand = { -- for treesitter, we we always try to expand to the top-most ancestor with these types
+					"function",
+					"method",
+				},
+			})
 		end,
 	})
 	use({ -- F11 to go all in on focus
@@ -180,34 +192,49 @@ return packer.startup(function()
 	-- colour schemes
 	use({
 		"folke/tokyonight.nvim",
+		requires = {
+			{ "Pocco81/Catppuccino.nvim", branch = "dev-remaster" },
+			"EdenEast/nightfox.nvim",
+			"morhetz/gruvbox",
+			"rose-pine/neovim",
+			"rockerBOO/boo-colorscheme-nvim",
+			"shaunsingh/moonlight.nvim",
+		},
+
 		config = function()
 			require("config/colour")
 		end,
 	})
-	use({ "EdenEast/nightfox.nvim" })
-	use({ "Pocco81/Catppuccino.nvim", branch = "dev-remaster" })
-	use({ "morhetz/gruvbox" })
-	use({ "rose-pine/neovim" })
-	use({ "rockerBOO/boo-colorscheme-nvim" })
-
 	-- Misc utils
 	use({ "npxbr/glow.nvim", run = "GlowInstall" }) -- markdown preview
 	use({ "tpope/vim-surround" }) -- the ability to edit surrounding things, like quotes or brackets
 	use({ "wellle/targets.vim" }) -- more text objects, like "inside argument"
 	use({ "windwp/nvim-autopairs" }) --auto-close brackets etc..
+	use({ "ap/vim-css-color" }) -- highlight colours in css
 	use({
 		"windwp/nvim-ts-autotag",
 		config = function()
 			require("nvim-ts-autotag").setup()
 		end,
 	}) -- auto-close html tags etc..
+	use({ -- stop windows jarring when opening stuff like Trouble etc..
+		"luukvbaal/stabilize.nvim",
+		config = function()
+			require("stabilize").setup()
+		end,
+	})
 	use({ -- alternative to EasyMotion or Sneak for faster movement
 		"ggandor/lightspeed.nvim",
 		config = function()
-			require("lightspeed").setup({
-				instant_repeat_fwd_key = ";",
-				instant_repeat_bwd_key = ",",
-			})
+			require("lightspeed").setup({})
+			vim.api.nvim_set_keymap("n", ";", "<Plug>Lightspeed_;_ft", { noremap = false, silent = true })
+			vim.api.nvim_set_keymap("n", ",", "<Plug>Lightspeed_,_ft", { noremap = false, silent = true })
+		end,
+	})
+	use({ -- allow . repeat to work with more plugins (surround, lightspeed, etc.)
+		"tpope/vim-repeat",
+		config = function()
+			vim.cmd([[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]])
 		end,
 	})
 	--[[ use({ -- faster caching, and profile your plugins
