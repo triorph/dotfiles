@@ -121,20 +121,6 @@ awesome.connect_signal("evil::microphone", function(muted)
 	end
 end)
 
-local music = create_button("", x.color4, x.color8 .. "90", x.color8 .. "B0")
-
-music:buttons(gears.table.join(
-	awful.button({}, 1, apps.music),
-	awful.button({}, 3, apps.music),
-	-- Scrolling: Adjust mpd volume
-	awful.button({}, 4, function()
-		awful.spawn.with_shell("mpc volume +5")
-	end),
-	awful.button({}, 5, function()
-		awful.spawn.with_shell("mpc volume -5")
-	end)
-))
-
 local sandwich = create_button("", x.color1, x.color8 .. "30", x.color8 .. "50")
 sandwich:buttons(gears.table.join(
 	awful.button({}, 1, function()
@@ -325,7 +311,6 @@ awful.screen.connect_for_each_screen(function(s)
 			{
 				volume,
 				microphone,
-				music,
 				exit,
 				layout = wibox.layout.fixed.horizontal,
 			},
