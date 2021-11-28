@@ -66,8 +66,12 @@ cp -r ~/otherrepos/elenapandotfiles/config/awesome ~/.config/awesome
 cp -r ~/otherrepos/elenapandotfiles/bin/* ~/.local/bin/
 rm ~/.config/awesome/keys.lua
 rm ~/.config/awesome/rc.lua
+rm ~/.config/awesome/elemental/bar/ephemeral.lua
+rm ~/.config/awesome/themes/amarena/theme.lua
 ln -s ~/dotfiles/config/awesome/keys.lua ~/.config/awesome/keys.lua
 ln -s ~/dotfiles/config/awesome/rc.lua ~/.config/awesome/rc.lua
+ln -s ~/dotfiles/config/awesome/ephemeralbar.lua ~/.config/awesome/elemental/bar/ephemeral.lua
+ln -s ~/dotfiles/config/awesome/theme.lua ~/.config/awesome/themes/amarena/theme.lua
 ln -s ~/dotfiles/config/bat ~/.config
 ln -s ~/dotfiles/config/git/gitattributes ~/.gitattributes
 cp ~/dotfiles/config/git/gitconfig ~/.gitconfig
