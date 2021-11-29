@@ -40,14 +40,14 @@ end
 
 local create_clock = function(clock_format, color, bg_color, hover_color)
 	local widget = wibox.widget({
-		font = "sans bold 16",
+		font = "sans medium 15",
 		align = "center",
 		valign = "center",
 		fg = color,
 		widget = wibox.widget.textclock(clock_format, 1),
 	})
 
-	local margin = wibox.container.margin(widget, 10, 10)
+	local margin = wibox.container.margin(widget, dpi(10), dpi(10), dpi(4), dpi(4))
 	local section = wibox.widget({
 		margin,
 		fg = color,
@@ -134,9 +134,9 @@ sandwich:buttons(gears.table.join(
 
 local calendar = wibox.widget({ widget = wibox.widget.calendar.month(os.date("*t")) })
 local calendar_show = function()
-	screen.calendar.visible = true
+	calendar.visible = true
 end
-local clock = create_clock("%Y-%m-%d %a %T", x.color4, x.background, x.color8 .. "B0")
+local clock = create_clock("%Y-%m-%d   (%a)  %T", x.foreground, x.background, x.color8 .. "50")
 clock:buttons(gears.table.join(awful.button({}, 1, function() end)))
 
 local tag_colors_empty = {
