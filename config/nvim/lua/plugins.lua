@@ -119,6 +119,14 @@ return packer.startup(function()
 		before = "telescope.nvim",
 	})
 
+	-- Debugging
+	use({
+		"mfussenegger/nvim-dap",
+		config = function()
+			require("config/debug")
+		end,
+	})
+
 	-- Autocompletion
 	use({ -- super fast autocomplete
 		"ms-jpq/coq_nvim",
