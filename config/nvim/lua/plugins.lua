@@ -127,6 +127,12 @@ return packer.startup(function()
 			require("config/debug")
 		end,
 	})
+	use({
+		"theHamsta/nvim-dap-virtual-text",
+		config = function()
+			require("nvim-dap-virtual-text").setup()
+		end,
+	})
 
 	-- Autocompletion
 	use({ -- super fast autocomplete

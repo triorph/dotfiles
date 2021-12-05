@@ -87,5 +87,16 @@ vim.api.nvim_set_keymap(
 )
 vim.api.nvim_set_keymap("n", "<leader>dr", ':lua require("dap").repl.open()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>dl", ':lua require("dap").run_last()<CR>', { noremap = true, silent = true })
--- vim.api.nvim_set_keymap("n", "<leader>di", '<Cmd>lua require("dap.ui.variables").hover()<CR>', { silent = true })  -- doesn't work
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>dw",
+	':lua require("dapui").float_element("watches", {})<CR>',
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	"n",
+	"<leader>di",
+	'<cmd>lua require"dap.ui.variables".hover()<CR>',
+	{ noremap = true, silent = true }
+)
 vim.api.nvim_set_keymap("n", "<leader>dv", ':lua require("dapui").toggle()<CR>', { noremap = true, silent = true })
