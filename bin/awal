@@ -1,4 +1,4 @@
 #!/bin/bash
 rm -rf ~/.cache/wal/schemes
-wal -i ~/.wallpaper -n -s -t -q -b "#282a36" -e
+wal -i ~/.wallpaper -n -s -t -q -e --backend colorz
 cat ~/.cache/wal/sequences
