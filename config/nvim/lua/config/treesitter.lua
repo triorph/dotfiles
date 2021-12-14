@@ -1,19 +1,20 @@
 require("nvim-treesitter.configs").setup({
 	ensure_installed = {
 		{
+			"bash",
 			"c",
 			"cpp",
 			"dockerfile",
 			"html",
-			"typescript",
 			"javascript",
-			"python",
-			"lua",
-			"bash",
-			"rust",
 			"json",
 			"jsonc",
+			"lua",
+			"python",
+			"rust",
+			"typescript",
 			"yaml",
+			-- "markdown",
 		},
 	},
 	ignore_install = {}, -- List of parsers to ignore installing

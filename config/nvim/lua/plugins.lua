@@ -52,12 +52,12 @@ return packer.startup(function()
 			require("config/lsp")
 		end,
 	})
-	use({
+	--[[ use({
 		"ray-x/lsp_signature.nvim",
 		config = function()
 			require("lsp_signature").setup()
 		end,
-	})
+	}) ]]
 	use({ "kosayoda/nvim-lightbulb" }) -- puts lightbulbs when a code action is available
 	use({ -- takes care of showing LSP problems at the bottom of the screen
 		"folke/trouble.nvim",
@@ -212,7 +212,7 @@ return packer.startup(function()
 	use({
 		"folke/tokyonight.nvim",
 		requires = {
-			{ "Pocco81/Catppuccino.nvim", branch = "dev-remaster" },
+			"catppuccin/nvim",
 			"EdenEast/nightfox.nvim",
 			"morhetz/gruvbox",
 			"rose-pine/neovim",
