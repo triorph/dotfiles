@@ -76,7 +76,6 @@ ln -s ~/dotfiles/config/bat ~/.config
 ln -s ~/dotfiles/config/git/gitattributes ~/.gitattributes
 cp ~/dotfiles/config/git/gitconfig ~/.gitconfig
 ln -s ~/dotfiles/config/git/ignore ~/.config/git/ignore
-ln -s ~/dotfiles/config/kitty/dracula.conf ~/.config/kitty/dracula.conf
 ln -s ~/dotfiles/config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 ln -s ~/dotfiles/config/nvim ~/.config
 ln -s ~/dotfiles/config/tmux/tmux.conf ~/.tmux.conf
@@ -98,6 +97,10 @@ fi
 echo "source ~/.zshenv" > ~/.xprofile
 echo "Changing shell to zsh (may require password)"
 chsh -s /bin/zsh
+echo ""
+echo "Please set your kitty theme `kitty +kitten themes`"
+echo ""
+read varname
 echo ""
 echo "Step 4 complete."
 echo ""
