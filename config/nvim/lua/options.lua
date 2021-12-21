@@ -28,7 +28,7 @@ vim.g.pyindent_open_paren = vim.o.shiftwidth
 -- limit the autocomplete popup menu size (a pet peeve of mine is how often the autocomplete blocks what you actually want to see)
 vim.o.pumheight = 5
 
--- disable builtin vim plugins
+--[[ -- disable builtin vim plugins
 local disabled_built_ins = {
 	"netrw",
 	"netrwPlugin",
@@ -53,5 +53,5 @@ local disabled_built_ins = {
 for _, plugin in pairs(disabled_built_ins) do
 	vim.g["loaded_" .. plugin] = 1
 end
-
+ ]]
 vim.cmd([[ ab breakpiont breakpoint ]])

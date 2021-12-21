@@ -17,7 +17,7 @@ require("lualine").setup({
 			"filename",
 			{
 				"diagnostics",
-				sources = { "nvim_lsp" },
+				sources = { "nvim_diagnostic" },
 			},
 			{
 				lint_results,
