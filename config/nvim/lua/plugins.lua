@@ -218,6 +218,7 @@ return packer.startup(function()
 			"rose-pine/neovim",
 			"rockerBOO/boo-colorscheme-nvim",
 			"shaunsingh/moonlight.nvim",
+			"rebelot/kanagawa.nvim",
 		},
 
 		config = function()

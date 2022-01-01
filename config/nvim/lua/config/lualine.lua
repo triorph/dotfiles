@@ -9,6 +9,7 @@ require("lualine").setup({
 		-- theme = "catppuccino",
 		-- theme = "nightfox",
 		theme = "rose-pine",
+		-- theme = "kanagawa",
 	},
 	sections = {
 		lualine_a = { "mode" },

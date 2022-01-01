@@ -5,6 +5,7 @@
 -- rose-pine (with base, moon, dawn variants)
 -- gruvbox (with set background light or dark)
 -- boo
+-- kanagawa
 vim.g.tokyonight_style = "storm" -- options are storm, night and day
 vim.g.tokyonight_italic_functions = true
 vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
