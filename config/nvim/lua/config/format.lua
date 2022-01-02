@@ -3,7 +3,6 @@ require("null-ls").setup({
 		require("null-ls").builtins.formatting.stylua,
 		require("null-ls").builtins.formatting.black,
 		require("null-ls").builtins.formatting.prettierd,
-		require("null-ls").builtins.formatting.rustfmt,
 		require("null-ls").builtins.diagnostics.eslint_d,
 		require("null-ls").builtins.diagnostics.pylama.with({
 			extra_args = { "--linters=print,mccabe,pycodestyle,pyflakes", "--ignore=E501,W0612,W605,E231,E203" },
