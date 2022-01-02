@@ -17,7 +17,7 @@ require("bufferline").setup({
 		right_trunc_marker = "",
 		max_name_length = 18,
 		max_prefix_length = 15, -- prefix used when a buffer is de-duplicated
-		diagnostics = "nvim_lsp",
+		diagnostics = false,
 		diagnostics_indicator = function(count, level, diagnostics_dict, context)
 			local icon = level:match("error") and " " or " "
 			return " " .. icon .. count
