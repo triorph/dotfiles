@@ -1,51 +1,21 @@
-require("format").setup({
-	vim = {
-		{
-			cmd = { "luafmt -w replace" },
-			start_pattern = "^lua << EOF$",
-			end_pattern = "^EOF$",
-		},
+require("null-ls").setup({
+	sources = {
+		require("null-ls").builtins.formatting.stylua,
+		require("null-ls").builtins.formatting.black,
+		require("null-ls").builtins.formatting.prettierd,
+		require("null-ls").builtins.formatting.rustfmt,
+		require("null-ls").builtins.diagnostics.eslint_d,
+		require("null-ls").builtins.diagnostics.pylama.with({
+			extra_args = { "--linters=print,mccabe,pycodestyle,pyflakes", "--ignore=E501,W0612,W605,E231,E203" },
+		}),
+		require("null-ls").builtins.completion.spell,
 	},
-	python = {
-		{
-			cmd = { "black" },
-		},
-	},
-	lua = {
-		{
-			cmd = { "stylua" },
-		},
-	},
-	json = {
-		{ cmd = { "prettier -w --tab-width 4" } },
-	},
-	javascript = {
-		{ cmd = { "prettier -w", "./node_modules/.bin/eslint --fix" } },
-	},
-	typescript = {
-		{ cmd = { "prettier -w", "./node_modules/.bin/eslint --fix" } },
-	},
-	html = {
-		{ cmd = { "prettier -w" } },
-	},
-	css = { { cmd = { "prettier -w" } } },
-	markdown = {
-		{ cmd = { "prettier -w" } },
-		{
-			cmd = { "black" },
-			start_pattern = "^```python$",
-			end_pattern = "^```$",
-			target = "current",
-		},
-	},
-	rust = {
-		{ cmd = { "rustfmt" } },
-	},
+	on_attach = function(client)
+		if client.resolved_capabilities.document_formatting then
+			vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+		end
+	end,
 })
-vim.cmd([[augroup Format
-    autocmd!
-    autocmd BufWritePre * FormatWrite
-augroup END]])
 
 -- remove trailing whitespaces in vim as a BufWritePre
 vim.cmd([[

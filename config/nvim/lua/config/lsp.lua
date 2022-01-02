@@ -141,8 +141,3 @@ vim.api.nvim_set_keymap("n", "<leader>cc", "<cmd>lua require'lspsaga.diagnostic'
 vim.api.nvim_set_keymap("n", "[e", "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>", opts)
 vim.api.nvim_set_keymap("n", "]e", "<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>", opts)
 vim.cmd([[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]])
-
--- Neomake to use pylama (I know not technically LSP but kinda fits)
-vim.g.neomake_python_pylama_args = { "-i E501,E231,E203,W605,W0612 --linters print,mccabe,pycodestyle,pyflakes" }
-vim.g.neomake_python_enable_makers = { "pylama" }
-vim.cmd([[call neomake#configure#automake('nrwi', 500)]])

@@ -35,15 +35,6 @@ return packer.startup(function()
 		end,
 	})
 
-	-- Code formatting and linting
-	use({ "neomake/neomake" }) -- used for pylama (is this still working?)
-	use({ -- autoformat your code on save
-		"lukas-reineke/format.nvim",
-		config = function()
-			require("config/format")
-		end,
-	})
-
 	-- Language Server Processing(?)
 	use({ -- better LSP handling, and setup configs
 		"tami5/lspsaga.nvim",
@@ -52,18 +43,20 @@ return packer.startup(function()
 			require("config/lsp")
 		end,
 	})
-	--[[ use({
-		"ray-x/lsp_signature.nvim",
-		config = function()
-			require("lsp_signature").setup()
-		end,
-	}) ]]
 	use({ "kosayoda/nvim-lightbulb" }) -- puts lightbulbs when a code action is available
 	use({ -- takes care of showing LSP problems at the bottom of the screen
 		"folke/trouble.nvim",
 		requires = "kyazdani42/nvim-web-devicons",
 		config = function()
 			require("config/trouble")
+		end,
+	})
+
+	-- Code formatting and linting via the LSP
+	use({
+		"jose-elias-alvarez/null-ls.nvim",
+		config = function()
+			require("config/format")
 		end,
 	})
 
