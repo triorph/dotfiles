@@ -4,8 +4,9 @@ require("lualine").setup({
 		-- theme = "gruvbox",
 		-- theme = "catppuccino",
 		-- theme = "nightfox",
-		theme = "rose-pine",
+		-- theme = "rose-pine",
 		-- theme = "kanagawa",
+		theme = "auto",
 	},
 	sections = {
 		lualine_a = { "mode" },
