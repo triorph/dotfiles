@@ -6,12 +6,12 @@
 -- gruvbox (with set background light or dark)
 -- boo
 -- kanagawa
-vim.g.tokyonight_style = "storm" -- options are storm, night and day
+vim.g.tokyonight_style = "night" -- options are storm, night and day
 vim.g.tokyonight_italic_functions = true
 vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
 vim.g.tokyonight_italic_comments = true
 vim.g.rose_pine_variant = "base" -- options are  "base", "moon", and "dawn"
 
 -- Load the colorscheme
-vim.cmd([[set background=dark]])
-vim.cmd([[colorscheme rose-pine]])
+-- vim.cmd([[set background=dark]])
+vim.cmd([[colorscheme tokyonight]])

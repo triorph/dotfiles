@@ -83,6 +83,7 @@ ln -s ~/dotfiles/config/zsh/miek-aliases-etc ~/.oh-my-zsh/custom/plugins
 ln -s ~/dotfiles/config/zsh/p10k.zsh ~/.p10k.zsh
 ln -s ~/dotfiles/config/zsh/zshrc ~/.zshrc
 ln -s ~/dotfiles/config/zsh/zshenv ~/.zshenv
+ln -s ~/dotfiles/config/prettierrc.json ~/.prettierrc.json
 mkdir ~/.fonts
 cp -r ~/otherrepos/elenapandotfiles/misc/fonts/* ~/.fonts
 cp -r ~/dotfiles/fonts/* ~/.fonts
@@ -158,6 +159,9 @@ echo "Step 10: Install LSPs"
 echo ""
 npm install -g pyright
 npm install -g typescript-language-server
+npm install -g eslint_d
+npm install -g @fsouza/prettierd
+npm install -g prettier
 if [[ ! -f ~/.local/bin/rust-analyzer ]]; then
     curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
     chmod +x ~/.local/bin/rust-analyzer
