@@ -60,3 +60,4 @@ npairs.add_rules({
 })
 
 require("coq")
+vim.cmd([[COQnow --shut-up]])
