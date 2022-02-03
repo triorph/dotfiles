@@ -13,5 +13,5 @@ vim.g.tokyonight_italic_comments = true
 vim.g.rose_pine_variant = "base" -- options are  "base", "moon", and "dawn"
 
 -- Load the colorscheme
--- vim.cmd([[set background=dark]])
+-- vim.cmd([[set background=light]])
 vim.cmd([[colorscheme tokyonight]])

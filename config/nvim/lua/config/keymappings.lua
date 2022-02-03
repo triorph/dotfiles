@@ -10,8 +10,6 @@ key_mapper("i", "kk", "<ESC>")
 key_mapper("i", "jk", "<ESC>")
 -- CHADTree
 key_mapper("n", "<F3>", "<cmd>CHADopen<CR>")
--- split windows
-key_mapper("n", "<c-l>", ":lua require('focus').split_nicely()<CR>")
 -- telescope simple shortcuts
 key_mapper("n", "<leader>b", "<cmd>Telescope buffers<CR>")
 --[[ key_mapper("n", "<c-p>", "<cmd>Telescope find_files<CR>") -- lets try not using these 2 so I can keep their original usage available
@@ -26,7 +24,7 @@ vim.api.nvim_set_keymap("n", "<leader>/", "gcc", { silent = true })
 vim.api.nvim_set_keymap("v", "<leader>/", "gc", { silent = true })
 
 -- ZenMode
-key_mapper("n", "<F11>", "<cmd>ZenMode<CR>")
+key_mapper("n", "<leader>vz", "<cmd>ZenMode<CR>")
 
 --  Copy to clipboard
 verbal_key_mapper("v", "\\y", '"+y')
@@ -45,6 +43,10 @@ key_mapper("n", "<leader>vg", "<cmd>Glow<CR>")
 -- primagen move visual chunk
 key_mapper("v", "J", ":m '>+1<CR>gv=gv")
 key_mapper("v", "K", ":m '<-2<CR>gv=gv")
+
+-- MaskDask change same text again
+vim.api.nvim_set_keymap("n", "cg*", "*Ncgn", { silent = true })
+key_mapper("n", "g.", '/\\V\\C<C-r>"<CR>cgn<C-a><Esc>')
 
 -- Overwrite the packer commands to work without packer directly loaded (for lazy loading) (borrowed from nvchad)
 vim.cmd("silent! command PackerCompile lua require 'plugins' require('packer').compile()")
