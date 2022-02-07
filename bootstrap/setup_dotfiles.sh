@@ -62,6 +62,9 @@ mkdir ~/.local/bin
 mkdir ~/.config/kitty
 mkdir ~/.config/git
 ln -s ~/dotfiles/bin/newwp ~/.local/bin/newwp
+ln -s ~/dotfiles/bin/set_daymode.sh ~/.local/bin/set_daymode
+ln -s ~/dotfiles/bin/set_nightmode.sh ~/.local/bin/set_nightmode
+ln -s ~/dotfiles/bin/toggle_daynight.sh ~/.local/bin/toggle_daynight
 cp -r ~/otherrepos/elenapandotfiles/config/awesome ~/.config/awesome
 cp -r ~/otherrepos/elenapandotfiles/bin/* ~/.local/bin/
 rm ~/.config/awesome/keys.lua
