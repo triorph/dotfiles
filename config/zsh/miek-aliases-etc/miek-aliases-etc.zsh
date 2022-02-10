@@ -12,11 +12,12 @@ fi
 
 alias gca="git commit -v -a"
 alias gca!="git commit -v -a --amend --reset-author"
+alias gdh="git diff -r HEAD^"
 alias ls="lsd --group-dirs first"
 alias ll="lsd --group-dirs first --color=always -la | less"
 # alias fd="fdfind"
 unalias duf
-alias cat="bat"
+alias cat="bat --style plain --paging never"
 alias bs="bat --style plain"
 alias xgrep="fd -tf .py . | xargs grep --color=always --exclude-dir={.git,.svn.CVS} "
 alias emacs="te"
