@@ -77,15 +77,6 @@ return packer.startup(function()
 		end,
 	})
 
-	--filetree
-	use({
-		"ms-jpq/chadtree",
-		branch = "chad",
-		config = function()
-			require("config/chadtree")
-		end,
-	})
-
 	-- Fuzzy search/file find
 	use({ -- awesome plugin that lets you open a window to fuzzy-find things
 		"nvim-telescope/telescope.nvim",
