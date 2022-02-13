@@ -53,7 +53,8 @@ return packer.startup(function()
 
 	-- Code formatting and linting via the LSP
 	use({
-		"jose-elias-alvarez/null-ls.nvim",
+		"triorph/null-ls.nvim",
+		-- "jose-elias-alvarez/null-ls.nvim",
 		config = function()
 			require("config/format")
 		end,
