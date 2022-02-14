@@ -129,7 +129,12 @@ return packer.startup(function()
 	})
 
 	-- Comments
-	use("b3nj5m1n/kommentary") -- autocommenting of code
+	use({ -- autocommenting of code
+		"numToStr/Comment.nvim",
+		config = function()
+			require("Comment").setup()
+		end,
+	})
 
 	-- help
 	use({ -- after a pause, bring up a popup that shows what commands you have available after pressing a key
@@ -233,6 +238,7 @@ return packer.startup(function()
 			require("lightspeed").setup({})
 			vim.api.nvim_set_keymap("n", ";", "<Plug>Lightspeed_;_ft", { noremap = false, silent = true })
 			vim.api.nvim_set_keymap("n", ",", "<Plug>Lightspeed_,_ft", { noremap = false, silent = true })
+			vim.api.nvim_set_keymap("n", "s", "<Plug>Lightspeed_omni_s", { noremap = false, silent = true })
 		end,
 	})
 	use({ -- allow . repeat to work with more plugins (surround, lightspeed, etc.)

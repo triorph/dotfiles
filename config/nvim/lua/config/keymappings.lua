@@ -18,8 +18,7 @@ key_mapper("n", "<leader>p", "<cmd>Telescope neoclip<CR>")
 key_mapper("n", "<leader>tp", "<cmd>Telescope find_files<CR>")
 key_mapper("n", "<leader>tf", "<cmd>Telescope live_grep<CR>")
 key_mapper("n", "<leader>tb", "<cmd>Telescope buffers<CR>")
--- kommentary
-require("kommentary.config") -- .use_extended_mappings()
+-- commenting
 vim.api.nvim_set_keymap("n", "<leader>/", "gcc", { silent = true })
 vim.api.nvim_set_keymap("v", "<leader>/", "gc", { silent = true })
 
