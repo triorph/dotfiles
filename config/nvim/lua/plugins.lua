@@ -201,7 +201,7 @@ return packer.startup(function()
 	use({
 		"folke/tokyonight.nvim",
 		requires = {
-			"catppuccin/nvim",
+			{ "catppuccin/nvim", as = "catppuccin" },
 			"EdenEast/nightfox.nvim",
 			"morhetz/gruvbox",
 			"rose-pine/neovim",

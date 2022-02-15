@@ -47,6 +47,10 @@ key_mapper("v", "K", ":m '<-2<CR>gv=gv")
 vim.api.nvim_set_keymap("n", "cg*", "*Ncgn", { silent = true })
 key_mapper("n", "g.", '/\\V\\C<C-r>"<CR>cgn<C-a><Esc>')
 
+-- Undo F1 as I keep hitting it accidentally when trying to hit ESC for exiting insert mode
+key_mapper("n", "<F1>", "<Nop>")
+key_mapper("i", "<F1>", "<Nop>")
+
 -- Overwrite the packer commands to work without packer directly loaded (for lazy loading) (borrowed from nvchad)
 vim.cmd("silent! command PackerCompile lua require 'plugins' require('packer').compile()")
 vim.cmd("silent! command PackerInstall lua require 'plugins' require('packer').install()")
