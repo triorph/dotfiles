@@ -7,7 +7,7 @@ if [[ -n $SSH_CONNECTION ]]; then
    export XIVIEWER='icat'
 else
    export EDITOR='nvim'
-   export XIVIEWER='eog'
+   export XIVIEWER='icat'
 fi
 
 alias gca="git commit -v -a"
@@ -20,7 +20,6 @@ unalias duf
 alias cat="bat --style plain --paging never"
 alias bs="bat --style plain"
 alias xgrep="fd -tf .py . | xargs grep --color=always --exclude-dir={.git,.svn.CVS} "
-alias emacs="te"
 alias xgrepfull="fd -tf .py . | xargs grep --color=always -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} "
 alias edit="$EDITOR"
 alias diff="delta"
