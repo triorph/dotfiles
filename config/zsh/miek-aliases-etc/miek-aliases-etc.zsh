@@ -19,6 +19,7 @@ alias ll="lsd --group-dirs first --color=always -la | less"
 unalias duf
 alias cat="bat --style plain --paging never"
 alias bs="bat --style plain"
+alias emacs="emacs -nw"
 alias xgrep="fd -tf .py . | xargs grep --color=always --exclude-dir={.git,.svn.CVS} "
 alias xgrepfull="fd -tf .py . | xargs grep --color=always -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} "
 alias edit="$EDITOR"
