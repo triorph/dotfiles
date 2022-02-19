@@ -351,6 +351,17 @@ keys.globalkeys = gears.table.join(
 	}),
 
 	awful.key({ ctrlkey }, "Tab", function()
+		toggle_class("Emacs", "emacs", {
+			floating = true,
+			width = mouse.screen.workarea.width * 0.9,
+			height = mouse.screen.workarea.height * 0.9,
+			titlebars_enabled = false,
+		})
+	end, {
+		description = "Toggle emacs in and out (for org mode / org-roam)",
+		group = "launcher",
+	}),
+	awful.key({ superkey }, "o", function()
 		toggle_class("obsidian", "obsidian", {
 			floating = true,
 			width = mouse.screen.workarea.width * 0.9,
@@ -358,7 +369,7 @@ keys.globalkeys = gears.table.join(
 			titlebars_enabled = false,
 		})
 	end, {
-		description = "Toggle obsidian in and out",
+		description = "Toggle obsidian in and out (Legacy - hopefully replaced by org-roam)",
 		group = "launcher",
 	}),
 
@@ -774,8 +785,6 @@ keys.globalkeys = gears.table.join(
 		description = "show or hide wibar(s)",
 		group = "awesome",
 	}),
-	-- Emacs (O for org mode)
-	awful.key({ superkey }, "o", apps.org, { description = "emacs", group = "launcher" }),
 	-- Markdown input scratchpad (I for input)
 	-- For quickly typing markdown comments and pasting them in
 	-- the browser
