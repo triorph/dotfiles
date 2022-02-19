@@ -11,6 +11,7 @@ paru -S --needed \
     dmenu \
     docker \
     duf \
+    emacs \
     fd \
     feh \
     ffmpeg \

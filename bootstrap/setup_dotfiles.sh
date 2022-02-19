@@ -43,10 +43,11 @@ git clone https://github.com/davidde/git ~/.oh-my-zsh/custom/plugins/git
 git clone https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-tips
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
-git clone git@github.com:triorph/obsidian.git ~/obsidian
+git clone git@github.com:triorph/notes.git ~/org
 git clone git@its-git.canterbury.ac.nz:student-first/ucee.git ~/ucee
 git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
 cd ~/otherrepos/lua-language-server
 git submodule update --init --recursive
 cd ~/dotfiles
@@ -87,6 +88,7 @@ ln -s ~/dotfiles/config/zsh/p10k.zsh ~/.p10k.zsh
 ln -s ~/dotfiles/config/zsh/zshrc ~/.zshrc
 ln -s ~/dotfiles/config/zsh/zshenv ~/.zshenv
 ln -s ~/dotfiles/config/prettierrc.json ~/.prettierrc.json
+ln -s ~/dotfiles/config/doom ~/.doom.d
 mkdir ~/.fonts
 cp -r ~/otherrepos/elenapandotfiles/misc/fonts/* ~/.fonts
 cp -r ~/dotfiles/fonts/* ~/.fonts
@@ -209,6 +211,10 @@ sudo ./aws/install
 cd ~/
 echo "Step 12 complete"
 echo ""
+echo "Step 13: Manual step, since it takes so long. Please install doom emacs from the command line with `doom install`"
+echo "press enter to continue"
+read varname
+echo "Step 13 complete"
+echo ""
 echo "Setup complete! You may have to restart your window-manager / reboot for this to take effect"
 echo ""
-
