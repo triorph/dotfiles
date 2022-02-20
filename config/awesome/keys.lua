@@ -353,7 +353,7 @@ keys.globalkeys = gears.table.join(
 	awful.key({ ctrlkey }, "Tab", function()
 		toggle_class("Emacs", "emacs", {
 			floating = true,
-			width = mouse.screen.workarea.width * 0.9,
+			width = mouse.screen.workarea.width * 0.4,
 			height = mouse.screen.workarea.height * 0.9,
 			titlebars_enabled = false,
 		})
