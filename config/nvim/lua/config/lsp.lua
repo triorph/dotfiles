@@ -38,6 +38,12 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 end
 
+vim.diagnostic.config({
+	virtual_text = {
+		severity = { min = vim.diagnostic.severity.WARN },
+	},
+})
+
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local servers = { "pyright" }
