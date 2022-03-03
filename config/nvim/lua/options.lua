@@ -55,3 +55,5 @@ for _, plugin in pairs(disabled_built_ins) do
 end
  ]]
 vim.cmd([[ ab breakpiont breakpoint ]])
+vim.cmd([[ autocmd FileType typescript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab ]])
+vim.cmd([[ autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab ]])
