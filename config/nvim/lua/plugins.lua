@@ -216,6 +216,7 @@ return packer.startup(function()
 	-- Misc utils
 	use({ "npxbr/glow.nvim", run = "GlowInstall" }) -- markdown preview
 	use({ "tpope/vim-surround" }) -- the ability to edit surrounding things, like quotes or brackets
+	use({ "tpope/vim-sleuth" }) -- auto-detection of tabwidth etc..
 	use({ "wellle/targets.vim" }) -- more text objects, like "inside argument"
 	use({ "windwp/nvim-autopairs" }) --auto-close brackets etc..
 	use({ "ap/vim-css-color" }) -- highlight colours in css

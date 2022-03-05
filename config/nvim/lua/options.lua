@@ -28,32 +28,4 @@ vim.g.pyindent_open_paren = vim.o.shiftwidth
 -- limit the autocomplete popup menu size (a pet peeve of mine is how often the autocomplete blocks what you actually want to see)
 vim.o.pumheight = 5
 
---[[ -- disable builtin vim plugins
-local disabled_built_ins = {
-	"netrw",
-	"netrwPlugin",
-	"netrwSettings",
-	"netrwFileHandlers",
-	"gzip",
-	"zip",
-	"zipPlugin",
-	"tar",
-	"tarPlugin",
-	"getscript",
-	"getscriptPlugin",
-	"vimball",
-	"vimballPlugin",
-	"2html_plugin",
-	"logipat",
-	"rrhelper",
-	"spellfile_plugin",
-	"matchit",
-}
-
-for _, plugin in pairs(disabled_built_ins) do
-	vim.g["loaded_" .. plugin] = 1
-end
- ]]
 vim.cmd([[ ab breakpiont breakpoint ]])
-vim.cmd([[ autocmd FileType typescript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab ]])
-vim.cmd([[ autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab ]])
