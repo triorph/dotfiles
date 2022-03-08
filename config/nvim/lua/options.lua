@@ -29,3 +29,4 @@ vim.g.pyindent_open_paren = vim.o.shiftwidth
 vim.o.pumheight = 5
 
 vim.cmd([[ ab breakpiont breakpoint ]])
+vim.cmd([[ autocmd filetype python setlocal colorcolumn=89 ]])
