@@ -10,7 +10,7 @@ require("null-ls").setup({
 		require("null-ls").builtins.diagnostics.pylama.with({
 			extra_args = { "--linters=print,mccabe,pycodestyle,pyflakes", "--ignore=E501,W0612,W605,E231,E203" },
 		}),
-		require("null-ls").builtins.completion.spell,
+		-- require("null-ls").builtins.completion.spell,
 	},
 	on_attach = function(client)
 		if client.resolved_capabilities.document_formatting then
