@@ -35,6 +35,7 @@ echo ""
 echo "Step 3: Cloning repos from the web"
 echo ""
 mkdir ~/otherrepos
+mkdir ~/repos
 git clone https://github.com/elenapan/dotfiles.git ~/otherrepos/elenapandotfiles
 git clone https://github.com/lr-tech/rofi-themes-collection ~/otherrepos/rofi-themes-collection
 git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
@@ -44,6 +45,7 @@ git clone https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-t
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
 git clone git@github.com:triorph/notes.git ~/org
+git clone git@github.com:triorph/newwp.git ~/repos/newwp
 git clone git@its-git.canterbury.ac.nz:student-first/ucee.git ~/ucee
 git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
@@ -62,7 +64,8 @@ mkdir ~/.local
 mkdir ~/.local/bin
 mkdir ~/.config/kitty
 mkdir ~/.config/git
-ln -s ~/dotfiles/bin/newwp ~/.local/bin/newwp
+cd ~/repos/newwp
+cargo install --path .
 ln -s ~/dotfiles/bin/set_daymode.sh ~/.local/bin/set_daymode
 ln -s ~/dotfiles/bin/set_nightmode.sh ~/.local/bin/set_nightmode
 ln -s ~/dotfiles/bin/toggle_daynight.sh ~/.local/bin/toggle_daynight
