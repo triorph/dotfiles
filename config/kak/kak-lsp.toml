@@ -3,3 +3,8 @@ filetypes = ["python"]
 roots = ["requirements.txt", "setup.py", ".git", ".hg"]
 command = "pyright-langserver"
 args = ["--stdio"]
+
+[language.rust]
+filetypes = ["rust"]
+roots = ["Cargo.toml"]
+command = "rust-analyzer"

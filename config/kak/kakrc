@@ -2,7 +2,7 @@ eval %sh{kak-lsp --kakoune -vvv -c $HOME/.config/kak/kak-lsp.toml -s $kak_sessio
 hook global WinSetOption filetype=(rust|python|go|javascript|typescript|c|cpp) %{
     lsp-enable-window
     set global lsp_cmd "kak-lsp -s %val{session} -vvv --log /tmp/kak-lsp.log"
-	lsp-autohover-enable
+    lsp-auto-hover-enable
 }
 hook global InsertChar \t %{
     exec -draft h@
