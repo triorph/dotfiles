@@ -9,7 +9,6 @@ end
 -- to still try:
 -- ahmedkhalf/project.nvim  (project management)
 -- rmagatti/goto-preview  (popups of definition previews etc..)
--- nvim-treesitter/nvim-treesitter-textobjects  (defined text objects to work on treesitter info)
 -- famiu/feline.nvim (alternative to lualine)
 -- RRethy/nvim-treesitter-textsubjects (expand your selection out or in via treesitter block)
 -- echasnovski/mini.nvim#minisurround (lua alternative to vim-surround that supports treesitter)
@@ -146,6 +145,7 @@ return packer.startup(function()
 	-- Highlight code
 	use({ -- treesitter - better highlighting of variables
 		"nvim-treesitter/nvim-treesitter",
+		requires = { "nvim-treesitter/nvim-treesitter-textobjects" },
 		run = function()
 			vim.cmd([[:TSUpdate]])
 		end,
