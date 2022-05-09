@@ -4,7 +4,15 @@ local coq = require("coq")
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
+local group = vim.api.nvim_create_augroup("DocumentFormatting", { clear = true })
 local on_attach = function(client, bufnr)
+	if client.resolved_capabilities.document_formatting then
+		vim.api.nvim_create_autocmd(
+			"BufWritePre",
+			{ command = "lua vim.lsp.buf.formatting_sync(nil, 5000)", group = "DocumentFormatting", buffer = bufnr }
+		)
+	end
+
 	local function buf_set_keymap(...)
 		vim.api.nvim_buf_set_keymap(bufnr, ...)
 	end

@@ -1,3 +1,4 @@
+local group = vim.api.nvim_create_augroup("DocumentFormatting", { clear = true })
 require("null-ls").setup({
 	sources = {
 		require("null-ls").builtins.formatting.stylua,
@@ -14,12 +15,13 @@ require("null-ls").setup({
 	},
 	on_attach = function(client)
 		if client.resolved_capabilities.document_formatting then
-			vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 5000)")
+			vim.api.nvim_create_autocmd(
+				"BufWritePre",
+				{ command = "lua vim.lsp.buf.formatting_sync(nil, 5000)", group = "DocumentFormatting" }
+			)
 		end
 	end,
 })
 
 -- remove trailing whitespaces in vim as a BufWritePre
-vim.cmd([[
-    autocmd BufWritePre * :%s/\s\+$//e
-    ]])
+vim.api.nvim_create_autocmd("BufWritePre", { command = ":%s/\\s\\+$//e", group = "DocumentFormatting" })
