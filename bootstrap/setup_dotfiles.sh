@@ -11,12 +11,9 @@
 # - load fonts
 # - Add user to groups
 # - setup nvm
-# - setup ucee tool
 # - setup neovim (manual step)
 # - set rofi theme (manual step)
 # - Install LSPs
-# - clone studentfirst aws repo (manual step)
-# - Install AWS CLI, pulumi
 echo ""
 echo "This script should be run in a way that you can use multiple terminals at once."
 echo "Either in a Window Manager, or with access to terminal multiplexing with something like tmux."
@@ -46,7 +43,6 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/p
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
 git clone git@github.com:triorph/notes.git ~/org
 git clone git@github.com:triorph/newwp.git ~/repos/newwp
-git clone git@its-git.canterbury.ac.nz:student-first/ucee.git ~/ucee
 git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
