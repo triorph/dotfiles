@@ -17,14 +17,15 @@ function toggle_window(opts, key, name)
 		else
 			app = hs.application.open(name, 2.0, true)
 		end
-		-- app:mainWindow():moveToUnit("[100,100,0,0]")
-		-- app:mainWindow().setShadows(false)
+		app:mainWindow():moveToUnit("[100,100,0,0]")
+		app:mainWindow().setShadows(false)
 	end)
 end
 
 toggle_window({ "ctrl" }, "`", "kitty")
 -- toggle_window({"ctrl"}, "tab", "emacs")
 toggle_window({ "ctrl" }, "tab", "Google Chrome")
+toggle_window({ "ctrl", "alt"}, "s", "Spotify")
 
 hs.loadSpoon("ReloadConfiguration")
 spoon.ReloadConfiguration:start()
