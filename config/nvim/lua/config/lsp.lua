@@ -1,6 +1,5 @@
 require("lspsaga").init_lsp_saga()
 local nvim_lsp = require("lspconfig")
-local coq = require("coq")
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -56,26 +55,26 @@ vim.diagnostic.config({
 -- map buffer local keybindings when the language server attaches
 local servers = { "pyright" }
 for _, lsp in ipairs(servers) do
-	nvim_lsp[lsp].setup(coq.lsp_ensure_capabilities({
+	nvim_lsp[lsp].setup({
 		on_attach = on_attach,
 		flags = {
 			debounce_text_changes = 150,
 		},
-	}))
+	})
 end
-nvim_lsp.tsserver.setup(coq.lsp_ensure_capabilities({
+nvim_lsp.tsserver.setup({
 	on_attach = function(client, bufnr)
 		client.resolved_capabilities.document_formatting = false
 		client.resolved_capabilities.document_range_formatting = false
 		on_attach(client, bufnr)
 	end,
 	flags = { debounce_text_changes = 150 },
-}))
+})
 local sumneko_root_path = vim.env.HOME .. "/.local/share/lua-language-server"
 local system_name = "Linux"
 local runtime_path = vim.split(package.path, ";")
 local sumneko_binary = sumneko_root_path .. "/bin/" .. system_name .. "/lua-language-server"
-nvim_lsp.sumneko_lua.setup(coq.lsp_ensure_capabilities({
+nvim_lsp.sumneko_lua.setup({
 	on_attach = on_attach,
 	flags = {
 		debounce_text_changes = 150,
@@ -105,9 +104,9 @@ nvim_lsp.sumneko_lua.setup(coq.lsp_ensure_capabilities({
 		},
 	},
 	cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
-}))
+})
 
-nvim_lsp.rust_analyzer.setup(coq.lsp_ensure_capabilities({
+nvim_lsp.rust_analyzer.setup({
 	on_attach = on_attach,
 	flags = {
 		debounce_text_changes = 150,
@@ -132,7 +131,7 @@ nvim_lsp.rust_analyzer.setup(coq.lsp_ensure_capabilities({
 			},
 		},
 	},
-}))
+})
 
 -- LSPSaga options
 -------

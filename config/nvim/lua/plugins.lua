@@ -13,6 +13,7 @@ end
 -- RRethy/nvim-treesitter-textsubjects (expand your selection out or in via treesitter block)
 -- echasnovski/mini.nvim#minisurround (lua alternative to vim-surround that supports treesitter)
 -- gelguy/wilder.nvim nice menu for ex-commands
+-- simrat39/rust-tools.nvim (additional support for rust-analyzer functions that aren't technically part of LSP spec)
 local use = packer.use
 return packer.startup(function()
 	-- Packer can manage itself
@@ -116,15 +117,37 @@ return packer.startup(function()
 		end,
 	})
 
-	-- Autocompletion
-	use({ -- super fast autocomplete
-		"ms-jpq/coq_nvim",
-		branch = "coq",
-		requires = { { "ms-jpq/coq.artifacts", branch = "artifacts" } },
+	-- Snippets
+	use({
+		"L3MON4D3/LuaSnip",
 		config = function()
-			require("config/autocomplete")
+			require("config/luasnip")
 		end,
 	})
+
+	-- Autocompletion
+	use({ -- more of the "de facto" choice. Trying out.
+		"hrsh7th/nvim-cmp",
+		requires = {
+			{ "onsails/lspkind.nvim" },
+			{ "hrsh7th/cmp-nvim-lua" },
+			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "hrsh7th/cmp-buffer" },
+			{ "saadparwaiz1/cmp_luasnip" },
+			{ "L3MON4D3/LuaSnip" },
+		},
+		config = function()
+			require("config/cmp")
+		end,
+	})
+	-- use({ -- super fast autocomplete
+	-- 	"ms-jpq/coq_nvim",
+	-- 	branch = "coq",
+	-- 	requires = { { "ms-jpq/coq.artifacts", branch = "artifacts" } },
+	-- 	config = function()
+	-- 		require("config/autocomplete")
+	-- 	end,
+	-- })
 
 	-- Comments
 	use({ -- autocommenting of code
