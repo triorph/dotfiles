@@ -5,6 +5,7 @@ local nvim_lsp = require("lspconfig")
 -- after the language server attaches to the current buffer
 local group = vim.api.nvim_create_augroup("DocumentFormatting", { clear = true })
 local on_attach = function(client, bufnr)
+	vim.api.nvim_clear_autocmds({ group = group, buffer = bufnr })
 	if client.resolved_capabilities.document_formatting then
 		vim.api.nvim_create_autocmd(
 			"BufWritePre",
@@ -45,6 +46,12 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 end
 
+local on_attach_no_format = function(client, bufnr)
+	client.resolved_capabilities.document_formatting = false
+	client.resolved_capabilities.document_range_formatting = false
+	on_attach(client, bufnr)
+end
+
 vim.diagnostic.config({
 	virtual_text = {
 		severity = { min = vim.diagnostic.severity.WARN },
@@ -63,19 +70,15 @@ for _, lsp in ipairs(servers) do
 	})
 end
 nvim_lsp.tsserver.setup({
-	on_attach = function(client, bufnr)
-		client.resolved_capabilities.document_formatting = false
-		client.resolved_capabilities.document_range_formatting = false
-		on_attach(client, bufnr)
-	end,
+	on_attach = on_attach_no_format,
 	flags = { debounce_text_changes = 150 },
 })
 local sumneko_root_path = vim.env.HOME .. "/.local/share/lua-language-server"
-local system_name = "Linux"
+-- local system_name = "Linux"
 local runtime_path = vim.split(package.path, ";")
-local sumneko_binary = sumneko_root_path .. "/bin/" .. system_name .. "/lua-language-server"
+local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
 nvim_lsp.sumneko_lua.setup({
-	on_attach = on_attach,
+	on_attach = on_attach_no_format,
 	flags = {
 		debounce_text_changes = 150,
 	},

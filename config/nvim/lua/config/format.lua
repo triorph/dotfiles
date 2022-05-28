@@ -14,18 +14,18 @@ require("null-ls").setup({
 		-- require("null-ls").builtins.completion.spell,
 	},
 	on_attach = function(client, bufnr)
-        if client.supports_method("textDocument/formatting") then
-            vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-            vim.api.nvim_create_autocmd("BufWritePre", {
-                group = group,
-                buffer = bufnr,
-                callback = function()
-                    -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
-                    vim.lsp.buf.formatting_sync(nil, 5000)
-                end,
-            })
-        end
-    end,
+		if client.supports_method("textDocument/formatting") then
+			vim.api.nvim_clear_autocmds({ group = group, buffer = bufnr })
+			vim.api.nvim_create_autocmd("BufWritePre", {
+				group = group,
+				buffer = bufnr,
+				callback = function()
+					-- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
+					vim.lsp.buf.formatting_sync(nil, 5000)
+				end,
+			})
+		end
+	end,
 })
 
 -- remove trailing whitespaces in vim as a BufWritePre
