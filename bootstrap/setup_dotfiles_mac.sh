@@ -77,14 +77,8 @@ ln -s ~/dotfiles/config/zsh/zshenv ~/.zshenv
 ln -s ~/dotfiles/config/prettierrc.json ~/.prettierrc.json
 ln -s ~/dotfiles/config/doom ~/.doom.d
 ln -s ~/dotfiles/config/hammerspoon ~/.config/hammerspoon
-mkdir ~/.fonts
-cp -r ~/dotfiles/fonts/* ~/.fonts
 mkdir ~/.config/picom
 touch ~/.config/picom/picom.conf
-if [[ ! -f ~/.local/bin/nvim ]]; then
-    curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage > ~/.local/bin/nvim
-    chmod a+x ~/.local/bin/nvim
-fi
 echo "source ~/.zshenv" > ~/.xprofile
 echo "Changing shell to zsh (may require password)"
 chsh -s /bin/zsh
@@ -95,12 +89,6 @@ read varname
 echo ""
 echo "Step 4 complete."
 echo ""
-echo "Step 5: load fonts"
-echo ""
-fc-cache -v
-echo ""
-echo "Step 5 complete"
-echo ""
 echo "Step 6: Add user to groups (requires sudo access)"
 echo ""
 sudo usermod -aG docker $USER
@@ -110,7 +98,6 @@ echo ""
 echo "Step 6 complete"
 echo ""
 echo "Step 7: Setup nvm"
-sh /usr/share/nvm/init-nvm.sh
 . ~/.nvm/nvm.sh
 nvm install --lts
 echo ""
@@ -134,10 +121,6 @@ npm install -g typescript-language-server
 npm install -g eslint_d
 npm install -g @fsouza/prettierd
 npm install -g prettier
-if [[ ! -f ~/.local/bin/rust-analyzer ]]; then
-    curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-x86_64-unknown-linux-gnu.gz | gunzip -c - > ~/.local/bin/rust-analyzer
-    chmod +x ~/.local/bin/rust-analyzer
-fi
 echo "Manual step: Install the sumneko_lua LSP and symlink to correct place"
 echo ""
 echo "cd ~/otherrepos/lua-language-server"
