@@ -33,7 +33,7 @@ if [[ $EUID == 0 ]]; then
      plugins=(
       git
       bgnotify
-      common-aliases
+      # common-aliases
       colored-man-pages
       command-not-found
       thefuck
