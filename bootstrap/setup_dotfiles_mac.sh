@@ -67,7 +67,9 @@ ln -s ~/dotfiles/config/bat ~/.config
 ln -s ~/dotfiles/config/git/gitattributes ~/.gitattributes
 cp ~/dotfiles/config/git/gitconfig ~/.gitconfig
 ln -s ~/dotfiles/config/git/ignore ~/.config/git/ignore
-ln -s ~/dotfiles/config/kitty/kitty.conf ~/.config/kitty/kitty.conf
+ln -s ~/dotfiles/config/kitty/kitty-mac.conf ~/.config/kitty/kitty.conf
+ln -s ~/dotfiles/config/kitty/kitty-common.conf ~/.config/kitty/kitty-common.conf
+ln -s ~/dotfiles/config/kitty/font-mac.conf ~/.config/kitty/kitty-mac.conf
 ln -s ~/dotfiles/config/nvim ~/.config
 ln -s ~/dotfiles/config/tmux/tmux.conf ~/.tmux.conf
 ln -s ~/dotfiles/config/zsh/miek-aliases-etc ~/.oh-my-zsh/custom/plugins

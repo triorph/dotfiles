@@ -74,7 +74,6 @@ nvim_lsp.tsserver.setup({
 	flags = { debounce_text_changes = 150 },
 })
 local sumneko_root_path = vim.env.HOME .. "/.local/share/lua-language-server"
--- local system_name = "Linux"
 local runtime_path = vim.split(package.path, ";")
 local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
 nvim_lsp.sumneko_lua.setup({
