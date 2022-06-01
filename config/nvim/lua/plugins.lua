@@ -42,6 +42,12 @@ return packer.startup(function()
 			require("config/lsp")
 		end,
 	})
+	use({
+		"mfussenegger/nvim-jdtls",
+		config = function()
+			require("config/jdtls")
+		end,
+	})
 	use({ "kosayoda/nvim-lightbulb" }) -- puts lightbulbs when a code action is available
 	use({ -- takes care of showing LSP problems at the bottom of the screen
 		"folke/trouble.nvim",

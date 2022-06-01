@@ -6,6 +6,7 @@ require("nvim-treesitter.configs").setup({
 			"cpp",
 			"dockerfile",
 			"html",
+			"java",
 			"javascript",
 			"json",
 			"jsonc",
