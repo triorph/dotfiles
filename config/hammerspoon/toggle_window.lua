@@ -10,12 +10,6 @@ local toggle_window = function(opts, key, name, unit)
 				app = hs.application.open(name, 2.0, true)
 			elseif app:isFrontmost() then
 				app:hide()
-			elseif app:isHidden() then
-				if not (app:mainWindow():screen() == screen) then
-					app:mainWindow():moveToScreen(screen)
-				end
-
-				app:activate()
 			else
 				app:activate()
 			end
