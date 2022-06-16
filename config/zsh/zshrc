@@ -81,3 +81,5 @@ alias luamake=/home/mfw56/.local/share/lua-language-server/3rd/luamake/luamake
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+[[ ! -f ~/.zsh_profile ]] || source ~/.zsh_profile

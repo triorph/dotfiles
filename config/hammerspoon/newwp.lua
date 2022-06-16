@@ -17,15 +17,28 @@ local call_url = function(page)
 	local json = hs.json.decode(body)
 	return json
 end
+local check_file_exists = function(filepath)
+	local this_file, error = io.open(filepath, "r")
+	if this_file then
+		this_file:close()
+		return true
+	else
+		return false
+	end
+end
 local download_from_url = function(url, filepath)
 	print("Writing url ", url, "to file", filepath)
-	local _status, body, _headers = hs.http.get(url)
-	local this_file, error = io.open(filepath, "w")
-	if this_file then
-		this_file:write(body)
-		this_file:close()
+	if not check_file_exists(filepath) then
+		local _status, body, _headers = hs.http.get(url)
+		local this_file, error = io.open(filepath, "w")
+		if this_file then
+			this_file:write(body)
+			this_file:close()
+		else
+			print("error opening file", error)
+		end
 	else
-		print("error opening file", error)
+		print("Skipping download as file already exists on disk")
 	end
 end
 
@@ -45,11 +58,11 @@ function newwp(index, screen)
 	end
 	local page = math.floor(index / per_page)
 	local new_index = index % per_page + 1
-	print("Calling page", page)
 	local data = call_url(page).data
 	local desktop_url = data[new_index].path
-	download_from_url(desktop_url, os.getenv("HOME") .. "/.wallpapers/" .. index)
-	screen:desktopImageURL("file://" .. os.getenv("HOME") .. "/.wallpapers/" .. index)
+	local filepath = os.getenv("HOME") .. "/.wallpapers/" .. desktop_url:match("^.+/(.+)$")
+	download_from_url(desktop_url, filepath)
+	screen:desktopImageURL("file://" .. filepath)
 end
 
 hs.hotkey.bind({ "ctrl", "cmd", "alt" }, "w", newwp)
