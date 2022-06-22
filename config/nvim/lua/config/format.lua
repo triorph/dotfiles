@@ -5,6 +5,7 @@ require("null-ls").setup({
 		require("null-ls").builtins.formatting.isort.with({
 			extra_args = { "--profile=black" },
 		}),
+		-- require("null-ls").builtins.formatting.google_java_format,
 		require("null-ls").builtins.formatting.black,
 		require("null-ls").builtins.formatting.prettier,
 		require("null-ls").builtins.diagnostics.eslint_d,

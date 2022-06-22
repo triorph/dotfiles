@@ -1,7 +1,9 @@
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_333.jdk/Contents/Home"
+# export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-18.0.1.1.jdk/Contents/Home"
+export CPPFLAGS="-I$JAVA_HOME/include"
+export ATLAS_MVN="/opt/homebrew/bin/mvn"
+
 typeset -U PATH path
-path=("$HOME/.local/bin" "$HOME/.local/share/gem/ruby/3.0.0/bin:" "$HOME/.emacs.d/bin" "$HOME/.cargo/bin" "/opt/homebrew/opt/openjdk@11/bin" "$path[@]")
+path=("$HOME/.local/bin" "$HOME/.local/share/gem/ruby/3.0.0/bin" "$HOME/.emacs.d/bin" "$HOME/.cargo/bin" "$JAVA_HOME/bin" "$path[@]")
 export PATH
 
-typeset -U CPPFLAGS cppflags
-cppflags=("-I/opt/homebrew/opt/openjdk@11/include" "$cppflags[@]")
-export CPPFLAGS

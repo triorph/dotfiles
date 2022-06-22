@@ -5,3 +5,5 @@ workspace
 .factorypath
 .project
 .settings
+.idea
+*.iml
