@@ -19,9 +19,9 @@ local checkstyle = h.make_builtin({
 			u.get_root() .. "/checkstyle-rules.xml",
 			"$FILENAME",
 		},
-		to_stdin = true,
+		to_stdin = false,
 		from_stderr = false,
-		to_temp_file = true,
+		to_temp_file = false,
 		format = "line",
 		on_output = h.diagnostics.from_patterns({
 			{
