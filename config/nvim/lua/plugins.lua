@@ -156,6 +156,20 @@ return packer.startup(function()
 	-- 	end,
 	-- })
 
+	-- Better folds
+	use({
+		"kevinhwang91/nvim-ufo",
+		requires = "kevinhwang91/promise-async",
+		config = function()
+			vim.wo.foldcolumn = "1"
+			vim.wo.foldlevel = 99 -- feel free to decrease the value
+			vim.wo.foldenable = true
+
+
+			require("ufo").setup()
+		end,
+	})
+
 	-- Comments
 	use({ -- autocommenting of code
 		"numToStr/Comment.nvim",

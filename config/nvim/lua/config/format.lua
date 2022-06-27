@@ -23,6 +23,9 @@ local checkstyle = h.make_builtin({
 		from_stderr = false,
 		to_temp_file = false,
 		format = "line",
+		check_exit_code = function(code)
+			return code < 1
+		end,
 		on_output = h.diagnostics.from_patterns({
 			{
 				pattern = [[.(%w+).*:(%d+):(%d+): (.+)]],
