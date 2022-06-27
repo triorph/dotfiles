@@ -37,15 +37,9 @@ return packer.startup(function()
 	-- Language Server Processing(?)
 	use({ -- better LSP handling, and setup configs
 		"tami5/lspsaga.nvim",
-		requires = { "neovim/nvim-lspconfig" },
+		requires = { "neovim/nvim-lspconfig", "mfussenegger/nvim-jdtls" },
 		config = function()
 			require("config/lsp")
-		end,
-	})
-	use({
-		"mfussenegger/nvim-jdtls",
-		config = function()
-			require("config/jdtls")
 		end,
 	})
 	use({ "kosayoda/nvim-lightbulb" }) -- puts lightbulbs when a code action is available
@@ -164,7 +158,6 @@ return packer.startup(function()
 			vim.wo.foldcolumn = "1"
 			vim.wo.foldlevel = 99 -- feel free to decrease the value
 			vim.wo.foldenable = true
-
 
 			require("ufo").setup()
 		end,
