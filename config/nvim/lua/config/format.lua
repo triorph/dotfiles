@@ -1,5 +1,40 @@
+local h = require("null-ls.helpers")
+local methods = require("null-ls.methods")
+local log = require("null-ls.logger")
+local u = require("null-ls.utils")
+
+local DIAGNOSTICS = methods.internal.DIAGNOSTICS
+
+local checkstyle = h.make_builtin({
+	name = "checkstyle",
+	meta = {
+		description = "Generic code quality linter",
+	},
+	method = DIAGNOSTICS,
+	filetypes = { "java" },
+	generator_opts = {
+		command = "checkstyle",
+		args = {
+			"-c",
+			u.get_root() .. "/checkstyle-rules.xml",
+			"$FILENAME",
+		},
+		to_stdin = true,
+		from_stderr = false,
+		to_temp_file = true,
+		format = "line",
+		on_output = h.diagnostics.from_patterns({
+			{
+				pattern = [[.(%w+).*:(%d+):(%d+): (.+)]],
+				groups = { "code", "row", "col", "message" },
+			},
+		}),
+	},
+	factory = h.generator_factory,
+})
 local group = vim.api.nvim_create_augroup("DocumentFormatting", { clear = true })
 require("null-ls").setup({
+	debug = true,
 	sources = {
 		require("null-ls").builtins.formatting.stylua,
 		require("null-ls").builtins.formatting.isort.with({
@@ -12,6 +47,7 @@ require("null-ls").setup({
 		require("null-ls").builtins.diagnostics.pylama.with({
 			extra_args = { "--linters=print,mccabe,pycodestyle,pyflakes", "--ignore=E501,W0612,W605,E231,E203" },
 		}),
+		checkstyle,
 		-- require("null-ls").builtins.completion.spell,
 	},
 	on_attach = function(client, bufnr)
