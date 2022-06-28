@@ -38,9 +38,10 @@ local on_attach = function(client, bufnr)
 	local opts = { noremap = true, silent = true }
 
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
-	buf_nmap_cmd("gd", "lua vim.lsp.buf.definition()")
+	buf_nmap_cmd("gd", "Telescope lsp_definitions")
 	buf_nmap_cmd("gR", "Telescope lsp_references")
-	buf_nmap_cmd("gi", "lua vim.lsp.buf.iplementation()")
+	buf_nmap_cmd("gT", "Telescope lsp_type_definitions")
+	buf_nmap_cmd("gi", "Telescope lsp_implementations")
 	buf_nmap_cmd("<C-k>", "lua vim.lsp.buf.signature_help()")
 	buf_nmap_cmd("gr", "lua vim.lsp.buf.rename()")
 	buf_nmap_cmd("<leader>tl", "lua vim.diagnostic.setloclist({open=false})<cr><cmd>Telescope loclist")
