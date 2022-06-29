@@ -36,7 +36,7 @@ return packer.startup(function()
 
 	-- Language Server Processing(?)
 	use({ -- better LSP handling, and setup configs
-		"tami5/lspsaga.nvim",
+		"glepnir/lspsaga.nvim",
 		requires = { "neovim/nvim-lspconfig", "mfussenegger/nvim-jdtls" },
 		config = function()
 			require("config/lsp")
@@ -182,7 +182,7 @@ return packer.startup(function()
 	-- Highlight code
 	use({ -- treesitter - better highlighting of variables
 		"nvim-treesitter/nvim-treesitter",
-		requires = { "nvim-treesitter/nvim-treesitter-textobjects" },
+		requires = { "nvim-treesitter/nvim-treesitter-textobjects", "nvim-treesitter/nvim-treesitter-context" },
 		run = function()
 			vim.cmd([[:TSUpdate]])
 		end,
