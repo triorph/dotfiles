@@ -46,7 +46,7 @@ require("null-ls").setup({
 		-- require("null-ls").builtins.formatting.google_java_format,
 		require("null-ls").builtins.formatting.black,
 		require("null-ls").builtins.formatting.prettier,
-		require("null-ls").builtins.diagnostics.eslint_d,
+		require("null-ls").builtins.diagnostics.eslint,
 		require("null-ls").builtins.diagnostics.pylama.with({
 			extra_args = { "--linters=print,mccabe,pycodestyle,pyflakes", "--ignore=E501,W0612,W605,E231,E203" },
 		}),
