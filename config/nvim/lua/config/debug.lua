@@ -63,10 +63,10 @@ dap.configurations.python = {
 	},
 }
 
-vim.api.nvim_set_keymap("n", "<F10>", ':lua require("dap").step_over()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<F11>", ':lua require("dap").step_into()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<F12>", ':lua require("dap").step_out()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<F5>", ':lua require("dap").continue()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>dso", ':lua require("dap").step_over()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>dsi", ':lua require("dap").step_into()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>dsO", ':lua require("dap").step_out()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>dc", ':lua require("dap").continue()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap(
 	"n",
 	"<leader>db",

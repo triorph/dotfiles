@@ -85,6 +85,9 @@ return packer.startup(function()
 		config = function()
 			require("telescope").load_extension("mapper")
 			require("telescope").load_extension("neoclip")
+			require("telescope").setup({
+				{ defaults = {border={}}}
+			})
 		end,
 	})
 	use({ -- see your keymappings in telescope

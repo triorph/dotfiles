@@ -158,6 +158,26 @@ nvim_lsp.rust_analyzer.setup({
 
 vim.cmd([[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]])
 
+local jdtls_on_attach = function(client, bufnr)
+	local function buf_set_keymap(...)
+		vim.api.nvim_buf_set_keymap(bufnr, ...)
+	end
+
+	local function buf_nmap_cmd(keymap, command)
+		local opts = { noremap = true, silent = true }
+		buf_set_keymap("n", keymap, "<cmd>" .. command .. "<CR>", opts)
+	end
+	require("jdtls").setup_dap({ hotcodereplace = "auto" })
+	buf_nmap_cmd("<leader>djm", "lua require('jdtls').test_nearest_method()")
+	buf_nmap_cmd("<leader>djc", "lua require('jdtls').test_class()")
+	on_attach(client, bufnr)
+end
+
+local jdtls_bundles = {
+	vim.fn.glob(vim.env.HOME .. "/otherrepos/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar")
+};
+vim.list_extend(jdtls_bundles, vim.split(vim.fn.glob(vim.env.HOME .. "/otherrepos/vscode-java-test/server/*.jar"), "\n"))
+
 local setup_jdtls = function()
 	-- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
 	local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
@@ -190,9 +210,9 @@ local setup_jdtls = function()
 		--
 		-- If you don't plan on using the debugger or other eclipse.jdt.ls plugins you can remove this
 		init_options = {
-			bundles = {},
+			bundles = jdtls_bundles,
 		},
-		on_attach = on_attach,
+		on_attach = jdtls_on_attach,
 		capabilities = capabilities,
 	}
 	-- This starts a new client & server,
