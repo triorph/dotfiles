@@ -1,5 +1,5 @@
 local dap = require("dap")
-local dapui = require("dapui").setup()
+require("dapui").setup()
 dap.adapters.lldb = {
 	type = "executable",
 	command = "/usr/bin/lldb-vscode", -- adjust as needed
@@ -63,40 +63,19 @@ dap.configurations.python = {
 	},
 }
 
-vim.api.nvim_set_keymap("n", "<leader>dso", ':lua require("dap").step_over()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>dsi", ':lua require("dap").step_into()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>dsO", ':lua require("dap").step_out()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>dc", ':lua require("dap").continue()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>db",
-	':lua require("dap").toggle_breakpoint()<CR>',
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>dB",
-	':lua require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))<CR>',
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>dlp",
-	":lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>",
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap("n", "<leader>dr", ':lua require("dap").repl.open()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>dl", ':lua require("dap").run_last()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>dw",
-	':lua require("dapui").float_element("watches", {})<CR>',
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>di",
-	'<cmd>lua require"dap.ui.variables".hover()<CR>',
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap("n", "<leader>dv", ':lua require("dapui").toggle()<CR>', { noremap = true, silent = true })
+local nnoremap_func = function(keys, call)
+	vim.api.nvim_set_keymap("n", keys, ":lua " .. call .. "<CR>", { noremap = true, silent = true })
+end
+
+nnoremap_func("<leader>dso", 'require("dap").step_over()')
+nnoremap_func("<leader>dsi", 'require("dap").step_into()')
+nnoremap_func("<leader>dsO", 'require("dap").step_out()')
+nnoremap_func("<leader>dc", 'require("dap").continue()')
+nnoremap_func("<leader>db", 'require("dap").toggle_breakpoint()')
+nnoremap_func("<leader>dB", 'require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))')
+nnoremap_func("<leader>dlp", "require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))")
+nnoremap_func("<leader>dr", 'require("dap").repl.open()')
+nnoremap_func("<leader>dl", 'require("dap").run_last()')
+nnoremap_func("<leader>dw", 'require("dapui").float_element("watches", {})')
+nnoremap_func("<leader>di", '<cmd>lua require"dap.ui.variables".hover()')
+nnoremap_func("<leader>dv", 'require("dapui").toggle()')
