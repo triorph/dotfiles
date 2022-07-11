@@ -188,11 +188,31 @@ local setup_jdtls = function()
 	local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 
 	local workspace_dir = "/Users/mwalsh2/" .. project_name
+	local java_executable = "/Library/Java/JavaVirtualMachines/jdk-18.0.1.1.jdk/Contents/Home/bin/java"
+	local shared_config_path = "/opt/homebrew/Cellar/jdtls/1.11.0/libexec/config_mac"
+	local jar_path =
+		"/opt/homebrew/Cellar/jdtls/1.11.0/libexec/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
 	local config = {
 		-- The command that starts the language server
 		-- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
 		cmd = {
-			"jdtls",
+			java_executable,
+			"-Declipse.application=org.eclipse.jdt.ls.core.id1",
+			"-Dosgi.bundles.defaultStartLevel=4",
+			"-Declipse.product=org.eclipse.jdt.ls.core.product",
+			"-Dosgi.checkConfiguration=true",
+			"-Dosgi.sharedConfiguration.area=" .. shared_config_path,
+			"-Dosgi.sharedConfiguration.area.readOnly=true",
+			"-Dosgi.configuration.cascaded=true",
+			"-noverify",
+			"-Xms1G",
+			"--add-modules=ALL-SYSTEM",
+			"--add-opens",
+			"java.base/java.util=ALL-UNNAMED",
+			"--add-opens",
+			"java.base/java.lang=ALL-UNNAMED",
+			"-jar",
+			jar_path,
 			workspace_dir,
 		},
 
@@ -204,7 +224,13 @@ local setup_jdtls = function()
 		-- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
 		-- for a list of options
 		settings = {
-			java = {},
+			java = {
+				format = {
+					settings = {
+						url = vim.env.HOME .. "/dotfiles/config/nvim/lua/config/eclipse-java-google-style.xml",
+					},
+				},
+			},
 		},
 
 		-- Language server `initializationOptions`
