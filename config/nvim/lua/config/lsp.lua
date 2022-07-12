@@ -189,9 +189,9 @@ local setup_jdtls = function()
 
 	local workspace_dir = "/Users/mwalsh2/" .. project_name
 	local java_executable = "/Library/Java/JavaVirtualMachines/jdk-18.0.1.1.jdk/Contents/Home/bin/java"
-	local shared_config_path = "/opt/homebrew/Cellar/jdtls/1.11.0/libexec/config_mac"
+	local shared_config_path = "/opt/homebrew/Cellar/jdtls/1.12.0/libexec/config_mac"
 	local jar_path =
-		"/opt/homebrew/Cellar/jdtls/1.11.0/libexec/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
+		"/opt/homebrew/Cellar/jdtls/1.12.0/libexec/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
 	local config = {
 		-- The command that starts the language server
 		-- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
