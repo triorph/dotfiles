@@ -81,13 +81,28 @@ return packer.startup(function()
 	-- Fuzzy search/file find
 	use({ -- awesome plugin that lets you open a window to fuzzy-find things
 		"nvim-telescope/telescope.nvim",
-		requires = { { "nvim-lua/popup.nvim" }, { "nvim-lua/plenary.nvim" } },
+		requires = {
+			{ "nvim-lua/popup.nvim" },
+			{ "nvim-lua/plenary.nvim" },
+			{ "nvim-telescope/telescope-file-browser.nvim" },
+		},
 		config = function()
-			require("telescope").load_extension("mapper")
-			require("telescope").load_extension("neoclip")
 			require("telescope").setup({
-				{ defaults = {border={}}}
+				defaults = { border = {} },
+				extensions = {
+					file_browser = {
+						theme = "ivy",
+						hijack_netrw = true,
+						mappings = {
+							["i"] = {},
+							["n"] = {},
+						},
+					},
+				},
 			})
+			require("telescope").load_extension("neoclip")
+			require("telescope").load_extension("mapper")
+			require("telescope").load_extension("file_browser")
 		end,
 	})
 	use({ -- see your keymappings in telescope

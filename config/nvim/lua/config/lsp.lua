@@ -225,11 +225,11 @@ local setup_jdtls = function()
 		-- for a list of options
 		settings = {
 			java = {
-				format = {
-					settings = {
-						url = vim.env.HOME .. "/dotfiles/config/nvim/lua/config/eclipse-java-google-style.xml",
-					},
-				},
+				-- format = {
+				-- 	settings = {
+				-- 		url = vim.env.HOME .. "/dotfiles/config/nvim/lua/config/eclipse-java-google-style.xml",
+				-- 	},
+				-- },
 			},
 		},
 
