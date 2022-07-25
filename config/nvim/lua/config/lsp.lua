@@ -72,9 +72,7 @@ local on_attach_no_format = function(client, bufnr)
 end
 
 vim.diagnostic.config({
-	virtual_text = {
-		severity = { min = vim.diagnostic.severity.WARN },
-	},
+	virtual_text = false,
 })
 
 -- Use a loop to conveniently call 'setup' on multiple servers and

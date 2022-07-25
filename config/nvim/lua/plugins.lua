@@ -42,6 +42,12 @@ return packer.startup(function()
 			require("config/lsp")
 		end,
 	})
+	use({
+	  "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+	  config = function()
+		require("lsp_lines").setup()
+	  end,
+	})
 	use({ "kosayoda/nvim-lightbulb" }) -- puts lightbulbs when a code action is available
 	use({ -- takes care of showing LSP problems at the bottom of the screen
 		"folke/trouble.nvim",
