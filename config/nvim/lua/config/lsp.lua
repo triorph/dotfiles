@@ -64,6 +64,7 @@ local on_attach = function(client, bufnr)
 	-- jump diagnostic
 	buf_nmap_cmd("gj", "Lspsaga diagnostic_jump_next")
 	buf_nmap_cmd("gk", "Lspsaga diagnostic_jump_prev")
+	buf_nmap_cmd("<leader>l", 'lua require("lsp_lines").toggle()')
 end
 
 local on_attach_no_format = function(client, bufnr)
