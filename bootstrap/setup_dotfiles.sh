@@ -41,6 +41,7 @@ git clone https://github.com/davidde/git ~/.oh-my-zsh/custom/plugins/git
 git clone https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-tips
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
+git clone https://github.com/lukechilds/zsh-nvm ~/.oh-my-zsh/custom/plugins/zsh-nvm
 git clone git@github.com:triorph/notes.git ~/org
 git clone git@github.com:triorph/newwp.git ~/repos/newwp
 git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
