@@ -10,6 +10,10 @@ else
    export XIVIEWER='icat'
 fi
 
+function search_code {
+   rg -n "$1" | fzf --delimiter=':' -n 1,3.. --preview-window 'right,70%,+{2}-/2' --preview 'bat --color=always {1} -H {2} --style=plain'
+}
+
 alias gca="git commit -v -a"
 alias gca!="git commit -v -a --amend --reset-author"
 alias gdh="git diff -r HEAD^"
@@ -24,4 +28,5 @@ alias edit="$EDITOR"
 alias diff="delta"
 alias icat="kitty +kitten icat"
 alias plint="pylama --linters=print,mccabe,pycodestyle,pyflakes --ignore=E501,W0612,W605,E231,E203"
+alias rg="search_code"
 eval "$(mcfly init zsh)"
