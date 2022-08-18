@@ -4,6 +4,6 @@ export CPPFLAGS="-I$JAVA_HOME/include"
 export ATLAS_MVN="/opt/homebrew/bin/mvn"
 
 typeset -U PATH path
-path=("$HOME/.local/bin" "$HOME/.local/share/gem/ruby/3.0.0/bin" "$HOME/.emacs.d/bin" "$HOME/.cargo/bin" "$JAVA_HOME/bin" "$path[@]")
+path=("$HOME/.local/bin" "$HOME/.local/share/gem/ruby/3.0.0/bin" "$HOME/.gem/ruby/2.6.0/bin" "$HOME/.emacs.d/bin" "$HOME/.cargo/bin" "$JAVA_HOME/bin" "$path[@]")
 export PATH
 
