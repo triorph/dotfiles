@@ -207,7 +207,7 @@ return packer.startup(function()
 	-- Highlight code
 	use({ -- treesitter - better highlighting of variables
 		"nvim-treesitter/nvim-treesitter",
-		requires = { "nvim-treesitter/nvim-treesitter-textobjects", "nvim-treesitter/nvim-treesitter-context" },
+		requires = { "nvim-treesitter/nvim-treesitter-textobjects", "nvim-treesitter/nvim-treesitter-context", "nvim-treesitter/playground" },
 		run = function()
 			vim.cmd([[:TSUpdate]])
 		end,

@@ -29,4 +29,5 @@ alias diff="delta"
 alias icat="kitty +kitten icat"
 alias plint="pylama --linters=print,mccabe,pycodestyle,pyflakes --ignore=E501,W0612,W605,E231,E203"
 alias rgs="search_code"
+alias sshbac="TERM=xterm-256color ssh"  # include TERM in ssh for the *bac servers
 eval "$(mcfly init zsh)"
