@@ -207,7 +207,11 @@ return packer.startup(function()
 	-- Highlight code
 	use({ -- treesitter - better highlighting of variables
 		"nvim-treesitter/nvim-treesitter",
-		requires = { "nvim-treesitter/nvim-treesitter-textobjects", "nvim-treesitter/nvim-treesitter-context", "nvim-treesitter/playground" },
+		requires = {
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			"nvim-treesitter/nvim-treesitter-context",
+			"nvim-treesitter/playground",
+		},
 		run = function()
 			vim.cmd([[:TSUpdate]])
 		end,
@@ -271,7 +275,7 @@ return packer.startup(function()
 			"rebelot/kanagawa.nvim",
 			"rktjmp/lush.nvim",
 			"Scysta/pink-panic.nvim",
-			{ "luisiacc/gruvbox-baby", branch="main" }
+			{ "luisiacc/gruvbox-baby", branch = "main" },
 		},
 
 		config = function()
