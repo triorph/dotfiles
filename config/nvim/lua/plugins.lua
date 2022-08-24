@@ -271,6 +271,7 @@ return packer.startup(function()
 			"rebelot/kanagawa.nvim",
 			"rktjmp/lush.nvim",
 			"Scysta/pink-panic.nvim",
+			{ "luisiacc/gruvbox-baby", branch="main" }
 		},
 
 		config = function()
