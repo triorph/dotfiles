@@ -12,7 +12,7 @@ capabilities.textDocument.foldingRange = {
 local group = vim.api.nvim_create_augroup("DocumentFormatting", { clear = true })
 local on_attach = function(client, bufnr)
 	vim.api.nvim_clear_autocmds({ group = group, buffer = bufnr })
-	if client.resolved_capabilities.document_formatting then
+	if client.server_capabilities.document_formatting then
 		vim.api.nvim_create_autocmd(
 			"BufWritePre",
 			{ command = "lua vim.lsp.buf.formatting_sync(nil, 5000)", group = "DocumentFormatting", buffer = bufnr }
@@ -23,6 +23,7 @@ local on_attach = function(client, bufnr)
 	local function buf_set_keymap(...)
 		vim.api.nvim_buf_set_keymap(bufnr, ...)
 	end
+
 	local function buf_set_option(...)
 		vim.api.nvim_buf_set_option(bufnr, ...)
 	end
@@ -68,14 +69,14 @@ local on_attach = function(client, bufnr)
 end
 
 local on_attach_no_format = function(client, bufnr)
-	client.resolved_capabilities.document_formatting = false
-	client.resolved_capabilities.document_range_formatting = false
+	client.server_capabilities.document_formatting = false
+	client.server_capabilities.document_range_formatting = false
 	on_attach(client, bufnr)
 end
 
-vim.diagnostic.config({
-	virtual_text = false,
-})
+-- vim.diagnostic.config({
+-- 	virtual_text = false,
+-- })
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
@@ -166,6 +167,7 @@ local jdtls_on_attach = function(client, bufnr)
 		local opts = { noremap = true, silent = true }
 		buf_set_keymap("n", keymap, "<cmd>" .. command .. "<CR>", opts)
 	end
+
 	require("jdtls").setup_dap({ hotcodereplace = "auto" })
 	buf_nmap_cmd("<leader>djm", "lua require('jdtls').test_nearest_method()")
 	buf_nmap_cmd("<leader>djc", "lua require('jdtls').test_class()")
