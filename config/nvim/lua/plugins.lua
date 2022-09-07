@@ -12,6 +12,7 @@ end
 -- famiu/feline.nvim (alternative to lualine)
 -- RRethy/nvim-treesitter-textsubjects (expand your selection out or in via treesitter block)
 -- echasnovski/mini.nvim#minisurround (lua alternative to vim-surround that supports treesitter)
+-- There's also nvim-surround with similar functionality
 -- gelguy/wilder.nvim nice menu for ex-commands
 -- simrat39/rust-tools.nvim (additional support for rust-analyzer functions that aren't technically part of LSP spec)
 local use = packer.use
@@ -310,6 +311,7 @@ return packer.startup(function()
 			vim.api.nvim_set_keymap("n", "s", "<Plug>Lightspeed_omni_s", { noremap = false, silent = true })
 		end,
 	})
+	use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
 	use({ -- allow . repeat to work with more plugins (surround, lightspeed, etc.)
 		"tpope/vim-repeat",
 		config = function()
