@@ -7,16 +7,23 @@ capabilities.textDocument.foldingRange = {
 	lineFoldingOnly = true,
 }
 
+local lsp_format = function(bufnr)
+	vim.lsp.buf.format({ bufnr = bufnr })
+end
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local group = vim.api.nvim_create_augroup("DocumentFormatting", { clear = true })
 local on_attach = function(client, bufnr)
-	vim.api.nvim_clear_autocmds({ group = group, buffer = bufnr })
-	if client.server_capabilities.document_formatting then
-		vim.api.nvim_create_autocmd(
-			"BufWritePre",
-			{ command = "lua vim.lsp.buf.formatting_sync(nil, 5000)", group = "DocumentFormatting", buffer = bufnr }
-		)
+	if client.supports_method("textDocument/formatting") then
+		vim.api.nvim_clear_autocmds({ group = group, buffer = bufnr })
+		vim.api.nvim_create_autocmd("BufWritePre", {
+			callback = function()
+				lsp_format(bufnr)
+			end,
+			group = "DocumentFormatting",
+			buffer = bufnr,
+		})
 	end
 	vim.cmd([[autocmd CursorHold,CursorHoldI ]] .. bufnr .. [[  lua require'nvim-lightbulb'.update_lightbulb()]])
 
@@ -48,7 +55,7 @@ local on_attach = function(client, bufnr)
 	buf_nmap_cmd("<C-k>", "lua vim.lsp.buf.signature_help()")
 	buf_nmap_cmd("gr", "lua vim.lsp.buf.rename()")
 	buf_nmap_cmd("<leader>tl", "lua vim.diagnostic.setloclist({open=false})<cr><cmd>Telescope loclist")
-	buf_nmap_cmd("<leader>f", "lua vim.lsp.buf.formatting()")
+	buf_nmap_cmd("<leader>f", "lua vim.lsp.buf.format()")
 	-- code actions
 	buf_nmap_cmd("gx", "Lspsaga code_action")
 	buf_set_keymap("x", "gx", ":<c-u>Lspsaga range_code_action<cr>", opts)
@@ -65,11 +72,10 @@ local on_attach = function(client, bufnr)
 	-- jump diagnostic
 	buf_nmap_cmd("gj", "Lspsaga diagnostic_jump_next")
 	buf_nmap_cmd("gk", "Lspsaga diagnostic_jump_prev")
-	buf_nmap_cmd("<leader>l", 'lua require("lsp_lines").toggle()')
 end
 
 local on_attach_no_format = function(client, bufnr)
-	client.server_capabilities.document_formatting = false
+	client.server_capabilities.documentFormattingProvider = false
 	client.server_capabilities.document_range_formatting = false
 	on_attach(client, bufnr)
 end
