@@ -194,12 +194,12 @@ vim.list_extend(
 local setup_jdtls = function()
 	-- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
 	local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+	local jdtls_base_path = "/opt/homebrew/Cellar/jdtls/1.15.0/libexec"
 
 	local workspace_dir = "/Users/mwalsh2/" .. project_name
 	local java_executable = "/Library/Java/JavaVirtualMachines/jdk-18.0.1.1.jdk/Contents/Home/bin/java"
-	local shared_config_path = "/opt/homebrew/Cellar/jdtls/1.12.0/libexec/config_mac"
-	local jar_path =
-		"/opt/homebrew/Cellar/jdtls/1.12.0/libexec/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
+	local shared_config_path = jdtls_base_path .. "/config_mac"
+	local jar_path = jdtls_base_path .. "/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
 	local config = {
 		-- The command that starts the language server
 		-- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line

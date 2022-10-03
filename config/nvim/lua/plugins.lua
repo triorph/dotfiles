@@ -318,6 +318,19 @@ return packer.startup(function()
 			vim.cmd([[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]])
 		end,
 	})
+	use({
+		"folke/noice.nvim",
+		event = "VimEnter",
+		config = function()
+			require("noice").setup()
+		end,
+		requires = {
+			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+			"MunifTanjim/nui.nvim",
+			"rcarriga/nvim-notify",
+			"hrsh7th/nvim-cmp",
+		},
+	})
 	-- use({ -- neovim version of emacs' orgmode for organising to do lists etc..
 	-- 	"nvim-orgmode/orgmode",
 	-- 	config = function()

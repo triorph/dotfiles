@@ -22,3 +22,4 @@ hs.hotkey.bind({ "ctrl", "alt" }, "b", embiggen_window)
 
 require("toggle_window")
 require("newwp")
+require("bluetooth")
