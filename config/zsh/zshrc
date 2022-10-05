@@ -75,6 +75,8 @@ source $ZSH/oh-my-zsh.sh
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+. ~/.asdf/plugins/java/set-java-home.zsh
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
