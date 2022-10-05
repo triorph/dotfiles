@@ -197,7 +197,7 @@ local setup_jdtls = function()
 	local jdtls_base_path = "/opt/homebrew/Cellar/jdtls/1.15.0/libexec"
 
 	local workspace_dir = "/Users/mwalsh2/" .. project_name
-	local java_executable = "/Library/Java/JavaVirtualMachines/jdk-18.0.1.1.jdk/Contents/Home/bin/java"
+	local java_executable = "/Users/mwalsh2/.asdf/installs/java/openjdk-19/bin/java"
 	local shared_config_path = jdtls_base_path .. "/config_mac"
 	local jar_path = jdtls_base_path .. "/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
 	local config = {
@@ -208,10 +208,7 @@ local setup_jdtls = function()
 			"-Declipse.application=org.eclipse.jdt.ls.core.id1",
 			"-Dosgi.bundles.defaultStartLevel=4",
 			"-Declipse.product=org.eclipse.jdt.ls.core.product",
-			"-Dosgi.checkConfiguration=true",
-			"-Dosgi.sharedConfiguration.area=" .. shared_config_path,
-			"-Dosgi.sharedConfiguration.area.readOnly=true",
-			"-Dosgi.configuration.cascaded=true",
+			"-Dlog.level=ALL",
 			"-noverify",
 			"-Xms1G",
 			"--add-modules=ALL-SYSTEM",
@@ -221,6 +218,9 @@ local setup_jdtls = function()
 			"java.base/java.lang=ALL-UNNAMED",
 			"-jar",
 			jar_path,
+			"-configuration",
+			shared_config_path,
+			"-data",
 			workspace_dir,
 		},
 
