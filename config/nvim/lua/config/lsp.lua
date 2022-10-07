@@ -196,7 +196,7 @@ local setup_jdtls = function()
 	local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 	local jdtls_base_path = "/opt/homebrew/Cellar/jdtls/1.15.0/libexec"
 
-	local workspace_dir = "/Users/mwalsh2/" .. project_name
+	local workspace_dir = "/Users/mwalsh2/work/" .. project_name
 	local java_executable = "/Users/mwalsh2/.asdf/installs/java/openjdk-19/bin/java"
 	local shared_config_path = jdtls_base_path .. "/config_mac"
 	local jar_path = jdtls_base_path .. "/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
