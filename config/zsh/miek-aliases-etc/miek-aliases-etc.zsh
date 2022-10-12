@@ -38,6 +38,9 @@ function search_code {
    rg -n "$1" | fzf --delimiter=':' -n 1,3.. --preview-window 'right,70%,+{2}-/2' --preview 'bat --color=always {1} -H {2} --style=plain'
 }
 
+[[ ! -f ~/opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source /opt/homebrew/opt/asdf/libexec/asdf.sh
+[[ ! -f ~/.asdf/plugins/java/set-java-home.zsh ]] || source ~/.asdf/plugins/java/set-java-home.zsh
+
 alias gca="git commit -v -a"
 alias gca!="git commit -v -a --amend --reset-author"
 alias gdh="git diff -r HEAD^"
