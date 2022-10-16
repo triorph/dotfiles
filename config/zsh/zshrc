@@ -38,6 +38,7 @@ if [[ $EUID == 0 ]]; then
       thefuck
       python
       git-auto-fetch
+      gitfast
       docker
       tmux
       fast-syntax-highlighting
@@ -59,6 +60,7 @@ else
       thefuck
       python
       git-auto-fetch
+      gitfast
       docker
       zsh-nvm
       tmux
