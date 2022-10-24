@@ -308,7 +308,7 @@ keys.globalkeys = gears.table.join(
 		description = "spawn floating terminal",
 		group = "launcher",
 	}),
-	awful.key({ ctrlkey, altkey }, "Tab", function()
+	awful.key({ ctrlkey }, "Tab", function()
 		toggle_class("Firefox", "firefox", {
 			floating = true,
 			opacity = 0.95,
@@ -350,7 +350,7 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 
-	awful.key({ ctrlkey }, "Tab", function()
+	awful.key({ ctrlkey, altkey }, "Tab", function()
 		toggle_class("Emacs", "emacs", {
 			floating = true,
 			width = mouse.screen.workarea.width * 0.4,
