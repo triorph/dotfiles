@@ -48,6 +48,8 @@ end
 
 function ResizeAndCenter(c, properties)
 	helpers.float_and_resize(c, properties.width, properties.height)
+	c.x = properties.x
+	x.y = properties.y
 end
 
 -- {{{ Mouse bindings on desktop
@@ -320,6 +322,8 @@ keys.globalkeys = gears.table.join(
 			titlebars_enabled = false,
 			width = mouse.screen.workarea.width * 0.8,
 			height = mouse.screen.workarea.height * 0.92,
+			x = mouse.screen.workarea.width * 0.1,
+			y = mouse.screen.workarea.height * 0.04,
 		}, {
 			class = "firefox",
 		})
@@ -375,6 +379,8 @@ keys.globalkeys = gears.table.join(
 			floating = true,
 			width = mouse.screen.workarea.width * 0.4,
 			height = mouse.screen.workarea.height * 0.9,
+			x = mouse.screen.workarea.width * 0.5,
+			y = mouse.screen.workarea.height * 0.05,
 			titlebars_enabled = false,
 		})
 	end, {

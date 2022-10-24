@@ -7,7 +7,7 @@ hook global WinSetOption filetype=(rust|python|go|javascript|typescript|c|cpp) %
 hook global InsertChar \t %{
     exec -draft h@
 }
-colorscheme gruvbox-dark
+colorscheme ayu-dark
 add-highlighter global/ number-lines -relative
 set global indentwidth 4
 set global tabstop 4
