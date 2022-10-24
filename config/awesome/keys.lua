@@ -15,8 +15,8 @@ altkey = "Mod1"
 ctrlkey = "Control"
 shiftkey = "Shift"
 
-function get_client(class, secondary_search_property)
-	c = helpers.find_clients({ class = class }, true)
+function GetClient(class, secondary_search_property)
+	local c = helpers.find_clients({ class = class }, true)
 	if not c and secondary_search_property then
 		c = helpers.find_clients(secondary_search_property, true)
 		if c then
@@ -26,8 +26,8 @@ function get_client(class, secondary_search_property)
 	return c
 end
 
-function toggle_class(class, spawn_command, properties, secondary_search_property)
-	c = get_client(class, secondary_search_property)
+function ToggleClass(class, spawn_command, properties, secondary_search_property)
+	local c = GetClient(class, secondary_search_property)
 	if c then
 		if client.focus == c then
 			c.hidden = true
@@ -37,12 +37,17 @@ function toggle_class(class, spawn_command, properties, secondary_search_propert
 			end
 			c.hidden = false
 			client.focus = c
+			ResizeAndCenter(c, properties)
 		end
 	else
 		naughty.notify({ text = "Spawning " .. spawn_command })
-		pid = awful.spawn(spawn_command, properties)
+		local pid = awful.spawn(spawn_command, properties)
 		-- naughty.notify({ text = tostring(pid) })
 	end
+end
+
+function ResizeAndCenter(c, properties)
+	helpers.float_and_resize(c, properties.width, properties.height)
 end
 
 -- {{{ Mouse bindings on desktop
@@ -309,7 +314,7 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey }, "Tab", function()
-		toggle_class("Firefox", "firefox", {
+		ToggleClass("Firefox", "firefox", {
 			floating = true,
 			opacity = 0.95,
 			titlebars_enabled = false,
@@ -323,7 +328,7 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 	awful.key({ ctrlkey }, "`", function()
-		toggle_class("quake-term", "kitty -1 --class=quake-term", {
+		ToggleClass("quake-term", "kitty -1 --class=quake-term", {
 			width = mouse.screen.workarea.width * 0.9,
 			height = mouse.screen.workarea.height * 0.9,
 			placement = awful.placement.TOP,
@@ -337,8 +342,23 @@ keys.globalkeys = gears.table.join(
 		description = "Toggle the quake mode terminal",
 		group = "launcher",
 	}),
+	awful.key({ ctrlkey, altkey }, "s", function()
+		ToggleClass("Spotify", "spotify", {
+			width = mouse.screen.workarea.width * 0.75,
+			height = mouse.screen.workarea.height * 0.75,
+			placement = awful.placement.TOP,
+			titlebars_enabled = false,
+			class = "spotify",
+			maximized = false,
+			floating = true,
+			opacity = 0.95,
+		})
+	end, {
+		description = "Toggle spotify",
+		group = "launcher",
+	}),
 	awful.key({ ctrlkey, altkey }, "d", function()
-		toggle_class("dev-term", "kitty -1 --class=dev-term", {
+		ToggleClass("dev-term", "kitty -1 --class=dev-term", {
 			floating = true,
 			titlebars_enabled = false,
 			width = mouse.screen.workarea.width * 0.85,
@@ -351,7 +371,7 @@ keys.globalkeys = gears.table.join(
 	}),
 
 	awful.key({ ctrlkey, altkey }, "Tab", function()
-		toggle_class("Emacs", "emacs", {
+		ToggleClass("Emacs", "emacs", {
 			floating = true,
 			width = mouse.screen.workarea.width * 0.4,
 			height = mouse.screen.workarea.height * 0.9,
@@ -362,7 +382,7 @@ keys.globalkeys = gears.table.join(
 		group = "launcher",
 	}),
 	awful.key({ superkey }, "o", function()
-		toggle_class("obsidian", "obsidian", {
+		ToggleClass("obsidian", "obsidian", {
 			floating = true,
 			width = mouse.screen.workarea.width * 0.9,
 			height = mouse.screen.workarea.height * 0.9,
