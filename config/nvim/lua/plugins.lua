@@ -15,6 +15,9 @@ end
 -- There's also nvim-surround with similar functionality
 -- gelguy/wilder.nvim nice menu for ex-commands
 -- simrat39/rust-tools.nvim (additional support for rust-analyzer functions that aren't technically part of LSP spec)
+-- princejoogie/dir-telescope.nvim (allow telescope to search on a directory before calling live_grep/find file)
+-- ggandor/leap.nvim (alternative to lightspeed, slightly more streamlined)
+-- ggandor/flit.nvim (addition to leap for f/t motions)
 local use = packer.use
 return packer.startup(function()
 	-- Packer can manage itself
@@ -324,19 +327,19 @@ return packer.startup(function()
 			vim.cmd([[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]])
 		end,
 	})
-	-- use({
-	-- 	"folke/noice.nvim",
-	-- 	event = "VimEnter",
-	-- 	config = function()
-	-- 		require("noice").setup()
-	-- 	end,
-	-- 	requires = {
-	-- 		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-	-- 		"MunifTanjim/nui.nvim",
-	-- 		"rcarriga/nvim-notify",
-	-- 		"hrsh7th/nvim-cmp",
-	-- 	},
-	-- })
+	use({
+		"folke/noice.nvim",
+		event = "VimEnter",
+		config = function()
+			require("noice").setup()
+		end,
+		requires = {
+			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+			"MunifTanjim/nui.nvim",
+			"rcarriga/nvim-notify",
+			"hrsh7th/nvim-cmp",
+		},
+	})
 	-- use({ -- neovim version of emacs' orgmode for organising to do lists etc..
 	-- 	"nvim-orgmode/orgmode",
 	-- 	config = function()
