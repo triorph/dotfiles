@@ -17,7 +17,8 @@ require("nvim-treesitter.configs").setup({
 			"ruby",
 			"typescript",
 			"yaml",
-			-- "markdown",
+			"regex",
+			"markdown",
 		},
 	},
 	ignore_install = {}, -- List of parsers to ignore installing

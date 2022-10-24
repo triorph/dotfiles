@@ -136,6 +136,18 @@ nvim_lsp.sumneko_lua.setup({
 	cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
 })
 
+nvim_lsp.yamlls.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	settings = {
+		yaml = {
+			schemas = {
+				["https://statlas.prod.atl-paas.net/dev/platform/json-schemas/micros-sd.schema.json"] = "*.sd.yml",
+			},
+		},
+	},
+})
+
 nvim_lsp.rust_analyzer.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
