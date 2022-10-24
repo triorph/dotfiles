@@ -143,7 +143,7 @@ return packer.startup(function()
 	use({
 		"theHamsta/nvim-dap-virtual-text",
 		config = function()
-			require("nvim-dap-virtual-text").setup()
+			require("nvim-dap-virtual-text").setup({})
 		end,
 	})
 
@@ -312,12 +312,21 @@ return packer.startup(function()
 		end,
 	})
 	use({ -- alternative to EasyMotion or Sneak for faster movement
-		"ggandor/lightspeed.nvim",
+
+		"ggandor/leap.nvim",
+		requires = { "ggandor/flit.nvim" },
 		config = function()
-			require("lightspeed").setup({})
-			vim.api.nvim_set_keymap("n", ";", "<Plug>Lightspeed_;_ft", { noremap = false, silent = true })
-			vim.api.nvim_set_keymap("n", ",", "<Plug>Lightspeed_,_ft", { noremap = false, silent = true })
-			vim.api.nvim_set_keymap("n", "s", "<Plug>Lightspeed_omni_s", { noremap = false, silent = true })
+			require("leap").opts.safe_labels = {}
+			require("leap").add_default_mappings()
+			require("flit").setup({
+				keys = { f = "f", F = "F", t = "t", T = "T" },
+				labels_modes = "v",
+				multiline = true,
+				opts = {},
+			})
+			vim.keymap.set("n", "s", function()
+				require("leap").leap({ target_windows = { vim.fn.win_getid() } })
+			end, { noremap = true, silent = true })
 		end,
 	})
 	use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
