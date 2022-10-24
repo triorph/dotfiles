@@ -290,7 +290,12 @@ return packer.startup(function()
 	use({ "tpope/vim-sleuth" }) -- auto-detection of tabwidth etc..
 	use({ "wellle/targets.vim" }) -- more text objects, like "inside argument"
 	use({ "windwp/nvim-autopairs" }) --auto-close brackets etc..
-	use({ "ap/vim-css-color" }) -- highlight colours in css
+	use({
+		"brenoprata10/nvim-highlight-colors",
+		config = function()
+			require("nvim-highlight-colors").setup()
+		end,
+	})
 	use({
 		"windwp/nvim-ts-autotag",
 		config = function()
