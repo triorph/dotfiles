@@ -23,6 +23,8 @@ vim.wo.number = true
 vim.wo.relativenumber = true
 vim.wo.signcolumn = "yes"
 vim.wo.wrap = false
+vim.o.cursorcolumn = true
+vim.o.cursorline = true
 vim.g.pyindent_open_paren = vim.o.shiftwidth
 -- limit the autocomplete popup menu size (a pet peeve of mine is how often the autocomplete blocks what you actually want to see)
 vim.o.pumheight = 5

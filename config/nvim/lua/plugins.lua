@@ -343,9 +343,12 @@ return packer.startup(function()
 		"takac/vim-hardtime",
 		config = function()
 			vim.g.list_of_normal_keys = { "j", "k" }
+			vim.g.list_of_visual_keys = {}
+			vim.g.list_of_insert_keys = {}
 			vim.g.hardtime_maxcount = 3
 			vim.g.hardtime_default_on = 1
 			vim.g.hardtime_motion_with_count_resets = 1
+			vim.g.hardtime_ignore_buffer_patterns = { ".*lpha" }
 		end,
 	})
 	use({ "andymass/vim-matchup", event = "VimEnter" })
