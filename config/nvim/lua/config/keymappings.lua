@@ -57,4 +57,7 @@ vim.cmd("silent! command PackerStatus lua require 'plugins' require('packer').st
 vim.cmd("silent! command PackerSync lua require 'plugins' require('packer').sync()")
 vim.cmd("silent! command PackerUpdate lua require 'plugins' require('packer').update()")
 
-ncmdmap("<leader>sr", "source ~/.config/nvim/lua/init.lua")
+-- Git status
+ncmdmap("<leader>g", "Ge:")
+-- Resource my init.lua
+ncmdmap("<leader>sr", "source ~/.config/nvim/init.lua")
