@@ -10,7 +10,7 @@ end
 
 local bluetooth_watcher = function(event)
 	if event == hs.caffeinate.watcher.systemWillSleep then
-		bluetooth_power("off")
+		disconnect_headphones()
 	elseif event == hs.caffeinate.watcher.screensDidWake then
 		bluetooth_power("on")
 	end
@@ -24,7 +24,7 @@ local connect_headphones = function()
 end
 
 local disconnect_headphones = function()
-	print("Disconnecting haedphones")
+	print("Disconnecting headphones")
 	blueutil_command({ "--disconnect", headphones_id, "--wait-disconnect", headphones_id })
 end
 
