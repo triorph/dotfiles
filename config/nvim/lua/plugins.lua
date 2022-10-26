@@ -270,7 +270,7 @@ return packer.startup(function()
 			"rktjmp/lush.nvim",
 			"Scysta/pink-panic.nvim",
 			{ "luisiacc/gruvbox-baby", branch = "main" },
-			{ "timilio/oxocarbon.nvim", branch = "fennel" },
+			-- { "timilio/oxocarbon.nvim", branch = "fennel" },
 		},
 
 		config = function()

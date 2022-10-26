@@ -15,4 +15,4 @@ vim.g.rose_pine_variant = "moon" -- options are  "base", "moon", and "dawn"
 
 -- Load the colorscheme
 -- vim.cmd([[set background=light]])
-vim.cmd([[colorscheme oxocarbon]])
+vim.cmd([[colorscheme catppuccin-mocha]])
