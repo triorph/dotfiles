@@ -11,8 +11,6 @@ end
 -- rmagatti/goto-preview  (popups of definition previews etc..)
 -- famiu/feline.nvim (alternative to lualine)
 -- RRethy/nvim-treesitter-textsubjects (expand your selection out or in via treesitter block)
--- echasnovski/mini.nvim#minisurround (lua alternative to vim-surround that supports treesitter)
--- There's also nvim-surround with similar functionality
 -- gelguy/wilder.nvim nice menu for ex-commands
 -- simrat39/rust-tools.nvim (additional support for rust-analyzer functions that aren't technically part of LSP spec)
 -- princejoogie/dir-telescope.nvim (allow telescope to search on a directory before calling live_grep/find file)
@@ -279,7 +277,13 @@ return packer.startup(function()
 	})
 	-- Misc utils
 	use({ "npxbr/glow.nvim", run = "GlowInstall" }) -- markdown preview
-	use({ "tpope/vim-surround" }) -- the ability to edit surrounding things, like quotes or brackets
+	use({ -- the ability to edit surrounding things, like quotes or brackets
+		"kylechui/nvim-surround",
+		tag = "*",
+		config = function()
+			require("nvim-surround").setup({})
+		end,
+	})
 	use({ -- git plugin
 		"tpope/vim-fugitive",
 
