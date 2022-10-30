@@ -337,7 +337,7 @@ return packer.startup(function()
 		"folke/noice.nvim",
 		event = "VimEnter",
 		config = function()
-			require("noice").setup()
+			require("noice").setup({ messages = { view_search = false } })
 		end,
 		requires = {
 			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
