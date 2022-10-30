@@ -14,6 +14,7 @@ superkey = "Mod4"
 altkey = "Mod1"
 ctrlkey = "Control"
 shiftkey = "Shift"
+HeadphonesId = "88:C9:E8:37:35:61"
 
 function GetClient(class, secondary_search_property)
 	local c = helpers.find_clients({ class = class }, true)
@@ -50,6 +51,14 @@ function ResizeAndCenter(c, properties)
 	helpers.float_and_resize(c, properties.width, properties.height)
 	c.x = properties.x
 	x.y = properties.y
+end
+
+function ConnectHeadphones()
+	awful.spawn("bluetoothctl connect " .. HeadphonesId)
+end
+
+function DisconnectHeadphones()
+	awful.spawn("bluetoothctl disconnect " .. HeadphonesId)
 end
 
 -- {{{ Mouse bindings on desktop
@@ -361,6 +370,12 @@ keys.globalkeys = gears.table.join(
 		description = "Toggle spotify",
 		group = "launcher",
 	}),
+	awful.key({ ctrlkey, altkey }, "h", function()
+		ConnectHeadphones()
+	end),
+	awful.key({ ctrlkey, superkey, altkey }, "h", function()
+		DisconnectHeadphones()
+	end),
 	awful.key({ ctrlkey, altkey }, "d", function()
 		ToggleClass("dev-term", "kitty -1 --class=dev-term", {
 			floating = true,
