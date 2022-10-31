@@ -21,16 +21,10 @@ return packer.startup(function()
 
 	-- git integration
 	use({
-		"tveskag/nvim-blame-line",
-		config = function()
-			vim.cmd([[autocmd BufEnter * EnableBlameLine]])
-		end,
-	})
-	use({
 		"lewis6991/gitsigns.nvim",
 		requires = { "nvim-lua/plenary.nvim" },
 		config = function()
-			require("gitsigns").setup()
+			require("gitsigns").setup({ current_line_blame = true })
 		end,
 	})
 
@@ -312,6 +306,12 @@ return packer.startup(function()
 			require("stabilize").setup()
 		end,
 	})
+	use({ -- coloured borders on the active split
+		"nvim-zh/colorful-winsep.nvim",
+		config = function()
+			require("colorful-winsep").setup({})
+		end,
+	})
 	use({ -- alternative to EasyMotion or Sneak for faster movement
 
 		"ggandor/leap.nvim",
@@ -337,19 +337,19 @@ return packer.startup(function()
 			vim.cmd([[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]])
 		end,
 	})
-	use({
-		"folke/noice.nvim",
-		event = "VimEnter",
-		config = function()
-			require("noice").setup({ messages = { view_search = false } })
-		end,
-		requires = {
-			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-			"MunifTanjim/nui.nvim",
-			"rcarriga/nvim-notify",
-			"hrsh7th/nvim-cmp",
-		},
-	})
+	-- use({
+	-- 	"folke/noice.nvim",
+	-- 	event = "VimEnter",
+	-- 	config = function()
+	-- 		require("noice").setup({ messages = { view_search = false } })
+	-- 	end,
+	-- 	requires = {
+	-- 		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+	-- 		"MunifTanjim/nui.nvim",
+	-- 		"rcarriga/nvim-notify",
+	-- 		"hrsh7th/nvim-cmp",
+	-- 	},
+	-- })
 	use({ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
 		config = function()

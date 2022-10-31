@@ -64,10 +64,10 @@
 
 (setq org-log-done 'time)
 
-(use-package! org-modern
-    :after org)
-
-(after! org (add-hook 'org-mode-hook #'org-modern-mode)
-(add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
+;; (use-package! org-modern
+;;     :after org)
+;;
+;; (after! org (add-hook 'org-mode-hook #'org-modern-mode)
+;; (add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
 (add-to-list
   'org-src-lang-modes '("plantuml" . plantuml))
