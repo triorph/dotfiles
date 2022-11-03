@@ -58,6 +58,7 @@ alias plint="pylama --linters=print,mccabe,pycodestyle,pyflakes --ignore=E501,W0
 alias rgs="search_code"
 alias sshbac="TERM=xterm-256color ssh"  # include TERM in ssh for the *bac servers
 alias gcb="fzf-checkout"
+alias dbash="docker run --entrypoint /bin/bash -it --pull always"
 eval "$(mcfly init zsh)"
 
 
