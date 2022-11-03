@@ -59,6 +59,7 @@ alias rgs="search_code"
 alias sshbac="TERM=xterm-256color ssh"  # include TERM in ssh for the *bac servers
 alias gcb="fzf-checkout"
 alias dbash="docker run --entrypoint /bin/bash -it --pull always"
+alias dsh="docker run --entrypoint /bin/sh -it --pull always"
 eval "$(mcfly init zsh)"
 
 
