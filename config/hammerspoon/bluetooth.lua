@@ -19,7 +19,7 @@ end
 
 local bluetooth_watcher = function(event)
 	if event == hs.caffeinate.watcher.systemWillSleep then
-		disconnect_headphones()
+		bluetooth_power("off")
 	elseif event == hs.caffeinate.watcher.screensDidWake then
 		bluetooth_power("on")
 	end
