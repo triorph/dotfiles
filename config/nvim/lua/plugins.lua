@@ -337,19 +337,19 @@ return packer.startup(function()
 			vim.cmd([[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]])
 		end,
 	})
-	-- use({
-	-- 	"folke/noice.nvim",
-	-- 	event = "VimEnter",
-	-- 	config = function()
-	-- 		require("noice").setup({ messages = { view_search = false } })
-	-- 	end,
-	-- 	requires = {
-	-- 		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-	-- 		"MunifTanjim/nui.nvim",
-	-- 		"rcarriga/nvim-notify",
-	-- 		"hrsh7th/nvim-cmp",
-	-- 	},
-	-- })
+	use({
+		"folke/noice.nvim",
+		event = "VimEnter",
+		config = function()
+			require("noice").setup({ messages = { view_search = false } })
+		end,
+		requires = {
+			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+			"MunifTanjim/nui.nvim",
+			"rcarriga/nvim-notify",
+			"hrsh7th/nvim-cmp",
+		},
+	})
 	use({ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
 		config = function()

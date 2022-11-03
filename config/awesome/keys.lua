@@ -17,28 +17,38 @@ shiftkey = "Shift"
 HeadphonesId = "88:C9:E8:37:35:61"
 
 function GetClient(class, secondary_search_property)
-	local c = helpers.find_clients({ class = class }, true)
-	if not c and secondary_search_property then
-		c = helpers.find_clients(secondary_search_property, true)
-		if c then
-			c.class = class
-		end
+	local c = helpers.find_clients({ class = class }, false)
+	if (not c or next(c) == nil) and secondary_search_property then
+		c = helpers.find_clients(secondary_search_property, false)
 	end
 	return c
 end
 
-function ToggleClass(class, spawn_command, properties, secondary_search_property)
-	local c = GetClient(class, secondary_search_property)
-	if c then
+function AreClientsFocused(clients)
+	for _, c in pairs(clients) do
 		if client.focus == c then
-			c.hidden = true
-		else
-			if c.hidden == true or c.screen == mouse.screen then
-				c:move_to_tag(mouse.screen.selected_tag)
+			return true
+		end
+	end
+	return false
+end
+
+function ToggleClass(class, spawn_command, properties, secondary_search_property)
+	local clients = GetClient(class, secondary_search_property)
+	if clients and not (next(clients) == nil) then
+		if AreClientsFocused(clients) then
+			for _, c in pairs(clients) do
+				c.hidden = true
 			end
-			c.hidden = false
-			client.focus = c
-			ResizeAndCenter(c, properties)
+		else
+			for _, c in pairs(clients) do
+				if c.hidden == true or c.screen == mouse.screen then
+					c:move_to_tag(mouse.screen.selected_tag)
+				end
+				c.hidden = false
+				client.focus = c
+				ResizeAndCenter(c, properties)
+			end
 		end
 	else
 		naughty.notify({ text = "Spawning " .. spawn_command })
