@@ -38,6 +38,10 @@ function search_code {
    rg -n "$1" | fzf --delimiter=':' -n 1,3.. --preview-window 'right,70%,+{2}-/2' --preview 'bat --color=always {1} -H {2} --style=plain'
 }
 
+function kubeexec {
+    kubectl exec -n "buildeng-$1-bamboo" --stdin --tty "$2" --container bamboo-agent  -- /bin/bash
+}
+
 [[ ! -f ~/opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source /opt/homebrew/opt/asdf/libexec/asdf.sh
 [[ ! -f ~/.asdf/plugins/java/set-java-home.zsh ]] || source ~/.asdf/plugins/java/set-java-home.zsh
 

@@ -1,5 +1,8 @@
 hs.loadSpoon("ReloadConfiguration")
 spoon.ReloadConfiguration:start()
+hs.loadSpoon("Caffeine")
+spoon.Caffeine:bindHotkeys({ toggle = { { "ctrl", "alt", "cmd" }, "c" } })
+spoon.Caffeine:start()
 
 local move_screen = function()
 	print("Moving window")
