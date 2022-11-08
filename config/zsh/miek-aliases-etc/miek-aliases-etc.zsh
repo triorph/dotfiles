@@ -48,6 +48,7 @@ function kubeexec {
 alias gca="git commit -v -a"
 alias gca!="git commit -v -a --amend --reset-author"
 alias gdh="git diff -r HEAD^"
+alias gdname="gd --cached --name-only --diff-filter=ACM -r"
 alias ls="lsd --group-dirs first"
 alias ll="lsd --group-dirs first --color=always -la | less"
 alias cat="bat --style plain --paging never"
