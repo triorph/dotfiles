@@ -7,6 +7,7 @@ end
 local ncmdmap = function(key, cmd)
 	key_mapper("n", key, "<cmd>" .. cmd .. "<CR>")
 end
+require("legendary").setup()
 -- usually if I press multiple jj or kk it means I forgot I was in insert mode
 key_mapper("i", "jj", "<ESC>")
 key_mapper("i", "kk", "<ESC>")
@@ -61,3 +62,4 @@ vim.cmd("silent! command PackerUpdate lua require 'plugins' require('packer').up
 ncmdmap("<leader>g", "Ge:")
 -- Resource my init.lua
 ncmdmap("<leader>sr", "source ~/.config/nvim/init.lua")
+-- vim.ui.select({ 'tabs', 'spaces' }, { prompt = 'Select tabs or spaces:', format_item = function(item) return "I'd like to choose " .. item end, }, function(choice) if choice == 'spaces' then vim.o.expandtab = true else vim.o.expandtab = false end end)

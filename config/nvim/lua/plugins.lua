@@ -9,11 +9,11 @@ end
 -- to still try:
 -- ahmedkhalf/project.nvim  (project management)
 -- rmagatti/goto-preview  (popups of definition previews etc..)
--- famiu/feline.nvim (alternative to lualine)
 -- RRethy/nvim-treesitter-textsubjects (expand your selection out or in via treesitter block)
--- gelguy/wilder.nvim nice menu for ex-commands
 -- simrat39/rust-tools.nvim (additional support for rust-analyzer functions that aren't technically part of LSP spec)
 -- princejoogie/dir-telescope.nvim (allow telescope to search on a directory before calling live_grep/find file)
+-- folke/styler.nvim (different colorschemes per file type)
+-- mrjones2014/legendary.nvim (define keymaps and sets up a command palette for them)
 local use = packer.use
 return packer.startup(function()
 	-- Packer can manage itself
@@ -86,9 +86,11 @@ return packer.startup(function()
 			{ "nvim-lua/popup.nvim" },
 			{ "nvim-lua/plenary.nvim" },
 			{ "nvim-telescope/telescope-file-browser.nvim" },
+			{ "nvim-telescope/telescope-ui-select.nvim" },
 		},
 		config = function()
-			require("telescope").setup({
+			local telescope = require("telescope")
+			telescope.setup({
 				defaults = { border = {} },
 				extensions = {
 					file_browser = {
@@ -101,9 +103,11 @@ return packer.startup(function()
 					},
 				},
 			})
-			require("telescope").load_extension("neoclip")
-			require("telescope").load_extension("mapper")
-			require("telescope").load_extension("file_browser")
+			telescope.load_extension("neoclip")
+			telescope.load_extension("mapper")
+			telescope.load_extension("file_browser")
+			-- telescope.load_extension("noice")
+			telescope.load_extension("ui-select")
 		end,
 	})
 	use({ -- see your keymappings in telescope
@@ -189,6 +193,7 @@ return packer.startup(function()
 			require("which-key").setup({})
 		end,
 	})
+	use({ "mrjones2014/legendary.nvim" })
 
 	-- Highlight code
 	use({ -- treesitter - better highlighting of variables
@@ -346,14 +351,32 @@ return packer.startup(function()
 		"folke/noice.nvim",
 		event = "VimEnter",
 		config = function()
-			require("noice").setup({ messages = { view_search = false } })
+			require("noice").setup({
+				messages = { view_search = false },
+				lsp = {
+					-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+					override = {
+						["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+						["vim.lsp.util.stylize_markdown"] = true,
+						["cmp.entry.get_documentation"] = true,
+					},
+				},
+				-- you can enable a preset for easier configuration
+				presets = {
+					bottom_search = true,
+					command_palette = true,
+					long_message_to_split = true,
+					inc_rename = false,
+					lsp_doc_border = false,
+				},
+			})
 		end,
 		requires = {
 			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 			"MunifTanjim/nui.nvim",
 			"rcarriga/nvim-notify",
-			"hrsh7th/nvim-cmp",
 		},
+		before = "telescope.nvim",
 	})
 	use({ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
