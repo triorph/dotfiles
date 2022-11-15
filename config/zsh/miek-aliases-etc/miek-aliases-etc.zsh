@@ -65,6 +65,8 @@ alias sshbac="TERM=xterm-256color ssh"  # include TERM in ssh for the *bac serve
 alias gcb="fzf-checkout"
 alias dbash="docker run --entrypoint /bin/bash -it --pull always"
 alias dsh="docker run --entrypoint /bin/sh -it --pull always"
+alias vim="nvim"
+bindkey '^x^e' edit-command-line
 eval "$(mcfly init zsh)"
 
 
