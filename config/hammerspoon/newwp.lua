@@ -42,6 +42,18 @@ local download_from_url = function(url, filepath)
 	end
 end
 
+local get_screen_by_index = function(index)
+	for i, screen in ipairs(hs.screen.allScreens()) do
+		print("Checking screen", i, index, screen)
+		if i == index then
+			print("Found screen")
+			return screen
+		end
+	end
+	print("No screen found for index", index)
+	return nil
+end
+
 function newwp(index, screen)
 	if screen == nil then
 		for _, screen in ipairs(hs.screen.allScreens()) do
@@ -49,6 +61,11 @@ function newwp(index, screen)
 		end
 		return
 	end
+	if type(screen) == "number" then
+		screen = get_screen_by_index(screen)
+	end
+	print("Screen is:", screen)
+
 	local meta = call_url(0).meta
 	local per_page = meta.per_page
 	local total = meta.total
