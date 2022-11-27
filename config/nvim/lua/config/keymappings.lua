@@ -51,6 +51,10 @@ key_mapper("n", "g.", '/\\V\\C<C-r>"<CR>cgn<C-a><Esc>')
 key_mapper("n", "<F1>", "<Nop>")
 key_mapper("i", "<F1>", "<Nop>")
 
+-- Auto-split on commas (with auto-indent), in case you don't have autoformatting setup.
+-- TODO: some version of this that checks that the , is of type @punctiation.delimiter (might have to make a custom method)
+key_mapper("n", "<leader>,", ":s/,/,\\r/g<CR>`[v`]=<CR><Esc>:nohl<CR>")
+
 -- Overwrite the packer commands to work without packer directly loaded (for lazy loading) (borrowed from nvchad)
 vim.cmd("silent! command PackerCompile lua require 'plugins' require('packer').compile()")
 vim.cmd("silent! command PackerInstall lua require 'plugins' require('packer').install()")

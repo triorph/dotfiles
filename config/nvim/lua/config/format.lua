@@ -45,6 +45,7 @@ require("null-ls").setup({
 		}),
 		-- require("null-ls").builtins.formatting.google_java_format,
 		require("null-ls").builtins.formatting.black,
+		require("null-ls").builtins.formatting.rufo,
 		require("null-ls").builtins.formatting.prettier.with({
 			filetypes = {
 				"javascript",
@@ -67,7 +68,7 @@ require("null-ls").setup({
 		require("null-ls").builtins.diagnostics.pylama.with({
 			extra_args = { "--linters=print,mccabe,pycodestyle,pyflakes", "--ignore=E501,W0612,W605,E231,E203" },
 		}),
-		checkstyle,
+		-- checkstyle,
 		-- require("null-ls").builtins.completion.spell,
 	},
 	on_attach = function(client, bufnr)

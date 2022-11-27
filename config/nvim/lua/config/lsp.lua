@@ -190,7 +190,7 @@ local jdtls_on_attach = function(client, bufnr)
 	require("jdtls").setup_dap({ hotcodereplace = "auto" })
 	buf_nmap_cmd("<leader>djm", "lua require('jdtls').test_nearest_method()")
 	buf_nmap_cmd("<leader>djc", "lua require('jdtls').test_class()")
-	on_attach(client, bufnr)
+	on_attach_no_format(client, bufnr)
 end
 
 local jdtls_bundles = {
