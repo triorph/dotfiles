@@ -6,6 +6,7 @@ fi
 if [[ $EUID == 0 ]]; then
     export ZSH_DISABLE_COMPFIX="true"
 fi
+HISTCONTROL="ignorespace"
 export ZSH="$HOME/.oh-my-zsh"
 export NVM_COMPLETION="true"
 

@@ -45,7 +45,7 @@ require("null-ls").setup({
 		}),
 		-- require("null-ls").builtins.formatting.google_java_format,
 		require("null-ls").builtins.formatting.black,
-		require("null-ls").builtins.formatting.rufo,
+		-- require("null-ls").builtins.formatting.rufo,
 		require("null-ls").builtins.formatting.prettier.with({
 			filetypes = {
 				"javascript",

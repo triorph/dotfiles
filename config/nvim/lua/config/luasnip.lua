@@ -29,14 +29,7 @@ ls.config.set_config({
 
 	-- Crazy highlights!!
 	-- #vid3
-	-- ext_opts = nil,
-	ext_opts = {
-		[types.choiceNode] = {
-			active = {
-				virt_text = { { " <- Current Choice", "NonTest" } },
-			},
-		},
-	},
+	ext_opts = nil,
 })
 
 -- this will expand the current item or jump to the next item within the snippet.
@@ -70,8 +63,7 @@ vim.keymap.set("n", "<leader>ss", "<cmd>source ~/.config/nvim/lua/config/luasnip
 local rustsnips = {
 	snippet("main", {
 		t({ "fn main () " }),
-		c(1, { t(""), t("-> Result<()> ") }),
-		t({ "{", "    " }),
+		c(1, { t({ " {", "    " }), t({ "-> Result<()> {", "    color_eyre::install()?;", "    " }) }),
 		i(0),
 		t({ "", "}" }),
 	}),
@@ -79,6 +71,8 @@ local rustsnips = {
 	snippet("modtest", {
 		t({ "#[cfg(test)]", "mod test {", "    " }),
 		c(1, { t("use super::*;"), t("") }),
+		t({ "", "    " }),
+		c(2, { t("use pretty_assertions::assert_eq;"), t("use pretty_assertions::{assert_eq, assert_ne};"), t("") }),
 		t({ "", "    " }),
 		i(0),
 		t({ "", "}" }),
