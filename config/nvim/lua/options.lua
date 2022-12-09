@@ -31,6 +31,7 @@ vim.o.smartcase = true
 vim.g.pyindent_open_paren = vim.o.shiftwidth
 -- limit the autocomplete popup menu size (a pet peeve of mine is how often the autocomplete blocks what you actually want to see)
 vim.o.pumheight = 5
+vim.cmd([[set colorcolumn=81,121]])
 
 vim.cmd([[ ab breakpiont breakpoint ]])
 vim.cmd([[ autocmd filetype python setlocal colorcolumn=89 ]])
