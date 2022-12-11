@@ -52,7 +52,6 @@ local on_attach = function(client, bufnr)
 	buf_nmap_cmd("gT", "Telescope lsp_type_definitions")
 	buf_nmap_cmd("gi", "Telescope lsp_implementations")
 	buf_nmap_cmd("gh", "lua vim.diagnostic.open_float()")
-	buf_nmap_cmd("gF", "Telescope grep_string")
 	buf_nmap_cmd("<C-k>", "lua vim.lsp.buf.signature_help()")
 	buf_nmap_cmd("gr", "lua vim.lsp.buf.rename()")
 	buf_nmap_cmd("<leader>tl", "lua vim.diagnostic.setloclist({open=false})<cr><cmd>Telescope loclist")
@@ -149,29 +148,33 @@ nvim_lsp.yamlls.setup({
 	},
 })
 
-nvim_lsp.rust_analyzer.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	flags = {
-		debounce_text_changes = 150,
-	},
-	settings = {
-		["rust-analyzer"] = {
-			assist = {
-				importMergeBehavior = "last",
-				importPrefix = "by_self",
-			},
-			diagnostics = {
-				disabled = { "unresolved-import" },
-			},
-			cargo = {
-				loadOutDirsFromCheck = true,
-			},
-			procMacro = {
-				enable = true,
-			},
-			checkOnSave = {
-				command = "clippy",
+local rt = require("rust-tools")
+
+rt.setup({
+	server = {
+		on_attach = on_attach,
+		capabilities = capabilities,
+		flags = {
+			debounce_text_changes = 150,
+		},
+		settings = {
+			["rust-analyzer"] = {
+				assist = {
+					importMergeBehavior = "last",
+					importPrefix = "by_self",
+				},
+				diagnostics = {
+					disabled = { "unresolved-import" },
+				},
+				cargo = {
+					loadOutDirsFromCheck = true,
+				},
+				procMacro = {
+					enable = true,
+				},
+				checkOnSave = {
+					command = "clippy",
+				},
 			},
 		},
 	},

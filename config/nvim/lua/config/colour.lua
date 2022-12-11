@@ -11,8 +11,8 @@ vim.g.tokyonight_italic_functions = true
 vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
 vim.g.tokyonight_italic_comments = true
 vim.g.rose_pine_variant = "moon" -- options are  "base", "moon", and "dawn"
--- vim.g.catppuccin_flavour = "mocha" -- options are "frappe", "latte", "macchiato", and "mocha"
 
 -- Load the colorscheme
 -- vim.cmd([[set background=light]])
-vim.cmd([[colorscheme catppuccin-mocha]])
+vim.opt.background = "dark"
+vim.cmd.colorscheme("catppuccin-mocha")

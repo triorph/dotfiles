@@ -10,7 +10,6 @@ end
 -- ahmedkhalf/project.nvim  (project management)
 -- rmagatti/goto-preview  (popups of definition previews etc..)
 -- RRethy/nvim-treesitter-textsubjects (expand your selection out or in via treesitter block)
--- simrat39/rust-tools.nvim (additional support for rust-analyzer functions that aren't technically part of LSP spec)
 -- princejoogie/dir-telescope.nvim (allow telescope to search on a directory before calling live_grep/find file)
 -- folke/styler.nvim (different colorschemes per file type)
 -- mrjones2014/legendary.nvim (define keymaps and sets up a command palette for them)
@@ -31,11 +30,12 @@ return packer.startup(function()
 	-- Language Server Processing(?)
 	use({ -- better LSP handling, and setup configs
 		"glepnir/lspsaga.nvim",
-		requires = { "neovim/nvim-lspconfig", "mfussenegger/nvim-jdtls" },
+		requires = { "neovim/nvim-lspconfig", "mfussenegger/nvim-jdtls", "simrat39/rust-tools.nvim" },
 		config = function()
 			require("config/lsp")
 		end,
 	})
+	-- (additional support for rust-analyzer functions that aren't technically part of LSP spec)
 	-- use({
 	-- 	"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
 	-- 	config = function()
@@ -268,7 +268,7 @@ return packer.startup(function()
 			"rktjmp/lush.nvim",
 			"Scysta/pink-panic.nvim",
 			{ "luisiacc/gruvbox-baby", branch = "main" },
-			-- { "timilio/oxocarbon.nvim", branch = "fennel" },
+			{ "nyoom-engineering/oxocarbon.nvim" },
 		},
 
 		config = function()

@@ -67,3 +67,6 @@ ncmdmap("<leader>g", "Ge:")
 -- Resource my init.lua
 ncmdmap("<leader>sr", "source ~/.config/nvim/init.lua")
 -- vim.ui.select({ 'tabs', 'spaces' }, { prompt = 'Select tabs or spaces:', format_item = function(item) return "I'd like to choose " .. item end, }, function(choice) if choice == 'spaces' then vim.o.expandtab = true else vim.o.expandtab = false end end)
+
+-- basic navigation if lsp isn't present
+ncmdmap("gF", "Telescope grep_string")

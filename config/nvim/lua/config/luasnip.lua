@@ -94,7 +94,7 @@ local rustsnips = {
 	snippet("eq", fmt("assert_eq!({}, {});{}", { i(1), i(2), i(0) })),
 
 	snippet("enum", {
-		t({ "#[derive(Debug, PartialEq)]", "enum " }),
+		t({ "#[derive(Debug, Eq, PartialEq)]", "enum " }),
 		i(1, "Name"),
 		t({ " {", "     " }),
 		i(0),
@@ -102,7 +102,7 @@ local rustsnips = {
 	}),
 
 	snippet("struct", {
-		t({ "#[derive(Debug, PartialEq)]", "struct " }),
+		t({ "#[derive(Debug, Eq, PartialEq)]", "struct " }),
 		i(1, "Name"),
 		t({ " {", "    " }),
 		i(0),
