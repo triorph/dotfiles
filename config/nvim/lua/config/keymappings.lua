@@ -46,6 +46,11 @@ key_mapper("v", "K", ":m '<-2<CR>gv=gv")
 -- MaskDask change same text again
 vim.api.nvim_set_keymap("n", "cg*", "*Ncgn", { silent = true })
 key_mapper("n", "g.", '/\\V\\C<C-r>"<CR>cgn<C-a><Esc>')
+vim.keymap.set("n", "<Esc>", function()
+	require("notify").dismiss() -- clear notifications
+	vim.cmd.nohlsearch() -- clear highlights
+	vim.cmd.echo() -- clear short-message
+end)
 
 -- Undo F1 as I keep hitting it accidentally when trying to hit ESC for exiting insert mode (less of a problem after capslock mapping)
 key_mapper("n", "<F1>", "<Nop>")

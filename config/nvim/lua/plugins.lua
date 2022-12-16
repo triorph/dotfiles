@@ -348,37 +348,37 @@ return packer.startup(function()
 			vim.cmd([[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]])
 		end,
 	})
-	-- use({
-	-- 	"folke/noice.nvim",
-	-- 	event = "VimEnter",
-	-- 	config = function()
-	-- 		require("noice").setup({
-	-- 			messages = { enabled = false, view_search = false },
-	-- 			lsp = {
-	-- 				-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-	-- 				override = {
-	-- 					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-	-- 					["vim.lsp.util.stylize_markdown"] = true,
-	-- 					["cmp.entry.get_documentation"] = true,
-	-- 				},
-	-- 			},
-	-- 			-- you can enable a preset for easier configuration
-	-- 			presets = {
-	-- 				bottom_search = true,
-	-- 				command_palette = true,
-	-- 				long_message_to_split = true,
-	-- 				inc_rename = false,
-	-- 				lsp_doc_border = false,
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- 	requires = {
-	-- 		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-	-- 		"MunifTanjim/nui.nvim",
-	-- 		"rcarriga/nvim-notify",
-	-- 	},
-	-- 	before = "telescope.nvim",
-	-- })
+	use({
+		"folke/noice.nvim",
+		event = "VimEnter",
+		config = function()
+			require("noice").setup({
+				messages = { enabled = false, view_search = false },
+				lsp = {
+					-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+					override = {
+						["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+						["vim.lsp.util.stylize_markdown"] = true,
+						["cmp.entry.get_documentation"] = true,
+					},
+				},
+				-- you can enable a preset for easier configuration
+				presets = {
+					bottom_search = true,
+					command_palette = true,
+					long_message_to_split = true,
+					inc_rename = false,
+					lsp_doc_border = false,
+				},
+			})
+		end,
+		requires = {
+			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+			"MunifTanjim/nui.nvim",
+			"rcarriga/nvim-notify",
+		},
+		before = "telescope.nvim",
+	})
 	use({ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
 		config = function()
