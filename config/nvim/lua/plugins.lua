@@ -277,7 +277,6 @@ return require("lazy").setup({
 		end,
 	},
 	-- Misc utils
-	{ "npxbr/glow.nvim", build = "GlowInstall" }, -- markdown preview
 	{ -- the ability to edit surrounding things, like quotes or brackets
 		"kylechui/nvim-surround",
 		version = "*",
