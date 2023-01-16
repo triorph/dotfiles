@@ -1,4 +1,4 @@
-require("lspsaga").init_lsp_saga()
+require("lspsaga").setup({})
 local nvim_lsp = require("lspconfig")
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()

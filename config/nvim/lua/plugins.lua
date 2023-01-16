@@ -1,11 +1,15 @@
-local present, _ = pcall(require, "packerInit")
-local packer
-
-if present then
-	packer = require("packer")
-else
-	return false
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
 end
+vim.opt.rtp:prepend(lazypath)
 -- to still try:
 -- ahmedkhalf/project.nvim  (project management)
 -- rmagatti/goto-preview  (popups of definition previews etc..)
@@ -13,28 +17,27 @@ end
 -- princejoogie/dir-telescope.nvim (allow telescope to search on a directory before calling live_grep/find file)
 -- folke/styler.nvim (different colorschemes per file type)
 -- mrjones2014/legendary.nvim (define keymaps and sets up a command palette for them)
-local use = packer.use
-return packer.startup(function()
+return require("lazy").setup({
 	-- Packer can manage itself
-	use("wbthomason/packer.nvim") -- manage plugins
+	"wbthomason/packer.nvim", -- manage plugins
 
 	-- git integration
-	use({
+	{
 		"lewis6991/gitsigns.nvim",
-		requires = { "nvim-lua/plenary.nvim" },
+		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			require("gitsigns").setup({ current_line_blame = true })
 		end,
-	})
+	},
 
 	-- Language Server Processing(?)
-	use({ -- better LSP handling, and setup configs
+	{ -- better LSP handling, and setup configs
 		"glepnir/lspsaga.nvim",
-		requires = { "neovim/nvim-lspconfig", "mfussenegger/nvim-jdtls", "simrat39/rust-tools.nvim" },
+		dependencies = { "neovim/nvim-lspconfig", "mfussenegger/nvim-jdtls", "simrat39/rust-tools.nvim" },
 		config = function()
 			require("config/lsp")
 		end,
-	})
+	},
 	-- (additional support for rust-analyzer functions that aren't technically part of LSP spec)
 	-- use({
 	-- 	"https://git.sr.ht/~whynothugo/lsp_lines.nvim",
@@ -42,47 +45,47 @@ return packer.startup(function()
 	-- 		require("lsp_lines").setup()
 	-- 	end,
 	-- })
-	use({ "rodjek/vim-puppet" })
-	use({ "kosayoda/nvim-lightbulb" }) -- puts lightbulbs when a code action is available
-	use({ -- takes care of showing LSP problems at the bottom of the screen
+	{ "rodjek/vim-puppet" },
+	{ "kosayoda/nvim-lightbulb" }, -- puts lightbulbs when a code action is available
+	{ -- takes care of showing LSP problems at the bottom of the screen
 		"folke/trouble.nvim",
-		requires = "kyazdani42/nvim-web-devicons",
+		dependencies = "kyazdani42/nvim-web-devicons",
 		config = function()
 			require("config/trouble")
 		end,
-	})
+	},
 
 	-- Code formatting and linting via the LSP
-	use({
+	{
 		"jose-elias-alvarez/null-ls.nvim",
 		config = function()
 			require("config/format")
 		end,
-	})
+	},
 
 	-- Tab headers
-	use({
+	{
 		"akinsho/nvim-bufferline.lua",
-		requires = "kyazdani42/nvim-web-devicons",
-		tag = "v2.*",
+		dependencies = "kyazdani42/nvim-web-devicons",
+		version = "v2.*",
 		config = function()
 			require("config/bufferline")
 		end,
-	})
+	},
 
 	-- statusline at the bottom of the screen
-	use({
+	{
 		"nvim-lualine/lualine.nvim",
-		requires = { "kyazdani42/nvim-web-devicons", opt = true },
+		dependencies = { "kyazdani42/nvim-web-devicons", lazy = true },
 		config = function()
 			require("config/lualine")
 		end,
-	})
+	},
 
 	-- Fuzzy search/file find
-	use({ -- awesome plugin that lets you open a window to fuzzy-find things
+	{ -- awesome plugin that lets you open a window to fuzzy-find things
 		"nvim-telescope/telescope.nvim",
-		requires = {
+		dependencies = {
 			{ "nvim-lua/popup.nvim" },
 			{ "nvim-lua/plenary.nvim" },
 			{ "nvim-telescope/telescope-file-browser.nvim" },
@@ -109,50 +112,48 @@ return packer.startup(function()
 			-- telescope.load_extension("noice")
 			telescope.load_extension("ui-select")
 		end,
-	})
-	use({ -- see your keymappings in telescope
+	},
+	{ -- see your keymappings in telescope
 		"lazytanuki/nvim-mapper",
 		config = function()
 			require("nvim-mapper").setup({})
 		end,
-		before = "telescope.nvim",
-	})
+	},
 	-- Copy/Paste
-	use({ -- store all yanks and allow you to open up a history in telescope
+	{ -- store all yanks and allow you to open up a history in telescope
 		"AckslD/nvim-neoclip.lua",
 		config = function()
 			require("neoclip").setup()
 		end,
-		before = "telescope.nvim",
-	})
+	},
 
 	-- Debugging
-	use({
+	{
 		"rcarriga/nvim-dap-ui",
-		requires = { "mfussenegger/nvim-dap" },
+		dependencies = { "mfussenegger/nvim-dap" },
 		config = function()
 			require("config/debug")
 		end,
-	})
-	use({
+	},
+	{
 		"theHamsta/nvim-dap-virtual-text",
 		config = function()
 			require("nvim-dap-virtual-text").setup({})
 		end,
-	})
+	},
 
 	-- Snippets
-	use({
+	{
 		"L3MON4D3/LuaSnip",
 		config = function()
 			require("config/luasnip")
 		end,
-	})
+	},
 
 	-- Autocompletion
-	use({ -- more of the "de facto" choice. Trying out.
+	{ -- more of the "de facto" choice. Trying out.
 		"hrsh7th/nvim-cmp",
-		requires = {
+		dependencies = {
 			{ "onsails/lspkind.nvim" },
 			{ "hrsh7th/cmp-nvim-lua" },
 			{ "hrsh7th/cmp-nvim-lsp" },
@@ -164,12 +165,12 @@ return packer.startup(function()
 		config = function()
 			require("config/cmp")
 		end,
-	})
+	},
 
 	-- Better folds
-	use({
+	{
 		"kevinhwang91/nvim-ufo",
-		requires = "kevinhwang91/promise-async",
+		dependencies = "kevinhwang91/promise-async",
 		config = function()
 			vim.wo.foldcolumn = "1"
 			vim.wo.foldlevel = 99 -- feel free to decrease the value
@@ -177,57 +178,57 @@ return packer.startup(function()
 
 			require("ufo").setup()
 		end,
-	})
+	},
 
 	-- Comments
-	use({ -- autocommenting of code
+	{ -- autocommenting of code
 		"numToStr/Comment.nvim",
 		config = function()
 			require("Comment").setup()
 		end,
-	})
+	},
 
 	-- help
-	use({ -- after a pause, bring up a popup that shows what commands you have available after pressing a key
+	{ -- after a pause, bring up a popup that shows what commands you have available after pressing a key
 		"folke/which-key.nvim",
 		config = function()
 			require("which-key").setup({})
 		end,
-	})
-	use({ "mrjones2014/legendary.nvim" })
+	},
+	{ "mrjones2014/legendary.nvim" },
 
 	-- Highlight code
-	use({ -- treesitter - better highlighting of variables
+	{ -- treesitter - better highlighting of variables
 		"nvim-treesitter/nvim-treesitter",
-		requires = {
+		dependencies = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			"nvim-treesitter/nvim-treesitter-context",
 			"nvim-treesitter/playground",
 		},
-		run = function()
+		build = function()
 			vim.cmd([[:TSUpdate]])
 		end,
 		config = function()
 			require("config/treesitter")
 		end,
-	})
-	use({ -- show indentation levels
+	},
+	{ -- show indentation levels
 		"lukas-reineke/indent-blankline.nvim",
 		config = function()
 			require("config/indent")
 		end,
-	})
-	use({ "mechatroner/rainbow_csv" }) -- syntax highlighting of columns for CSV files
+	},
+	{ "mechatroner/rainbow_csv" }, -- syntax highlighting of columns for CSV files
 
 	-- Look pretty
-	use({ -- dashboard
+	{ -- dashboard
 		"goolord/alpha-nvim",
-		requires = { "kyazdani42/nvim-web-devicons" },
+		dependencies = { "kyazdani42/nvim-web-devicons" },
 		config = function()
 			require("config/dashboard")
 		end,
-	})
-	use({ -- only show colour for what's active
+	},
+	{ -- only show colour for what's active
 		"folke/twilight.nvim",
 		config = function()
 			require("twilight").setup({
@@ -238,27 +239,27 @@ return packer.startup(function()
 				},
 			})
 		end,
-	})
-	use({ -- F11 to go all in on focus
+	},
+	{ -- F11 to go all in on focus
 		"folke/zen-mode.nvim",
 		config = function()
 			require("zen-mode").setup({
 				plugins = { tmux = { enabled = true } },
 			})
 		end,
-	})
-	use({ -- fibonacci window splitting (doesn't interact well with bufferline though)
+	},
+	{ -- fibonacci window splitting (doesn't interact well with bufferline though)
 		"beauwilliams/focus.nvim",
 		config = function()
 			require("focus").setup()
 		end,
-	})
+	},
 
 	-- colour schemes
-	use({
+	{
 		"folke/tokyonight.nvim",
-		requires = {
-			{ "catppuccin/nvim", as = "catppuccin" },
+		dependencies = {
+			{ "catppuccin/nvim", name = "catppuccin" },
 			"EdenEast/nightfox.nvim",
 			"morhetz/gruvbox",
 			"rose-pine/neovim",
@@ -274,59 +275,59 @@ return packer.startup(function()
 		config = function()
 			require("config/colour")
 		end,
-	})
+	},
 	-- Misc utils
-	use({ "npxbr/glow.nvim", run = "GlowInstall" }) -- markdown preview
-	use({ -- the ability to edit surrounding things, like quotes or brackets
+	{ "npxbr/glow.nvim", build = "GlowInstall" }, -- markdown preview
+	{ -- the ability to edit surrounding things, like quotes or brackets
 		"kylechui/nvim-surround",
-		tag = "*",
+		version = "*",
 		config = function()
 			require("nvim-surround").setup({})
 		end,
-	})
-	use({ -- git plugin
+	},
+	{ -- git plugin
 		"tpope/vim-fugitive",
 
-		run = function()
+		build = function()
 			vim.cmd([[:helptags ~/.local/share/nvim/site/pack/packer/start/vim-fugitive/doc]])
 		end,
-	})
-	use({ "tpope/vim-sleuth" }) -- auto-detection of tabwidth etc..
-	use({ "wellle/targets.vim" }) -- more text objects, like "inside argument"
-	use({ --auto-close brackets etc..
+	},
+	{ "tpope/vim-sleuth" }, -- auto-detection of tabwidth etc..
+	{ "wellle/targets.vim" }, -- more text objects, like "inside argument"
+	{ --auto-close brackets etc..
 		"windwp/nvim-autopairs",
 		config = function()
 			require("nvim-autopairs").setup({})
 		end,
-	})
-	use({
+	},
+	{
 		"brenoprata10/nvim-highlight-colors",
 		config = function()
 			require("nvim-highlight-colors").setup()
 		end,
-	})
-	use({
+	},
+	{
 		"windwp/nvim-ts-autotag",
 		config = function()
 			require("nvim-ts-autotag").setup()
 		end,
-	}) -- auto-close html tags etc..
-	use({ -- stop windows jarring when opening stuff like Trouble etc..
+	}, -- auto-close html tags etc..
+	{ -- stop windows jarring when opening stuff like Trouble etc..
 		"luukvbaal/stabilize.nvim",
 		config = function()
 			require("stabilize").setup()
 		end,
-	})
-	use({ -- coloured borders on the active split
+	},
+	{ -- coloured borders on the active split
 		"nvim-zh/colorful-winsep.nvim",
 		config = function()
 			require("colorful-winsep").setup({})
 		end,
-	})
-	use({ -- alternative to EasyMotion or Sneak for faster movement
+	},
+	{ -- alternative to EasyMotion or Sneak for faster movement
 
 		"ggandor/leap.nvim",
-		requires = { "ggandor/flit.nvim" },
+		dependencies = { "ggandor/flit.nvim" },
 		config = function()
 			require("leap").opts.safe_labels = {}
 			require("leap").add_default_mappings()
@@ -340,15 +341,15 @@ return packer.startup(function()
 				require("leap").leap({ target_windows = { vim.fn.win_getid() } })
 			end, { noremap = true, silent = true })
 		end,
-	})
-	use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
-	use({ -- allow . repeat to work with more plugins (surround, lightspeed, etc.)
+	},
+	{ "sindrets/diffview.nvim", dependencies = "nvim-lua/plenary.nvim" },
+	{ -- allow . repeat to work with more plugins (surround, lightspeed, etc.)
 		"tpope/vim-repeat",
 		config = function()
 			vim.cmd([[silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)]])
 		end,
-	})
-	use({
+	},
+	{
 		"folke/noice.nvim",
 		event = "VimEnter",
 		config = function()
@@ -372,14 +373,13 @@ return packer.startup(function()
 				},
 			})
 		end,
-		requires = {
+		dependencies = {
 			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 			"MunifTanjim/nui.nvim",
 			"rcarriga/nvim-notify",
 		},
-		before = "telescope.nvim",
-	})
-	use({ -- disable repeatedly hjkl keys, to force you to get used to other options.
+	},
+	{ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
 		config = function()
 			vim.g.list_of_normal_keys = { "j", "k" }
@@ -390,7 +390,7 @@ return packer.startup(function()
 			vim.g.hardtime_motion_with_count_resets = 1
 			vim.g.hardtime_ignore_buffer_patterns = { ".*lpha" }
 		end,
-	})
-	use({ "andymass/vim-matchup", event = "VimEnter" })
-	use({ "ThePrimeagen/vim-be-good" })
-end)
+	},
+	{ "andymass/vim-matchup", event = "VimEnter" },
+	{ "ThePrimeagen/vim-be-good" },
+})

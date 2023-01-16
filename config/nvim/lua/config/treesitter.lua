@@ -22,6 +22,15 @@ require("nvim-treesitter.configs").setup({
 			"markdown_inline",
 		},
 	},
+	incremental_selection = {
+		enable = true,
+		keymaps = {
+			init_selection = "<CR>",
+			node_incremental = "<CR>",
+			scope_incremental = "<S-CR>",
+			node_decremental = "<BS>",
+		},
+	},
 	ignore_install = {}, -- List of parsers to ignore installing
 	indent = {
 		enable = true,
@@ -151,9 +160,9 @@ local embedded_signalflow = vim.treesitter.parse_query(
 	[[
 		(attribute
 		  (identifier) @_name (#eq? @_name "program_text")
-		  (expression 
-			(template_expr 
-			  (heredoc_template 
+		  (expression
+			(template_expr
+			  (heredoc_template
 				(template_literal) @signalflow_text))))
 	]]
 )
