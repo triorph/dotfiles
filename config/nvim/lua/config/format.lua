@@ -1,52 +1,16 @@
-local h = require("null-ls.helpers")
-local methods = require("null-ls.methods")
-local log = require("null-ls.logger")
-local u = require("null-ls.utils")
+local builtins = require("null-ls").builtins
 
-local DIAGNOSTICS = methods.internal.DIAGNOSTICS
-
-local checkstyle = h.make_builtin({
-	name = "checkstyle",
-	meta = {
-		description = "Generic code quality linter",
-	},
-	method = DIAGNOSTICS,
-	filetypes = { "java" },
-	generator_opts = {
-		command = "checkstyle",
-		args = {
-			"-c",
-			u.get_root() .. "/checkstyle-rules.xml",
-			"$FILENAME",
-		},
-		to_stdin = false,
-		from_stderr = false,
-		to_temp_file = false,
-		format = "line",
-		check_exit_code = function(code)
-			return code < 1
-		end,
-		on_output = h.diagnostics.from_patterns({
-			{
-				pattern = [[.(%w+).*:(%d+):(%d+): (.+)]],
-				groups = { "code", "row", "col", "message" },
-			},
-		}),
-	},
-	factory = h.generator_factory,
-})
 local group = vim.api.nvim_create_augroup("DocumentFormatting", { clear = true })
 require("null-ls").setup({
 	debug = true,
 	sources = {
-		require("null-ls").builtins.formatting.stylua,
-		require("null-ls").builtins.formatting.isort.with({
+		builtins.formatting.stylua,
+		builtins.formatting.isort.with({
 			extra_args = { "--profile=black" },
 		}),
-		-- require("null-ls").builtins.formatting.google_java_format,
-		require("null-ls").builtins.formatting.black,
-		-- require("null-ls").builtins.formatting.rufo,
-		require("null-ls").builtins.formatting.prettier.with({
+		builtins.formatting.black,
+		builtins.diagnostics.shellcheck,
+		builtins.formatting.prettier.with({
 			filetypes = {
 				"javascript",
 				"javascriptreact",
@@ -64,11 +28,22 @@ require("null-ls").setup({
 				"handlebars",
 			},
 		}),
-		require("null-ls").builtins.diagnostics.eslint,
-		require("null-ls").builtins.diagnostics.pylama.with({
+		builtins.diagnostics.eslint,
+		builtins.diagnostics.pylama.with({
 			extra_args = { "--linters=print,mccabe,pycodestyle,pyflakes", "--ignore=E501,W0612,W605,E231,E203" },
 		}),
-		-- checkstyle,
+		builtins.diagnostics.checkstyle.with({
+			extra_args = {
+				"-c",
+				"./checkstyle-rules.xml",
+			},
+			condition = function(utils)
+				return utils.root_has_file({ "checkstyle-rules.xml" })
+			end,
+			env = {
+				JAVA_HOME = vim.env.HOME .. "/.asdf/installs/java/openjdk-19",
+			},
+		}),
 		-- require("null-ls").builtins.completion.spell,
 	},
 	on_attach = function(client, bufnr)
@@ -78,8 +53,12 @@ require("null-ls").setup({
 				group = group,
 				buffer = bufnr,
 				callback = function()
-					-- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
-					vim.lsp.buf.format({ bufnr = bufnr })
+					vim.lsp.buf.format({
+						bufnr = bufnr,
+						filter = function(filter_client)
+							return filter_client.name == "null-ls"
+						end,
+					})
 				end,
 			})
 		end

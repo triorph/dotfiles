@@ -210,32 +210,33 @@ vim.list_extend(
 local setup_jdtls = function()
 	-- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
 	local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
-	local jdtls_base_path = "/opt/homebrew/Cellar/jdtls/1.15.0/libexec"
+	-- local jdtls_base_path = "/opt/homebrew/Cellar/jdtls/*/libexec"
 
-	local workspace_dir = "/Users/mwalsh2/work/" .. project_name
-	local java_executable = "/Users/mwalsh2/.asdf/installs/java/openjdk-19/bin/java"
-	local shared_config_path = jdtls_base_path .. "/config_mac"
-	local jar_path = jdtls_base_path .. "/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
+	local workspace_dir = "/Users/mwalsh2/work/"
+	-- local java_executable = "/Users/mwalsh2/.asdf/installs/java/openjdk-19/bin/java"
+	-- local shared_config_path = jdtls_base_path .. "/config_mac"
+	-- local jar_path = jdtls_base_path .. "/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
 	local config = {
 		-- The command that starts the language server
 		-- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
 		cmd = {
-			java_executable,
-			"-Declipse.application=org.eclipse.jdt.ls.core.id1",
-			"-Dosgi.bundles.defaultStartLevel=4",
-			"-Declipse.product=org.eclipse.jdt.ls.core.product",
-			"-Dlog.level=ALL",
-			"-noverify",
-			"-Xms1G",
-			"--add-modules=ALL-SYSTEM",
-			"--add-opens",
-			"java.base/java.util=ALL-UNNAMED",
-			"--add-opens",
-			"java.base/java.lang=ALL-UNNAMED",
-			"-jar",
-			jar_path,
-			"-configuration",
-			shared_config_path,
+			-- java_executable,
+			-- "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+			-- "-Dosgi.bundles.defaultStartLevel=4",
+			-- "-Declipse.product=org.eclipse.jdt.ls.core.product",
+			-- "-Dlog.level=ALL",
+			-- "-noverify",
+			-- "-Xms1G",
+			-- "--add-modules=ALL-SYSTEM",
+			-- "--add-opens",
+			-- "java.base/java.util=ALL-UNNAMED",
+			-- "--add-opens",
+			-- "java.base/java.lang=ALL-UNNAMED",
+			-- "-jar",
+			-- jar_path,
+			-- "-configuration",
+			-- shared_config_path,
+			"jdtls",
 			"-data",
 			workspace_dir,
 		},
