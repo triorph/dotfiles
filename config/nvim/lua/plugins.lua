@@ -288,7 +288,7 @@ return require("lazy").setup({
 		"tpope/vim-fugitive",
 
 		build = function()
-			vim.cmd([[:helptags ~/.local/share/nvim/site/pack/packer/start/vim-fugitive/doc]])
+			vim.cmd([[:helptags ~/.local/share/nvim/lazy/vim-fugitive/doc]])
 		end,
 	},
 	{ "tpope/vim-sleuth" }, -- auto-detection of tabwidth etc..

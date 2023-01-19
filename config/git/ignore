@@ -9,3 +9,4 @@ workspace
 *.iml
 .metadata/*
 jdt.ls*
+.tool-versions
