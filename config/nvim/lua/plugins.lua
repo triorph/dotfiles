@@ -18,6 +18,8 @@ vim.opt.rtp:prepend(lazypath)
 -- folke/styler.nvim (different colorschemes per file type)
 -- mrjones2014/legendary.nvim (define keymaps and sets up a command palette for them)
 return require("lazy").setup({
+	-- Lazy should manage itself
+	{ "folke/lazy.nvim" },
 	-- git integration
 	{
 		"lewis6991/gitsigns.nvim",
