@@ -24,8 +24,7 @@ theme.section.mru_cwd.val = {
 	{
 		type = "group",
 		val = function()
-			local ret = { theme.mru(0, vim.fn.getcwd(), 20) }
-			vim.print(ret)
+			local ret = { theme.mru(0, vim.fn.getcwd(), 13) }
 			for _, inner in ipairs(ret) do
 				for _, val in ipairs(inner.val) do
 					val.opts.position = "center"
