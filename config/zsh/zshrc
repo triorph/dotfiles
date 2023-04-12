@@ -6,7 +6,6 @@ fi
 if [[ $EUID == 0 ]]; then
     export ZSH_DISABLE_COMPFIX="true"
 fi
-source ~/.fzf.zsh
 HISTCONTROL="ignorespace"
 export ZSH="$HOME/.oh-my-zsh"
 export NVM_COMPLETION="true"
@@ -88,3 +87,5 @@ export KUBECONFIG=$(atlas kitt context:create --pid=$$)
 alias luamake=/home/mfw56/.local/share/lua-language-server/3rd/luamake/luamake
 
 [[ ! -f ~/.zsh_profile ]] || source ~/.zsh_profile
+source ~/.fzf.zsh
+bindkey "ç" fzf-cd-widget

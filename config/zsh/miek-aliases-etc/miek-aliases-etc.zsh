@@ -67,6 +67,5 @@ alias dbash="docker run --entrypoint /bin/bash -it --pull always"
 alias dsh="docker run --entrypoint /bin/sh -it --pull always"
 alias vim="nvim"
 bindkey '^x^e' edit-command-line
-eval "$(mcfly init zsh)"
 
 
