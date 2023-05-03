@@ -27,3 +27,4 @@ toggle_window({ "ctrl" }, "s", "Slack", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 toggle_window({ "ctrl", "alt" }, "z", "zoom.us")
 toggle_window({ "ctrl", "alt" }, "tab", "Emacs", { x = 0.01, y = 0.01, w = 0.49, h = 0.99 })
 toggle_window({ "ctrl", "alt" }, "d", "IntelliJ IDEA")
+toggle_window({ "ctrl", "alt" }, "c", "hammerspoon", { x = 0.2, y = 0.2, w = 0.5, h = 0.5 }) -- hammerspoon console
