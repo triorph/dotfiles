@@ -267,6 +267,7 @@ return require("lazy").setup({
 			"rebelot/kanagawa.nvim",
 			"rktjmp/lush.nvim",
 			"Scysta/pink-panic.nvim",
+			"maxmx03/fluoromachine.nvim",
 			{ "luisiacc/gruvbox-baby", branch = "main" },
 			{ "nyoom-engineering/oxocarbon.nvim" },
 		},

@@ -12,6 +12,8 @@ vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
 vim.g.tokyonight_italic_comments = true
 vim.g.rose_pine_variant = "moon" -- options are  "base", "moon", and "dawn"
 
+-- require("fluoromachine").setup({ glow = false, theme = "retrowave" }) -- fluoromachine or retrowave
+
 -- Load the colorscheme
 -- vim.cmd([[set background=light]])
 vim.opt.background = "dark"
