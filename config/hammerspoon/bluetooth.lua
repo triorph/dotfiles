@@ -1,4 +1,6 @@
 local headphones_id = "88-c9-e8-37-35-61"
+local earbuds_id = "f8-4e-17-ee-97-9f"
+
 local blueutil_command = function(args)
 	local t = hs.task.new("/opt/homebrew/bin/blueutil", nil, args)
 	t:start()
@@ -17,6 +19,15 @@ local disconnect_headphones = function()
 	blueutil_command({ "--disconnect", headphones_id, "--wait-disconnect", headphones_id })
 end
 
+local disconnect_earbuds = function()
+	print("Disconnecting earbuds")
+	blueutil_command({ "--disconnect", earbuds_id, "--wait-disconnect", earbuds_id })
+end
+
+local connect_earbuds = function()
+	blueutil_command({ "--connect", earbuds_id })
+end
+
 local bluetooth_watcher = function(event)
 	if event == hs.caffeinate.watcher.systemWillSleep then
 		bluetooth_power("off")
@@ -30,3 +41,5 @@ watcher:start()
 
 hs.hotkey.bind({ "ctrl", "alt" }, "h", connect_headphones)
 hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "h", disconnect_headphones)
+hs.hotkey.bind({ "ctrl", "alt" }, "e", connect_earbuds)
+hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "e", disconnect_earbuds)

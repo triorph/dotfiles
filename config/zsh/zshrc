@@ -14,6 +14,7 @@ export NVM_COMPLETION="true"
 VSCODE=code
 export PATH=$PATH:$HOME/.pulumi/bin:/snap/bin
 export PATH=$PATH:$HOME/.cargo/bin:$HOME/.local/bin
+export PATH=$PATH:$HOME/.docker/bin
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment the following line to use hyphen-insensitive completion.
