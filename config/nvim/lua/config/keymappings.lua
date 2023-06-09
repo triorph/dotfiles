@@ -75,3 +75,13 @@ ncmdmap("<leader>sr", "source ~/.config/nvim/init.lua")
 
 -- basic navigation if lsp isn't present
 ncmdmap("gF", "Telescope grep_string")
+
+vim.api.nvim_create_user_command("SplunkFormat", function()
+	vim.cmd([[
+%!jq -c '{"t":.result._time, "m": .result.message}'     
+%norm d3f"
+%norm f"df:
+%norm f"x$xx
+%g/^/m0
+	]])
+end, {})
