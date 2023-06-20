@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+set -e
+
+########################################################
+# ---- Check for if writing to a protected branch ---- #
+########################################################
+
+protected_branches=('master' 'main')
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+push_command=$(ps -ocommand= -p $PPID)
+is_destructive='force|delete|\-f'
+repo_name=$(git rev-parse --show-toplevel | tr '/' '\n' | tail -n 1)
+
+verify_push(){
+  read -rp "This will overwrite $current_branch which is protected. Are you sure you want to do this? If so, type the repo's name: " first < /dev/tty
+  if [[ $first != "$repo_name" ]]; then
+    echo "Aborting"
+    exit 1
+  fi
+  read -rp "For real this time, this action is NOT REVERSIBLE: " second < /dev/tty
+  if [[ $second != "$repo_name" ]]; then
+    echo "Aborting"
+    exit 1
+  fi
+  echo "Ok, overwriting $current_branch"
+
+  # If we're force pushing to a protected branch, it's probably to rewrite history. Ignore it.
+  ignore_freshness=true
+}
+
+is_protected() {
+  for protected_branch in "${protected_branches[@]}"; do
+    if [ "$protected_branch" = "$current_branch" ]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+is_protected_push() {
+  for protected_branch in "${protected_branches[@]}"; do
+    if [[ "$push_command" =~ $protected_branch ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+will_remove_protected_branch() {
+  for protected_branch in "${protected_branches[@]}"; do
+    will_remove=':'$protected_branch
+    if [[ $push_command =~ $will_remove ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+if [[ $push_command =~ $is_destructive ]] && is_protected; then
+  verify_push
+fi
+
+if [[ $push_command =~ $is_destructive ]] && is_protected_push; then
+  verify_push
+fi
+
+if will_remove_protected_branch; then
+  verify_push
+fi
+
+# Exit early if we're ignoring freshness
+if [[ "$ignore_freshness" = "true" ]]; then exit 0; fi
+
+############################################################################
+# ---- Check if our current branch is up to date with upstream master ---- #
+############################################################################
+
+git fetch origin master > /dev/null 2>&1
+if [[  "$(git log ..origin/master --oneline | wc -l | awk '{$1=$1};1')" != "0" ]]; then
+
+  # This is Mac specific to display a popup alert. You will need to change this if you are using Linux to something like Zenity or notify-send
+  osascript -e 'tell app "System Events" to display alert "WARNING: Your local branch is not up to date with origin master"' > /dev/null 2>&1
+
+  echo "WARNING: Your local branch is not up to date with origin's master!" >&2
+
+  # Change this to exit 0 if you want to just warn you when behind instead of stopping you
+  # VS Code will give you a popup, IntelliJ won't. You will get a message in terminal. System alert should display regardless.
+  exit 1
+else
+  exit 0
+fi

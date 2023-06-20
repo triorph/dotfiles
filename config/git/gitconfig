@@ -36,6 +36,7 @@
 	autosetuprebase = always
 [core]
 	attributesfile = /home/mfw56/.gitattributes
+	hooksPath = /Users/mwalsh2/.config/git/hooks
 [mergetool "vscode"]
 	cmd = code --wait $MERGED
 [mergetool "vimdiff"]
