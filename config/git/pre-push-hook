@@ -76,13 +76,24 @@ if [[ "$ignore_freshness" = "true" ]]; then exit 0; fi
 # ---- Check if our current branch is up to date with upstream master ---- #
 ############################################################################
 
-git fetch origin master > /dev/null 2>&1
-if [[  "$(git log ..origin/master --oneline | wc -l | awk '{$1=$1};1')" != "0" ]]; then
+find_upstream_name() {
+  for protected_branch in "${protected_branches[@]}"; do
+    b="$(git branch -r -l "origin/$protected_branch")"
+    if [[ -n "$b" ]]; then
+      echo "$protected_branch"
+      return
+    fi
+  done
+}
+
+upstream_branch_name=$(find_upstream_name)
+git fetch origin "$upstream_branch_name" > /dev/null 2>&1
+if [[  "$(git log "..origin/$upstream_branch_name" --oneline | wc -l | awk '{$1=$1};1')" != "0" ]]; then
 
   # This is Mac specific to display a popup alert. You will need to change this if you are using Linux to something like Zenity or notify-send
-  osascript -e 'tell app "System Events" to display alert "WARNING: Your local branch is not up to date with origin master"' > /dev/null 2>&1
+  osascript -e 'tell app "System Events" to display alert "WARNING: Your local branch is not up to date with origin $upstream_branch_name"' > /dev/null 2>&1
 
-  echo "WARNING: Your local branch is not up to date with origin's master!" >&2
+  echo "WARNING: Your local branch is not up to date with origin's $upstream_branch_name!" >&2
 
   # Change this to exit 0 if you want to just warn you when behind instead of stopping you
   # VS Code will give you a popup, IntelliJ won't. You will get a message in terminal. System alert should display regardless.
