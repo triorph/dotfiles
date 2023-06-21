@@ -66,7 +66,7 @@ return require("lazy").setup({
 	{
 		"akinsho/nvim-bufferline.lua",
 		dependencies = "kyazdani42/nvim-web-devicons",
-		version = "v2.*",
+		version = "*",
 		config = function()
 			require("config/bufferline")
 		end,
@@ -323,8 +323,7 @@ return require("lazy").setup({
 			require("colorful-winsep").setup({})
 		end,
 	},
-	{ -- alternative to EasyMotion or Sneak for faster movement
-
+	--[[ { -- alternative to EasyMotion or Sneak for faster movement
 		"ggandor/leap.nvim",
 		dependencies = { "ggandor/flit.nvim" },
 		config = function()
@@ -340,6 +339,27 @@ return require("lazy").setup({
 				require("leap").leap({ target_windows = { vim.fn.win_getid() } })
 			end, { noremap = true, silent = true })
 		end,
+	} ,]]
+	{ -- another faster movement, from folke
+		"folke/flash.nvim",
+		event = "VeryLazy",
+		opts = {},
+		keys = {
+			{
+				"s",
+				mode = { "n", "x", "o" },
+				function()
+					require("flash").jump()
+				end,
+			},
+			{
+				"S",
+				mode = { "o", "x" },
+				function()
+					require("flash").treesitter()
+				end,
+			},
+		},
 	},
 	{ "sindrets/diffview.nvim", dependencies = "nvim-lua/plenary.nvim" },
 	{ -- allow . repeat to work with more plugins (surround, lightspeed, etc.)
@@ -377,6 +397,13 @@ return require("lazy").setup({
 			"MunifTanjim/nui.nvim",
 			"rcarriga/nvim-notify",
 		},
+	},
+	{ -- easy navigation between paired windows (e.g. vs source)
+		"rgroli/other.nvim",
+		config = function()
+			require("other-nvim").setup({})
+			vim.api.nvim_set_keymap("n", "<leader>o", "<cmd>:Other<CR>", { noremap = true, silent = true })
+		end,
 	},
 	{ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
