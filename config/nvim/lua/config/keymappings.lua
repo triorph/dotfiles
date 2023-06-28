@@ -50,6 +50,9 @@ vim.keymap.set("n", "<Esc>", function()
 	require("notify").dismiss() -- clear notifications
 	vim.cmd.nohlsearch() -- clear highlights
 	vim.cmd.echo() -- clear short-message
+	if require("flash.plugins.char").state ~= nil then
+		require("flash.plugins.char").state:hide()
+	end
 end)
 
 -- Undo F1 as I keep hitting it accidentally when trying to hit ESC for exiting insert mode (less of a problem after capslock mapping)
@@ -78,7 +81,7 @@ ncmdmap("gF", "Telescope grep_string")
 
 vim.api.nvim_create_user_command("SplunkFormat", function()
 	vim.cmd([[
-%!jq -c '{"t":.result._time, "m": .result.message}'     
+%!jq -c '{"t":.result._time, "m": .result.message}'
 %norm d3f"
 %norm f"df:
 %norm f"x$xx
