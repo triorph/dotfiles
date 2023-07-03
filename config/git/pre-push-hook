@@ -90,8 +90,7 @@ upstream_branch_name=$(find_upstream_name)
 git fetch origin "$upstream_branch_name" > /dev/null 2>&1
 if [[  "$(git log "..origin/$upstream_branch_name" --oneline | wc -l | awk '{$1=$1};1')" != "0" ]]; then
 
-  # This is Mac specific to display a popup alert. You will need to change this if you are using Linux to something like Zenity or notify-send
-  osascript -e 'tell app "System Events" to display alert "WARNING: Your local branch is not up to date with origin $upstream_branch_name"' > /dev/null 2>&1
+  say "You did not rebase onto origin before pushing."
 
   echo "WARNING: Your local branch is not up to date with origin's $upstream_branch_name!" >&2
 
