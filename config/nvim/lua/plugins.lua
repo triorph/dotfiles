@@ -114,16 +114,12 @@ return require("lazy").setup({
 	},
 	{ -- see your keymappings in telescope
 		"lazytanuki/nvim-mapper",
-		config = function()
-			require("nvim-mapper").setup({})
-		end,
+		opts = {},
 	},
 	-- Copy/Paste
 	{ -- store all yanks and allow you to open up a history in telescope
 		"AckslD/nvim-neoclip.lua",
-		config = function()
-			require("neoclip").setup()
-		end,
+		opts = {},
 	},
 
 	-- Debugging
@@ -136,9 +132,7 @@ return require("lazy").setup({
 	},
 	{
 		"theHamsta/nvim-dap-virtual-text",
-		config = function()
-			require("nvim-dap-virtual-text").setup({})
-		end,
+		opts = {},
 	},
 
 	-- Snippets
@@ -182,17 +176,13 @@ return require("lazy").setup({
 	-- Comments
 	{ -- autocommenting of code
 		"numToStr/Comment.nvim",
-		config = function()
-			require("Comment").setup()
-		end,
+		opts = {},
 	},
 
 	-- help
 	{ -- after a pause, bring up a popup that shows what commands you have available after pressing a key
 		"folke/which-key.nvim",
-		config = function()
-			require("which-key").setup({})
-		end,
+		opts = {},
 	},
 	{ "mrjones2014/legendary.nvim" },
 
@@ -229,29 +219,21 @@ return require("lazy").setup({
 	},
 	{ -- only show colour for what's active
 		"folke/twilight.nvim",
-		config = function()
-			require("twilight").setup({
-				context = 20, -- amount of lines we will try to show around the current line
-				expand = { -- for treesitter, we we always try to expand to the top-most ancestor with these types
-					"function",
-					"method",
-				},
-			})
-		end,
+		opts = {
+			context = 20, -- amount of lines we will try to show around the current line
+			expand = { -- for treesitter, we we always try to expand to the top-most ancestor with these types
+				"function",
+				"method",
+			},
+		},
 	},
 	{ -- F11 to go all in on focus
 		"folke/zen-mode.nvim",
-		config = function()
-			require("zen-mode").setup({
-				plugins = { tmux = { enabled = true } },
-			})
-		end,
+		opts = {},
 	},
 	{ -- fibonacci window splitting (doesn't interact well with bufferline though)
-		"beauwilliams/focus.nvim",
-		config = function()
-			require("focus").setup()
-		end,
+		"nvim-focus/focus.nvim",
+		opts = {},
 	},
 
 	-- colour schemes
@@ -280,9 +262,7 @@ return require("lazy").setup({
 	{ -- the ability to edit surrounding things, like quotes or brackets
 		"kylechui/nvim-surround",
 		version = "*",
-		config = function()
-			require("nvim-surround").setup({})
-		end,
+		opts = {},
 	},
 	{ -- git plugin
 		"tpope/vim-fugitive",
@@ -292,36 +272,30 @@ return require("lazy").setup({
 		end,
 	},
 	{ "tpope/vim-sleuth" }, -- auto-detection of tabwidth etc..
+	{ -- show LSP info in top-right for current cursor
+		"dgagn/diagflow.nvim",
+		opts = {},
+	},
 	{ "wellle/targets.vim" }, -- more text objects, like "inside argument"
 	{ --auto-close brackets etc..
 		"windwp/nvim-autopairs",
-		config = function()
-			require("nvim-autopairs").setup({})
-		end,
+		opts = {},
 	},
 	{
 		"brenoprata10/nvim-highlight-colors",
-		config = function()
-			require("nvim-highlight-colors").setup()
-		end,
+		opts = {},
 	},
 	{
 		"windwp/nvim-ts-autotag",
-		config = function()
-			require("nvim-ts-autotag").setup()
-		end,
+		opts = {},
 	}, -- auto-close html tags etc..
 	{ -- stop windows jarring when opening stuff like Trouble etc..
 		"luukvbaal/stabilize.nvim",
-		config = function()
-			require("stabilize").setup()
-		end,
+		opts = {},
 	},
 	{ -- coloured borders on the active split
 		"nvim-zh/colorful-winsep.nvim",
-		config = function()
-			require("colorful-winsep").setup({})
-		end,
+		opts = {},
 	},
 	--[[ { -- alternative to EasyMotion or Sneak for faster movement
 		"ggandor/leap.nvim",
@@ -371,39 +345,30 @@ return require("lazy").setup({
 	{
 		"folke/noice.nvim",
 		event = "VimEnter",
-		config = function()
-			require("noice").setup({
-				messages = { enabled = false, view_search = false },
-				lsp = {
-					-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-					override = {
-						["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-						["vim.lsp.util.stylize_markdown"] = true,
-						["cmp.entry.get_documentation"] = true,
-					},
+		opts = {
+			messages = { enabled = false, view_search = false },
+			lsp = {
+				-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+				override = {
+					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+					["vim.lsp.util.stylize_markdown"] = true,
+					["cmp.entry.get_documentation"] = true,
 				},
-				-- you can enable a preset for easier configuration
-				presets = {
-					bottom_search = true,
-					command_palette = true,
-					long_message_to_split = true,
-					inc_rename = false,
-					lsp_doc_border = false,
-				},
-			})
-		end,
+			},
+			-- you can enable a preset for easier configuration
+			presets = {
+				bottom_search = true,
+				command_palette = true,
+				long_message_to_split = true,
+				inc_rename = false,
+				lsp_doc_border = false,
+			},
+		},
 		dependencies = {
 			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 			"MunifTanjim/nui.nvim",
 			"rcarriga/nvim-notify",
 		},
-	},
-	{ -- easy navigation between paired windows (e.g. vs source)
-		"rgroli/other.nvim",
-		config = function()
-			require("other-nvim").setup({})
-			vim.api.nvim_set_keymap("n", "<leader>o", "<cmd>:Other<CR>", { noremap = true, silent = true })
-		end,
 	},
 	{ -- disable repeatedly hjkl keys, to force you to get used to other options.
 		"takac/vim-hardtime",
