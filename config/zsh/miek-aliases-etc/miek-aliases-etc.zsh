@@ -25,6 +25,18 @@ fzf-checkout(){
     fi
 }
 
+fzf-vim-config(){
+    items=("default" "LazyVim")
+    config=$(printf "%s\n" "${items[@]}"| fzf --prompt="Choose your neovim config" --height=~10 --exit-0 )
+    if [[ -z $config ]]; then
+        echo "Nothing selected"
+        return 0
+    elif [[ $config == "default" ]]; then
+        config = ""
+    fi
+  NVIM_APPNAME=$config nvim $@
+}
+
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
    export EDITOR='nvim'
@@ -44,6 +56,7 @@ function kubeexec {
 
 [[ ! -f ~/opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source /opt/homebrew/opt/asdf/libexec/asdf.sh
 [[ ! -f ~/.asdf/plugins/java/set-java-home.zsh ]] || source ~/.asdf/plugins/java/set-java-home.zsh
+export NVIM_APPNAME="LazyVim"
 
 alias gca="git commit -v -a"
 alias gca!="git commit -v -a --amend --reset-author"
@@ -63,9 +76,11 @@ alias plint="pylama --linters=print,mccabe,pycodestyle,pyflakes --ignore=E501,W0
 alias rgs="search_code"
 alias sshbac="TERM=xterm-256color ssh"  # include TERM in ssh for the *bac servers
 alias gcb="fzf-checkout"
+alias nvims="fzf-vim-config"
+alias vims="fzf-vim-config"
 alias dbash="docker run --entrypoint /bin/bash -it --pull always"
 alias dsh="docker run --entrypoint /bin/sh -it --pull always"
-alias vim="nvim"
+alias vim="JAVA_HOME=~/.asdf/installs/java/openjdk-19/ nvim"
 bindkey '^x^e' edit-command-line
 
 
