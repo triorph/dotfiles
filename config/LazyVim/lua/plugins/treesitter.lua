@@ -1,0 +1,40 @@
+return {
+  "nvim-treesitter/nvim-treesitter",
+  opts = {
+    ensure_installed = {
+      {
+        "bash",
+        "c",
+        "cpp",
+        "dockerfile",
+        "go",
+        "hcl",
+        "html",
+        "java",
+        "javascript",
+        "json",
+        "jsonc",
+        "kotlin",
+        "lua",
+        "markdown",
+        "markdown_inline",
+        "python",
+        "regex",
+        "ruby",
+        "rust",
+        "typescript",
+        "terraform",
+        "yaml",
+      },
+    },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection = "<CR>",
+        node_incremental = "<CR>",
+        scope_incremental = "<S-CR>",
+        node_decremental = "<BS>",
+      },
+    },
+  },
+}
