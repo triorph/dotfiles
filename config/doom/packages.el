@@ -50,3 +50,7 @@
 ;(unpin! t)
 
 ;; (package! org-modern)
+;;
+
+;; fix org roam bug as of 8/8/23
+(package! org :pin "ca873f7")

@@ -54,6 +54,13 @@ function kubeexec {
     kubectl exec -n "buildeng-$1-bamboo" --stdin --tty "$2" --container bamboo-agent  -- /bin/bash
 }
 
+ssh_all_prod() {                                          
+  for server in bbac ccbac depbac ecobac engbac idbac itbac jcbac jsbac mbac sabac sbac sgbac ssbac subac sdcbac soxbac tbac trebac; do
+    echo -n "$server: "
+    ssh $server "$*"
+  done
+}
+
 [[ ! -f ~/opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source /opt/homebrew/opt/asdf/libexec/asdf.sh
 [[ ! -f ~/.asdf/plugins/java/set-java-home.zsh ]] || source ~/.asdf/plugins/java/set-java-home.zsh
 export NVIM_APPNAME="LazyVim"

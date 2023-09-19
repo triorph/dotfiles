@@ -30,7 +30,6 @@ return {
         root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git"),
         sources = {
           builtins.formatting.stylua,
-          builtins.formatting.shfmt,
           builtins.formatting.isort.with({
             extra_args = { "--profile=black" },
           }),

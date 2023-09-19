@@ -51,6 +51,7 @@ nmap <leader>9 <Action>(GoToTab9)
 
 " basic keymaps, such as copy/paste and close insert mode
 nnoremap \y "*y
+vnoremap \y "*y
 nnoremap \p "*p
 inoremap jj <ESC>
 inoremap kk <ESC>

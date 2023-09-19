@@ -33,12 +33,12 @@
 (setq org-directory "~/org/")
 (setq org-roam-directory "~/org")
 (org-roam-db-autosync-mode)
-(add-to-list 'display-buffer-alist
-             '("\\*org-roam\\*"
-               (display-buffer-in-direction)
-               (direction . right)
-               (window-width . 0.33)
-               (window-height . fit-window-to-buffer)))
+; (add-to-list 'display-buffer-alist
+;              '("\\*org-roam\\*"
+;                (display-buffer-in-direction)
+;                (direction . right)
+;                (window-width . 0.33)
+;                (window-height . fit-window-to-buffer)))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -64,10 +64,5 @@
 
 (setq org-log-done 'time)
 
-;; (use-package! org-modern
-;;     :after org)
-;;
-;; (after! org (add-hook 'org-mode-hook #'org-modern-mode)
-;; (add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
-(add-to-list
-  'org-src-lang-modes '("plantuml" . plantuml))
+; (add-to-list
+;   'org-src-lang-modes '("plantuml" . plantuml))
