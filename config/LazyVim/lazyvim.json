@@ -1,0 +1,14 @@
+{
+    "extras": [
+        "lazyvim.plugins.extras.coding.copilot",
+        "lazyvim.plugins.extras.dap.core",
+        "lazyvim.plugins.extras.dap.nlua",
+        "lazyvim.plugins.extras.formatting.black",
+        "lazyvim.plugins.extras.formatting.prettier",
+        "lazyvim.plugins.extras.lsp.none-ls"
+    ],
+    "news": {
+        "NEWS.md": "2123"
+    },
+    "version": 2
+}
