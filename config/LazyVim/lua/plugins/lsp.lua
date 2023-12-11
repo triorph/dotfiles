@@ -1,16 +1,6 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        jdtls = {},
-        pyright = {},
-        rust_analyzer = {},
-        tsserver = {},
-        gopls = {},
-        solargraph = {},
-      },
-    },
     init = function()
       local keys = require("lazyvim.plugins.lsp.keymaps")
       keys[#keys + 1] = { "gR", "<cmd>Telescope lsp_references<cr>" }
