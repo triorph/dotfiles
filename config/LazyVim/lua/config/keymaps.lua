@@ -79,6 +79,9 @@ key_mapper("n", "<leader>,", ":s/,/,\\r/g<CR>`[v`]=<CR><Esc>:nohl<CR>")
 
 -- basic navigation if lsp isn't present
 ncmdmap("gF", "Telescope grep_string")
+vim.keymap.set("n", "gr", vim.lsp.buf.rename, { silent = true })
+-- code actions
+vim.keymap.set({ "n", "v" }, "gx", vim.lsp.buf.code_action, { silent = true })
 
 vim.api.nvim_create_user_command("SplunkFormat", function()
   vim.cmd([[
