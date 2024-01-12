@@ -93,4 +93,4 @@ vim.api.nvim_create_user_command("SplunkFormat", function()
 	]])
 end, {})
 
-vim.cmd([[Copilot disable]])
+-- vim.cmd([[Copilot disable]])

@@ -65,7 +65,7 @@ else
       git-auto-fetch
       gitfast
       docker
-      zsh-nvm
+      # zsh-nvm
       tmux
       fast-syntax-highlighting
       zsh-autosuggestions
@@ -83,8 +83,6 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
 
-export KUBECONFIG=$(atlas kitt context:create --pid=$$) &
-
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 alias luamake=/home/mfw56/.local/share/lua-language-server/3rd/luamake/luamake
@@ -92,4 +90,4 @@ alias luamake=/home/mfw56/.local/share/lua-language-server/3rd/luamake/luamake
 [[ ! -f ~/.zsh_profile ]] || source ~/.zsh_profile
 source ~/.fzf.zsh
 bindkey "ç" fzf-cd-widget
-source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+# source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"

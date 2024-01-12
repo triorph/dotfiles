@@ -24,7 +24,7 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 end
 
 toggle_window({ "ctrl" }, "`", "kitty")
-toggle_window({ "ctrl" }, "tab", "Google Chrome")
+toggle_window({ "ctrl" }, "tab", "Firefox")
 toggle_window({ "ctrl", "alt" }, "s", "Spotify", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 toggle_window({ "ctrl" }, "s", "Slack", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 toggle_window({ "ctrl", "alt" }, "z", "zoom.us")
