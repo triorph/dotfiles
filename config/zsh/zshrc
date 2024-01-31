@@ -90,4 +90,6 @@ alias luamake=/home/mfw56/.local/share/lua-language-server/3rd/luamake/luamake
 [[ ! -f ~/.zsh_profile ]] || source ~/.zsh_profile
 source ~/.fzf.zsh
 bindkey "ç" fzf-cd-widget
-# source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
