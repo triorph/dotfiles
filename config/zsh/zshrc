@@ -82,7 +82,8 @@ source $ZSH/oh-my-zsh.sh
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
-export KUBECONFIG=$(atlas kitt context:create --pid=$$)
+
+export KUBECONFIG=$(atlas kitt context:create --pid=$$) &
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
