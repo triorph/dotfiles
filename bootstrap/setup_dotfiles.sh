@@ -33,25 +33,25 @@ echo "Step 3: Cloning repos from the web"
 echo ""
 mkdir ~/otherrepos
 mkdir ~/repos
-git clone https://github.com/elenapan/dotfiles.git ~/otherrepos/elenapandotfiles
-git clone https://github.com/lr-tech/rofi-themes-collection ~/otherrepos/rofi-themes-collection
+#git clone https://github.com/elenapan/dotfiles.git ~/otherrepos/elenapandotfiles
+#git clone https://github.com/lr-tech/rofi-themes-collection ~/otherrepos/rofi-themes-collection
 git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
 git clone https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
 git clone https://github.com/davidde/git ~/.oh-my-zsh/custom/plugins/git
 git clone https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-tips
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
-git clone https://github.com/lukechilds/zsh-nvm ~/.oh-my-zsh/custom/plugins/zsh-nvm
-git clone git@github.com:triorph/notes.git ~/org
-git clone git@github.com:triorph/newwp.git ~/repos/newwp
-git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+#git clone https://github.com/lukechilds/zsh-nvm ~/.oh-my-zsh/custom/plugins/zsh-nvm
+#git clone git@github.com:triorph/notes.git ~/org
+#git clone git@github.com:triorph/newwp.git ~/repos/newwp
+#git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
+#git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
-cd ~/otherrepos/lua-language-server
-git submodule update --init --recursive
+#cd ~/otherrepos/lua-language-server
+#git submodule update --init --recursive
 cd ~/dotfiles
-git remote remove origin
-git remote add origin git@github.com:/triorph/dotfiles.git
+#git remote remove origin
+#git remote add origin git@github.com:/triorph/dotfiles.git
 echo ""
 echo "Step 3 complete."
 echo ""
@@ -66,16 +66,16 @@ cargo install --path .
 ln -s ~/dotfiles/bin/set_daymode.sh ~/.local/bin/set_daymode
 ln -s ~/dotfiles/bin/set_nightmode.sh ~/.local/bin/set_nightmode
 ln -s ~/dotfiles/bin/toggle_daynight.sh ~/.local/bin/toggle_daynight
-cp -r ~/otherrepos/elenapandotfiles/config/awesome ~/.config/awesome
-cp -r ~/otherrepos/elenapandotfiles/bin/* ~/.local/bin/
-rm ~/.config/awesome/keys.lua
-rm ~/.config/awesome/rc.lua
-rm ~/.config/awesome/elemental/bar/ephemeral.lua
-rm ~/.config/awesome/themes/amarena/theme.lua
-ln -s ~/dotfiles/config/awesome/keys.lua ~/.config/awesome/keys.lua
-ln -s ~/dotfiles/config/awesome/rc.lua ~/.config/awesome/rc.lua
-ln -s ~/dotfiles/config/awesome/ephemeralbar.lua ~/.config/awesome/elemental/bar/ephemeral.lua
-ln -s ~/dotfiles/config/awesome/theme.lua ~/.config/awesome/themes/amarena/theme.lua
+#cp -r ~/otherrepos/elenapandotfiles/config/awesome ~/.config/awesome
+#cp -r ~/otherrepos/elenapandotfiles/bin/* ~/.local/bin/
+#rm ~/.config/awesome/keys.lua
+#rm ~/.config/awesome/rc.lua
+#rm ~/.config/awesome/elemental/bar/ephemeral.lua
+#rm ~/.config/awesome/themes/amarena/theme.lua
+#ln -s ~/dotfiles/config/awesome/keys.lua ~/.config/awesome/keys.lua
+#ln -s ~/dotfiles/config/awesome/rc.lua ~/.config/awesome/rc.lua
+#ln -s ~/dotfiles/config/awesome/ephemeralbar.lua ~/.config/awesome/elemental/bar/ephemeral.lua
+#ln -s ~/dotfiles/config/awesome/theme.lua ~/.config/awesome/themes/amarena/theme.lua
 ln -s ~/dotfiles/config/bat ~/.config
 ln -s ~/dotfiles/config/git/gitattributes ~/.gitattributes
 cp ~/dotfiles/config/git/gitconfig ~/.gitconfig
@@ -92,19 +92,19 @@ ln -s ~/dotfiles/config/zsh/zshenv ~/.zshenv
 ln -s ~/dotfiles/config/prettierrc.json ~/.prettierrc.json
 ln -s ~/dotfiles/config/doom ~/.doom.d
 mkdir ~/.fonts
-cp -r ~/otherrepos/elenapandotfiles/misc/fonts/* ~/.fonts
+#cp -r ~/otherrepos/elenapandotfiles/misc/fonts/* ~/.fonts
 cp -r ~/dotfiles/fonts/* ~/.fonts
-mkdir ~/.config/picom
-touch ~/.config/picom/picom.conf
-mkdir -p ~/.local/share/rofi/themes/
-cp ~/otherrepos/rofi-themes-collection/themes/* ~/.local/share/rofi/themes
+#mkdir ~/.config/picom
+#touch ~/.config/picom/picom.conf
+#mkdir -p ~/.local/share/rofi/themes/
+#cp ~/otherrepos/rofi-themes-collection/themes/* ~/.local/share/rofi/themes
 if [[ ! -f ~/.local/bin/nvim ]]; then
     curl -fsSL https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage > ~/.local/bin/nvim
     chmod a+x ~/.local/bin/nvim
 fi
 echo "source ~/.zshenv" > ~/.xprofile
 echo "Changing shell to zsh (may require password)"
-chsh -s /bin/zsh
+#chsh -s /bin/zsh
 echo ""
 echo "Please set your kitty theme `kitty +kitten themes`"
 echo ""

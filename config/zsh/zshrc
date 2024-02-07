@@ -38,7 +38,6 @@ if [[ $EUID == 0 ]]; then
       bgnotify
       colored-man-pages
       command-not-found
-      thefuck
       python
       git-auto-fetch
       gitfast
@@ -60,12 +59,10 @@ else
       bgnotify
       colored-man-pages
       command-not-found
-      thefuck
       python
       git-auto-fetch
       gitfast
       docker
-      # zsh-nvm
       tmux
       fast-syntax-highlighting
       zsh-autosuggestions
@@ -85,11 +82,10 @@ export ARCHFLAGS="-arch x86_64"
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-alias luamake=/home/mfw56/.local/share/lua-language-server/3rd/luamake/luamake
-
 [[ ! -f ~/.zsh_profile ]] || source ~/.zsh_profile
 source ~/.fzf.zsh
 bindkey "ç" fzf-cd-widget
+[[ ! -f "$HOME/.asdf/asdf.sh" ] || source "$HOME/.asdf/asdf.sh"
+[[ ! -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]] source "/opt/homebrew/opt/asdf/libexec/asdf.sh"
 source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
 
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
