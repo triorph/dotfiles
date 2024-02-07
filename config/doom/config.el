@@ -31,14 +31,15 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
-(setq org-roam-directory "~/org")
+(setq org-roam-directory "~/org/roam/")
+(setq org-return-follows-link t)
 (org-roam-db-autosync-mode)
-; (add-to-list 'display-buffer-alist
-;              '("\\*org-roam\\*"
-;                (display-buffer-in-direction)
-;                (direction . right)
-;                (window-width . 0.33)
-;                (window-height . fit-window-to-buffer)))
+(add-to-list 'display-buffer-alist
+             '("\\*org-roam\\*"
+               (display-buffer-in-direction)
+               (direction . right)
+               (window-width . 0.33)
+               (window-height . fit-window-to-buffer)))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.

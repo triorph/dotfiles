@@ -44,21 +44,7 @@ return {
             },
           }),
           builtins.diagnostics.eslint,
-          builtins.diagnostics.pylama.with({
-            extra_args = { "--linters=print,mccabe,pycodestyle,pyflakes", "--ignore=E501,W0612,W605,E231,E203" },
-          }),
-          builtins.diagnostics.checkstyle.with({
-            extra_args = {
-              "-c",
-              "./checkstyle-rules.xml",
-            },
-            condition = function(utils)
-              return utils.root_has_file({ "checkstyle-rules.xml" })
-            end,
-            env = {
-              JAVA_HOME = vim.env.HOME .. "/.asdf/installs/java/openjdk-19",
-            },
-          }),
+          builtins.diagnostics.pylama.with({}),
         },
       }
     end,
