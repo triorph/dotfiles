@@ -32,9 +32,6 @@ ncmdmap("<leader>9", "BufferLineGoToBuffer 9")
 key_mapper("i", "jj", "<ESC>")
 key_mapper("i", "kk", "<ESC>")
 key_mapper("i", "jk", "<ESC>")
--- commenting
-vim.api.nvim_set_keymap("n", "<leader>/", "gcc", { silent = true })
-vim.api.nvim_set_keymap("v", "<leader>/", "gc", { silent = true })
 
 -- ZenMode
 ncmdmap("<leader>vz", "ZenMode")

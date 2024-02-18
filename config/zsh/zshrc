@@ -78,7 +78,7 @@ fi
 source $ZSH/oh-my-zsh.sh
 
 # Compilation flags
-export ARCHFLAGS="-arch x86_64"
+# export ARCHFLAGS="-arch x86_64"
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
