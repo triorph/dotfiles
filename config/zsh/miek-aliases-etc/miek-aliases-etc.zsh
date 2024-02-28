@@ -1,5 +1,6 @@
 
 export LESS="--quit-if-one-screen --RAW-CONTROL-CHARS --no-init"
+export FZF_DEFAULT_OPTS="--layout=reverse --height=10 -0"
 
 # from https://github.com/beauwilliams/awesome-fzf/blob/master/awesome-fzf.zsh
 # Checkout to existing branch or else create new branch. gco <branch-name>.
