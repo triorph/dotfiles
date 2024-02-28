@@ -54,6 +54,15 @@ function kubeexec {
     kubectl exec -n "buildeng-$1-bamboo" --stdin --tty "$2" --container bamboo-agent  -- /bin/bash
 }
 
+function gitbranchcleanup {
+  git branch -vv \
+    | grep ": gone" \
+    | awk '{print $1}' \
+    | fzf -m -0 --layout=reverse --height=10 \
+        --header="Delete which git branches? (tab/shift+tab to multi-select)" \
+    | xargs git branch -D
+}
+
 ssh_all_prod() {                                          
   for server in bbac ccbac depbac ecobac engbac idbac itbac jcbac jsbac mbac sabac sbac sgbac ssbac subac sdcbac soxbac tbac trebac; do
     echo -n "$server: "
