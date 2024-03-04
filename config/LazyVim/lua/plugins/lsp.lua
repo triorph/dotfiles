@@ -24,7 +24,6 @@ return {
             extra_args = { "--profile=black" },
           }),
           builtins.formatting.black,
-          builtins.diagnostics.shellcheck,
           builtins.formatting.prettier.with({
             filetypes = {
               "javascript",
@@ -43,8 +42,6 @@ return {
               "handlebars",
             },
           }),
-          builtins.diagnostics.eslint,
-          builtins.diagnostics.pylama.with({}),
         },
       }
     end,
