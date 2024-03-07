@@ -3,8 +3,11 @@
 -- Add any additional autocmds here
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "cpp" },
+  pattern = { "cpp", "h", "cuda" },
   callback = function()
+    vim.opt.shiftwidth = 4
+    vim.opt.tabstop = 4
+    vim.opt.expandtab = false
     vim.b.autoformat = false
   end,
 })
