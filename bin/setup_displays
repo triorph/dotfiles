@@ -1,2 +1,2 @@
 #!/bin/bash
-displayplacer "id:EDC0B71B-077E-469A-8A8E-B6E9ED3B1611 res:2560x1440 hz:120 color_depth:8 enabled:true scaling:off origin:(0,0) degree:0" "id:CDAB1F2D-9F6B-4A43-9DD0-0D12EE300A4A res:2560x1440 hz:144 color_depth:8 enabled:true scaling:off origin:(2560,0) degree:0"
+displayplacer "id:D35B3BEF-4A3E-4624-9352-B9E197B7EA1E res:2560x1440 hz:144 color_depth:8 enabled:true scaling:off origin:(0,0) degree:0" "id:804EB033-1161-41D5-8557-FCBF780CEDD6 res:2560x1440 hz:120 color_depth:8 enabled:true scaling:off origin:(-2560,0) degree:0"

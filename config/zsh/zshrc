@@ -60,6 +60,7 @@ else
       colored-man-pages
       command-not-found
       python
+      macos
       git-auto-fetch
       gitfast
       docker
