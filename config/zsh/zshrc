@@ -86,7 +86,9 @@ source $ZSH/oh-my-zsh.sh
 [[ ! -f ~/.zsh_profile ]] || source ~/.zsh_profile
 source ~/.fzf.zsh
 bindkey "ç" fzf-cd-widget
-[[ ! -f $HOME/.asdf/asdf.sh ]] || source "$HOME/.asdf/asdf.sh"
-[[ ! -f /opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source "/opt/homebrew/opt/asdf/libexec/asdf.sh"
+# [[ ! -f $HOME/.asdf/asdf.sh ]] || source "$HOME/.asdf/asdf.sh"
+# [[ ! -f /opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source "/opt/homebrew/opt/asdf/libexec/asdf.sh"
+[[ ! -f /opt/homebrew/bin/mise ]] || eval "$(/opt/homebrew/bin/mise activate zsh)"
+[[ ! -f $HOME/.local/bin/mise ]] || eval "$($HOME/.local/bin/mise activate zsh)"
 source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
 
