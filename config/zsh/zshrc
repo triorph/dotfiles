@@ -91,4 +91,5 @@ bindkey "ç" fzf-cd-widget
 [[ ! -f /opt/homebrew/bin/mise ]] || eval "$(/opt/homebrew/bin/mise activate zsh)"
 [[ ! -f $HOME/.local/bin/mise ]] || eval "$($HOME/.local/bin/mise activate zsh)"
 source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
