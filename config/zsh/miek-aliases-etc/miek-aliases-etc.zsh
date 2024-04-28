@@ -73,8 +73,8 @@ ssh_all_prod() {
 
 [ "$TERM" = "xterm-kitty" ] && [ "$SSH_CONNECTION" = "" ] && alias ssh="kitty +kitten ssh"
 
-[[ ! -f ~/opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source /opt/homebrew/opt/asdf/libexec/asdf.sh
-[[ ! -f ~/.asdf/plugins/java/set-java-home.zsh ]] || source ~/.asdf/plugins/java/set-java-home.zsh
+# [[ ! -f ~/opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source /opt/homebrew/opt/asdf/libexec/asdf.sh
+# [[ ! -f ~/.asdf/plugins/java/set-java-home.zsh ]] || source ~/.asdf/plugins/java/set-java-home.zsh
 export NVIM_APPNAME="LazyVim"
 
 alias gca="git commit -v -a"
@@ -99,7 +99,7 @@ alias nvims="fzf-vim-config"
 alias vims="fzf-vim-config"
 alias dbash="docker run --entrypoint /bin/bash -it --pull always"
 alias dsh="docker run --entrypoint /bin/sh -it --pull always"
-alias vim="JAVA_HOME=~/.asdf/installs/java/openjdk-19/ nvim"
+# alias vim="JAVA_HOME=~/.asdf/installs/java/openjdk-19/ nvim"
 bindkey '^x^e' edit-command-line
 
 

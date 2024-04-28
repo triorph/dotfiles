@@ -40,3 +40,4 @@ Temporary Items
 .direnv
 .envrc
 pylama.ini
+.mise.toml
