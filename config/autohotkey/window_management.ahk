@@ -1,5 +1,10 @@
 #Requires AutoHotKey v2
+
 WinHidden(window_name) {
+  ; Returns whether or not a window is currently hidden
+  ; uses DetectHiddenWindows to search for the window name,
+  ; if it can be found when detect is on but otherwise cannot, then
+  ; it must be hidden
   DetectHiddenWindows 1
   win_id := WinExist(window_name)
   DetectHiddenWindows 0
@@ -12,19 +17,19 @@ WinHidden(window_name) {
 }
 
 SwapMonitor() {
+  ; Moves the currently active window to the next monitor, and resizes it to the large size
   monitor := FindMonitor()
   new_monitor := Mod(monitor + 1,  MonitorGetCount())
-  SetWindowSize(0.05, 0.05, 0.9, 0.9, "A", new_monitor)
-  new_monitor := MonitorGetWorkArea(new_monitor, &left, &top, &right, &bottom)
-  WinMove(left + 0.05 * (right - left), top + 0.05 * (bottom - top), 0.9 * (right - left), 0.9 * (bottom - top), "A")
+  SetWindowSize(0.02, 0.02, 0.96, 0.96, "A", new_monitor)
 }
 
 FindMonitor(window_name := "A") {
+  ; Find which monitor a window is in, by checking the x/y positions compared to the monitors extents
   WinGetPos &win_x, &win_y, &win_w, &win_h, window_name
   monitor_count := MonitorGetCount()
   Loop monitor_count {
     monitor_id := MonitorGetWorkArea(A_index, &left, &top, &right, &bottom)
-    if (win_x >= left) && ( win_x < right  )&& ( win_y >= top  )&& (win_y < bottom) {
+    if (win_x >= left) && ( win_x <= right  )&& ( win_y >= top  )&& (win_y <= bottom) {
       return monitor_id
     }
   }
@@ -32,15 +37,31 @@ FindMonitor(window_name := "A") {
 }
 
 SetWindowSize(x, y, w, h, window_name := "A", monitor := -1) {
-  if monitor := -1 {
+  ; Sets the window position/size relative to its monitor
+  ;
+  ; params:
+  ; x/y the positions (relative to top-left) as a proportion of the total monitor size. e.g. 0.1 for 10%
+  ; w/h the size of the window, relative to the total monitor size
+  ; window_name - a descriptor to find the window. Will use the active window if not specified
+  ; monitor - which monitor to set the window on. Defaults to the current monitor (or 0 if this can't be determined)
+  if (monitor == -1) {
     monitor := FindMonitor(window_name)
+  }
+  if (monitor == -1) {
+    ; at this point we can't figure out the monitor, so default to monitor 0
+    ; this sometimes happens when windows are fully maximised, as they seem to have borders slightly larger than the monitor extent
+    monitor := 0
   }
   monitor := MonitorGetWorkArea(monitor, &left, &top, &right, &bottom)
   WinMove(left + x * (right - left), top + y * (bottom - top), w * (right - left), h * (bottom - top), window_name)
 }
 
 ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
-
+  ; Either activates or deactivates a specific window type
+  ; if the window is active and visible, then it will hide said window. 
+  ; If the window is hidden, it will show the window and then activate it
+  ; If the window doesn't exist, it will launch the specified program and activate it
+  ; In all cases where the window is now active, it sets its position relative to the monitor it is on
   DetectHiddenWindows 1
   window_id := WinActive(window_name)
   if window_id {
@@ -68,18 +89,34 @@ ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
   return
 }
 
-^!b::SetWindowSize(0.02, 0.02, 0.96, 0.96)
-^Tab::ToggleWindow("Firefox", "firefox.exe", 0.02, 0.02, 0.96, 0.96)
-#^s::ToggleWindow("Slack", "slack.exe", 0.1, 0.1, 0.8, 0.8)
-^!s::ToggleWindow("Spotify ahk_class Chrome_WidgetWin_1", "spotify.exe", 0.1, 0.1, 0.8, 0.8)
-^Sc029::ToggleWindow("ahk_class org.wezfurlong.wezterm", "wezterm.exe", 0.02, 0.02, 0.96, 0.96)
-^m::ToggleWindow("Outlook", "outlook.exe", 0.1, 0.1, 0.8, 0.8)
-^!z::ToggleWindow("ahk_class TeamsWebView", "teams.exe", 0.1, 0.1, 0.8, 0.8)
-^!m::SwapMonitor()
-#^p::{
-MsgBox(WinGetClass("A"))
+^!b::{ ; ctrl+alt_b - emBiggen the window to near max
+  SetWindowSize(0.02, 0.02, 0.96, 0.96)
+}
+^!m::{  ; ctrl+alt+m - move window to next monitor
+  SwapMonitor() 
+}
+^Tab::{ ; ctrl+tab - toggle in/out firefox
+  ToggleWindow("Firefox", "firefox.exe", 0.02, 0.02, 0.96, 0.96)
+}
+#^s::{ ; ctrl+win+s - toggle in/out slack
+  ToggleWindow("Slack", "slack.exe", 0.1, 0.1, 0.8, 0.8)
+}
+^!s::{ ; ctrl+alt+s - toggle in/out spotify
+  ToggleWindow("ahk_exe Spotify.exe ahk_class Chrome_WidgetWin_1", "spotify.exe", 0.1, 0.1, 0.8, 0.8)
+}
+^Sc029::{ ; ctrl+` - toggle in/out the terminal window
+  ToggleWindow("ahk_class org.wezfurlong.wezterm", "wezterm.exe", 0.02, 0.02, 0.96, 0.96)
+}
+^m::{ ; ctrl+m - toggle mail window
+  ToggleWindow("Outlook", "outlook.exe", 0.1, 0.1, 0.8, 0.8) 
+}
+^!z::{  ; ctrl+alt+z - toggle MS teams
+  ToggleWindow("ahk_class TeamsWebView", "teams.exe", 0.1, 0.1, 0.8, 0.8) 
+}
+#^p::{  ; ctrl+win+p - debug information about the window
+MsgBox(WinGetClass("A") " - " WinGetProcessName("A")  " - " WinGetTitle("A"))
 }
 
-^!r::Reload
+^!r::Reload  ; ctrl+alt+r  reload this configuration
 
 
