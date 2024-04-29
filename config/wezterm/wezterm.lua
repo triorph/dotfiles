@@ -41,6 +41,7 @@ config.tab_bar_at_bottom = true
 --  && tic -x -o ~/.terminfo $tempfile \
 --  && rm $tempfile
 config.term = "wezterm"
+config.audible_bell = "Disabled"
 
 -- and finally, return the configuration to wezterm
 
