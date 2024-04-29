@@ -99,7 +99,7 @@ alias nvims="fzf-vim-config"
 alias vims="fzf-vim-config"
 alias dbash="docker run --entrypoint /bin/bash -it --pull always"
 alias dsh="docker run --entrypoint /bin/sh -it --pull always"
-# alias vim="JAVA_HOME=~/.asdf/installs/java/openjdk-19/ nvim"
+alias vim="nvim"
 bindkey '^x^e' edit-command-line
 
 
