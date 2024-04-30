@@ -97,7 +97,7 @@ ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
   SwapMonitor() 
 }
 ^Tab::{ ; ctrl+tab - toggle in/out firefox
-  ToggleWindow("Firefox", "firefox.exe", 0.02, 0.02, 0.96, 0.96)
+  ToggleWindow("Firefox ahk_class MozillaWindowClass", "firefox.exe", 0.02, 0.02, 0.96, 0.96)
 }
 ^s::{ ; ctrl+s - toggle in/out slack
   ToggleWindow("Slack ahk_exe slack.exe ahk_class Chrome_WidgetWin_1", "slack.exe", 0.1, 0.1, 0.8, 0.8)
@@ -109,7 +109,7 @@ ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
   ToggleWindow("ahk_class org.wezfurlong.wezterm", "wezterm.exe", 0.02, 0.02, 0.96, 0.96)
 }
 ^m::{ ; ctrl+m - toggle mail window
-  ToggleWindow("Outlook", "olk.exe", 0.1, 0.1, 0.8, 0.8) 
+  ToggleWindow("Outlook ahk_exe olk.exe", "olk.exe", 0.1, 0.1, 0.8, 0.8) 
 }
 ^!z::{  ; ctrl+alt+z - toggle MS teams
   ToggleWindow("ahk_class TeamsWebView", "ms-teams.exe", 0.1, 0.1, 0.8, 0.8) 
