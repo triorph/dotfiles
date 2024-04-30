@@ -1,14 +1,14 @@
 #Requires AutoHotKey v2
 
-WinHidden(window_name) {
+WinHidden(window_id) {
   ; Returns whether or not a window is currently hidden
   ; uses DetectHiddenWindows to search for the window name,
   ; if it can be found when detect is on but otherwise cannot, then
   ; it must be hidden
   DetectHiddenWindows 1
-  win_id := WinExist(window_name)
+  win_id := WinExist("ahk_id " window_id)
   DetectHiddenWindows 0
-  win_id_hidden := WinExist(window_name)
+  win_id_hidden := WinExist("ahk_id " window_id)
   if (win_id_hidden == 0) && (win_id > 0) {
     return 1
   } else {
@@ -64,29 +64,35 @@ ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
   ; In all cases where the window is now active, it sets its position relative to the monitor it is on
   SetTitleMatchMode(2)
   DetectHiddenWindows 1
-  window_id := WinActive(window_name)
-  if window_id {
-    if WinHidden(window_name) {
-      DetectHiddenWindows 1
-      window_id := WinActive(window_name)
-      WinShow
-      SetWindowSize(x, y, w, h, window_name)
-    } else {
-      WinHide(window_id)
+  window_ids := WinGetList(window_name)
+  activated := 0
+  if window_ids.Length > 0 {
+    for window_id in window_ids {
+      if WinActive("ahk_id " window_id) {
+        activated := 1
+        if WinHidden(window_id) {
+          DetectHiddenWindows 1
+          WinShow("ahk_id " window_id)
+          SetWindowSize(x, y, w, h, "ahk_id " window_id)
+        } else {
+          WinHide("ahk_id " window_id)
+        }
+      } else {
+        WinShow("ahk_id " window_id)
+        if activated == 0 {
+          WinActivate("ahk_id " window_id)
+          activated := 1
+        }
+        SetWindowSize(x, y, w, h, "ahk_id " window_id)
+      }
     }
   } else {
-    window_id := WinExist(window_name)
-    if window_id  {
-      WinShow window_id
-      WinActivate window_id
-      SetWindowSize(x, y, w, h, window_name)
-    } else {
-      Run executable
-      WinWait(window_name)
-      WinActivate(window_name)
-      SetWindowSize(x, y, w, h, window_name)
-    }
-  } 
+    Run executable
+    WinWait(window_name)
+    WinActivate(window_name)
+    SetWindowSize(x, y, w, h, window_name)
+  }
+
   return
 }
 
