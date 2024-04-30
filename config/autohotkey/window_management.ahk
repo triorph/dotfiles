@@ -62,6 +62,7 @@ ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
   ; If the window is hidden, it will show the window and then activate it
   ; If the window doesn't exist, it will launch the specified program and activate it
   ; In all cases where the window is now active, it sets its position relative to the monitor it is on
+  SetTitleMatchMode(2)
   DetectHiddenWindows 1
   window_id := WinActive(window_name)
   if window_id {
@@ -112,6 +113,9 @@ ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
 }
 ^!z::{  ; ctrl+alt+z - toggle MS teams
   ToggleWindow("ahk_class TeamsWebView", "teams.exe", 0.1, 0.1, 0.8, 0.8) 
+}
+^!d::{  ; ctrl+alt+d - development window (aka visual studio)
+  ToggleWindow("Microsoft Visual Studio ahk_exe devenv.exe", "devenv.exe", 0.02, 0.02, 0.96, 0.96)
 }
 #^p::{  ; ctrl+win+p - debug information about the window
 MsgBox(WinGetClass("A") " - " WinGetProcessName("A")  " - " WinGetTitle("A"))
