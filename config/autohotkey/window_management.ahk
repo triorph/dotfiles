@@ -19,10 +19,12 @@ WinHidden(window_id) {
 WinDeactivate(window_name) {
   ; Deactivates a window, so that text doesn't get input into it
   ; (e.g. accidentally typing passwords uh-oh, thankfully I didn't hit enter)
-  ;
-  ; In windows there doesn't really exist a deactivate concept, so I'm 
-  ; just saying that we activate the taskbar instead
-  WinActivate("ahk_class Shell_TrayWnd")
+  DetectHiddenWindows 0
+  windows := WinGetList()
+  if windows.Length > 0 {
+    WinActivate(windows[windows.Length])
+  }
+  DetectHiddenWindows 1
 }
 
 SwapMonitor() {
