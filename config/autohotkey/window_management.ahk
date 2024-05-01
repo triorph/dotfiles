@@ -16,6 +16,15 @@ WinHidden(window_id) {
   }
 }
 
+WinDeactivate(window_name) {
+  ; Deactivates a window, so that text doesn't get input into it
+  ; (e.g. accidentally typing passwords uh-oh, thankfully I didn't hit enter)
+  ;
+  ; In windows there doesn't really exist a deactivate concept, so I'm 
+  ; just saying that we activate the taskbar instead
+  WinActivate("ahk_class Shell_TrayWnd")
+}
+
 SwapMonitor() {
   ; Moves the currently active window to the next monitor, and resizes it to the large size
   monitor := FindMonitor()
@@ -76,6 +85,7 @@ ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
           SetWindowSize(x, y, w, h, "ahk_id " window_id)
         } else {
           WinHide("ahk_id " window_id)
+          WinDeactivate("ahk_id " window_id)
         }
       } else {
         WinShow("ahk_id " window_id)
@@ -112,7 +122,7 @@ ToggleWindow(window_name, executable, x:=0.05, y:=0.05, w:=0.9, h:=0.9) {
   ToggleWindow("ahk_exe Spotify.exe ahk_class Chrome_WidgetWin_1", "spotify.exe", 0.1, 0.1, 0.8, 0.8)
 }
 ^Sc029::{ ; ctrl+` - toggle in/out the terminal window
-  ToggleWindow("ahk_class org.wezfurlong.wezterm", "wezterm.exe", 0.02, 0.02, 0.96, 0.96)
+  ToggleWindow("ahk_class org.wezfurlong.wezterm", "wezterm-gui.exe", 0.02, 0.02, 0.96, 0.96)
 }
 ^m::{ ; ctrl+m - toggle mail window
   ToggleWindow("Outlook ahk_exe olk.exe", "olk.exe", 0.1, 0.1, 0.8, 0.8) 
