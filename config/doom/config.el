@@ -45,6 +45,10 @@
       :map evil-org-mode-map
       :ni "C-j" #'evil-org-org-insert-heading-respect-content-below)
 
+(map! :after evil-org
+      :map evil-org-mode-map
+      :ni "RET" #'+org/dwim-at-point)
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
