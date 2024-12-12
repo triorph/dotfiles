@@ -1,3 +1,4 @@
+local virtual_screens = require("virtual_screens")
 local toggle_window = function(opts, key, name, unit, launcher_name)
 	if unit == nil then
 		unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
@@ -19,12 +20,16 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 		else
 			app = hs.application.open(launcher_name, 2.0, true)
 		end
-		app:mainWindow():moveToUnit(unit)
+		if app:focusedWindow() then
+			virtual_screens.move_to_virtual_screen(app:focusedWindow(), nil, unit)
+		else
+			print("Error, app did not have a mainWindow at any point")
+		end
 	end)
 end
 
 toggle_window({ "ctrl" }, "`", "kitty")
-toggle_window({ "ctrl" }, "tab", "Firefox")
+toggle_window({ "ctrl" }, "tab", "Chrome")
 toggle_window({ "ctrl", "alt" }, "s", "Spotify", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 -- toggle_window({ "ctrl", "alt" }, "l", "Slicer")
 toggle_window({ "ctrl" }, "s", "Slack", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })

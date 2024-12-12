@@ -4,11 +4,13 @@ hs.loadSpoon("Caffeine")
 spoon.Caffeine:bindHotkeys({ toggle = { { "ctrl", "alt", "cmd" }, "c" } })
 spoon.Caffeine:start()
 
+local virtual_screens = require("virtual_screens")
+
 local move_screen = function()
 	print("Moving window")
 	local window = hs.window.frontmostWindow()
-	local next = window:screen():next()
-	window:moveToScreen(next)
+	local next = virtual_screens.get_next_virtual_screen(window)
+	virtual_screens.move_to_virtual_screen(window, next)
 end
 
 local embiggen_window = function(unit)
@@ -17,7 +19,7 @@ local embiggen_window = function(unit)
 	if unit == nil then
 		unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
 	end
-	window:moveToUnit(unit)
+	virtual_screens.move_to_virtual_screen(window, nil, unit)
 end
 
 hs.hotkey.bind({ "ctrl", "alt" }, "m", move_screen)
