@@ -15,6 +15,7 @@ VSCODE=code
 export PATH=$PATH:$HOME/.pulumi/bin:/snap/bin
 export PATH=$PATH:$HOME/.cargo/bin:$HOME/.local/bin
 export PATH=$PATH:$HOME/.docker/bin
+export PATH=$PATH:/opt/homebrew/bin
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment the following line to use hyphen-insensitive completion.
@@ -92,4 +93,8 @@ bindkey "ç" fzf-cd-widget
 [[ ! -f $HOME/.local/bin/mise ]] || eval "$($HOME/.local/bin/mise activate zsh)"
 # source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
 export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+source ~/.zshenv
+export KUBECONFIG=$(atlas kitt context:create --pid=$$)**** 
 
+
+export PATH="/opt/atlassian/bin:$PATH"

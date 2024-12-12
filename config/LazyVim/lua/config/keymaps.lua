@@ -57,7 +57,7 @@ key_mapper("n", "g.", '/\\V\\C<C-r>"<CR>cgn<C-a><Esc>')
 
 --  make extra pushes of escape clear various highlights
 vim.keymap.set("n", "<Esc>", function()
-  require("notify").dismiss({}) -- clear notifications
+  -- require("notify").dismiss({}) -- clear notifications
   vim.cmd.nohlsearch() -- clear highlights
   vim.cmd.echo() -- clear short-message
   if require("flash.plugins.char").state ~= nil then -- clear flash char highlight

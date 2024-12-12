@@ -39,7 +39,8 @@ git clone https://github.com/davidde/git ~/.oh-my-zsh/custom/plugins/git
 git clone https://github.com/djui/alias-tips ~/.oh-my-zsh/custom/plugins/alias-tips
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting ~/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
-git clone git@github.com:triorph/notes.git ~/org
+mkdir ~/org
+git clone git@github.com:triorph/notes.git ~/org/roam
 git clone git@github.com:triorph/newwp.git ~/repos/newwp
 git clone https://github.com/sumneko/lua-language-server ~/otherrepos/lua-language-server
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
@@ -60,9 +61,6 @@ mkdir ~/.config/kitty
 mkdir ~/.config/git
 cd ~/repos/newwp
 cargo install --path .
-ln -s ~/dotfiles/bin/set_daymode.sh ~/.local/bin/set_daymode
-ln -s ~/dotfiles/bin/set_nightmode.sh ~/.local/bin/set_nightmode
-ln -s ~/dotfiles/bin/toggle_daynight.sh ~/.local/bin/toggle_daynight
 ln -s ~/dotfiles/config/bat ~/.config
 ln -s ~/dotfiles/config/git/gitattributes ~/.gitattributes
 cp ~/dotfiles/config/git/gitconfig ~/.gitconfig
@@ -79,8 +77,6 @@ ln -s ~/dotfiles/config/zsh/zshenv ~/.zshenv
 ln -s ~/dotfiles/config/prettierrc.json ~/.prettierrc.json
 ln -s ~/dotfiles/config/doom ~/.doom.d
 ln -s ~/dotfiles/config/hammerspoon ~/.config/hammerspoon
-mkdir ~/.config/picom
-touch ~/.config/picom/picom.conf
 echo "source ~/.zshenv" > ~/.xprofile
 echo "Changing shell to zsh (may require password)"
 chsh -s /bin/zsh
@@ -93,15 +89,10 @@ echo "Step 4 complete."
 echo ""
 echo "Step 6: Add user to groups (requires sudo access)"
 echo ""
-sudo usermod -aG docker $USER
-sudo usermod -aG nopasswdlogin $USER
-sudo usermod -aG autologin $USER
 echo ""
 echo "Step 6 complete"
 echo ""
 echo "Step 7: Setup nvm"
-. ~/.nvm/nvm.sh
-nvm install --lts
 echo ""
 echo "Step 7 complete"
 echo ""
@@ -118,11 +109,6 @@ read varname
 echo ""
 echo "Step 9: Install LSPs"
 echo ""
-npm install -g pyright
-npm install -g typescript-language-server
-npm install -g eslint_d
-npm install -g @fsouza/prettierd
-npm install -g prettier
 echo "Manual step: Install the sumneko_lua LSP and symlink to correct place"
 echo ""
 echo "cd ~/otherrepos/lua-language-server"
