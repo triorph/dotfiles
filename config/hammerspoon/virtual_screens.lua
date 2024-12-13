@@ -1,6 +1,6 @@
 local M = {}
 
-local virtual_screen_multiplier = 2
+local virtual_screen_multiplier = 1
 function M.get_current_virtual_screen(window)
 	hs.screen.allScreens()
 	local real_screen_id = nil
@@ -43,7 +43,12 @@ function M.move_to_virtual_screen(window, virtual_screen, unit)
 	print("Moving to virtual screen " .. virtual_screen)
 	local real_screen = tonumber(virtual_screen / virtual_screen_multiplier)
 	local screens_virtual = virtual_screen % virtual_screen_multiplier
-	unit = { x = unit.x / 2 + 0.5 * screens_virtual, y = unit.y, w = unit.w / 2, h = unit.h }
+	unit = {
+		x = unit.x / virtual_screen_multiplier + 0.5 * screens_virtual,
+		y = unit.y,
+		w = unit.w / virtual_screen_multiplier,
+		h = unit.h,
+	}
 	print(
 		"Moving to real screen "
 			.. real_screen
