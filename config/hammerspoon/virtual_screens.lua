@@ -1,3 +1,32 @@
+-- virtual screens are smaller subsections that divide up a main screen
+--
+-- I think I am inspiring myself too much by tiling windows here
+-- and need to maintain all the use cases I want to consider:
+--
+-- use case 1:
+--  I am on a giant mofo screen that is just too wide and doesn't really work
+--  as a single screen, so  I want to do my usual thing with 2 sections being
+--  treated as separate screens
+--
+--  use case 2:
+--   I want to divide up the screen I am using in a spiral for tiling within it.
+--
+--  Other considerations:
+--   Floating within the screen vs taking up the full section
+--   Per window settings - floating in a larger space than others are bound to
+--
+--  Proposed solution:
+--    - Each window has its screen possibilities and locations separately defined
+--    - Each window can be floating or full-screen within those bounds, and
+--    remembers which it is set to
+--    - increasing the virtual screen count splits in half thecurrent virtual
+--    screen for a windows
+--    - we always split along the largest edge, so if halving a giant screen still
+--    leaves a desktop sized area, furthre splits will half that same direction
+--
+--    still TODO for now
+--
+
 local M = {}
 
 local virtual_screen_multiplier = { [0] = 1, [1] = 1 } --, [2] = 1, [3] = 1 }
