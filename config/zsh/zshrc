@@ -94,7 +94,7 @@ bindkey "ç" fzf-cd-widget
 # source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
 export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 source ~/.zshenv
-export KUBECONFIG=$(atlas kitt context:create --pid=$$)**** 
+export KUBECONFIG=$([[ ! -f /opt/atlassian/bin/atlas ]] || /opt/atlassian/bin/atlas kitt context:create --pid=$$)
 
 
 export PATH="/opt/atlassian/bin:$PATH"
