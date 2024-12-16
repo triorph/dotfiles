@@ -1,21 +1,24 @@
-zmodload zsh/zprof
+# Uncomment this zmodload and the `zprof` at the bottom of the file
+# to profile the startup time
+# zmodload zsh/zprof  
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
 if [[ $EUID == 0 ]]; then
+    # root user needs to set this as disabled or we get warnings
+    # (assuming that root is configured to use the same directory as home)
     export ZSH_DISABLE_COMPFIX="true"
 fi
+
 HISTCONTROL="ignorespace"
 export ZSH="$HOME/.oh-my-zsh"
-export NVM_COMPLETION="true"
 
-VSCODE=code
-export PATH=$PATH:$HOME/.pulumi/bin:/snap/bin
-export PATH=$PATH:$HOME/.cargo/bin:$HOME/.local/bin
-export PATH=$PATH:$HOME/.docker/bin
-export PATH=$PATH:/opt/homebrew/bin
+# .zshenv is where I setup custom paths
+[[ ! -f ~!/.zshenv ]] || source ~/.zshenv
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment the following line to use hyphen-insensitive completion.
@@ -33,7 +36,8 @@ DISABLE_MAGIC_FUNCTIONS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Add wisely, as too many plugins slow down shell startup.
 if [[ $EUID == 0 ]]; then
-    # Plugins for root user (same as main but no zoxide)
+    # Plugins for root user (same as main but no zoxide so as to 
+    # stop the db getting permissions corrupted)
      plugins=(
       git
       bgnotify
@@ -75,26 +79,13 @@ else
       miek-aliases-etc
     )
 fi
+
 # Uncomment the following line to have your zsh autostart/join a tmux session
 # export ZSH_TMUX_AUTOSTART=true
+
+
 source $ZSH/oh-my-zsh.sh
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-[[ ! -f ~/.zsh_profile ]] || source ~/.zsh_profile
-source ~/.fzf.zsh
-bindkey "ç" fzf-cd-widget
-# [[ ! -f $HOME/.asdf/asdf.sh ]] || source "$HOME/.asdf/asdf.sh"
-# [[ ! -f /opt/homebrew/opt/asdf/libexec/asdf.sh ]] || source "/opt/homebrew/opt/asdf/libexec/asdf.sh"
-[[ ! -f /opt/homebrew/bin/mise ]] || eval "$(/opt/homebrew/bin/mise activate zsh)"
-[[ ! -f $HOME/.local/bin/mise ]] || eval "$($HOME/.local/bin/mise activate zsh)"
-# source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
-export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-source ~/.zshenv
-export KUBECONFIG=$([[ ! -f /opt/atlassian/bin/atlas ]] || /opt/atlassian/bin/atlas kitt context:create --pid=$$)
-
-
-export PATH="/opt/atlassian/bin:$PATH"
+# uncomment this (and the first line of the file) to profile the startup
+# zprof
