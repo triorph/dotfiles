@@ -22,8 +22,20 @@ local embiggen_window = function(unit)
 	virtual_screens.move_to_virtual_screen(window, nil, unit)
 end
 
+local increase_virtual_screens = function()
+	virtual_screens.increase_virtual_screens()
+	embiggen_window(nil)
+end
+
+local decrease_virtual_screens = function()
+	virtual_screens.decrease_virtual_screens()
+	embiggen_window(nil)
+end
+
 hs.hotkey.bind({ "ctrl", "alt" }, "m", move_screen)
 hs.hotkey.bind({ "ctrl", "alt" }, "b", embiggen_window)
+hs.hotkey.bind({ "ctrl", "alt" }, "=", increase_virtual_screens)
+hs.hotkey.bind({ "ctrl", "alt" }, "-", decrease_virtual_screens)
 
 require("toggle_window")
 require("newwp")

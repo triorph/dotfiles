@@ -75,3 +75,4 @@ vmap <leader>/ gc
 
 " Find more examples here: https://jb.gg/share-ideavimrc
 
+set ideajoin
