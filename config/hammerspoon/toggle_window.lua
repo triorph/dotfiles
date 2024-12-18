@@ -28,8 +28,13 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 	end)
 end
 
+local web_browser = "Chrome"
+if hs.host.localizedName() == "Michael’s MacBook Pro" then
+	web_browser = "Firefox"
+end
+
 toggle_window({ "ctrl" }, "`", "kitty")
-toggle_window({ "ctrl" }, "tab", "Chrome")
+toggle_window({ "ctrl" }, "tab", web_browser)
 toggle_window({ "ctrl", "alt" }, "s", "Spotify", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 -- toggle_window({ "ctrl", "alt" }, "l", "Slicer")
 toggle_window({ "ctrl" }, "s", "Slack", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
