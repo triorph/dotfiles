@@ -28,16 +28,19 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 	end)
 end
 
-local web_browser = "Chrome"
-if hs.host.localizedName() == "Michael’s MacBook Pro" then
+local web_browser = "Firefox" -- default to firefox
+print(hs.host.localizedName())
+if hs.host.localizedName() == "CJDPHHJW5Q" then -- work laptop uses Chrome
+	web_browser = "Chrome"
+elseif hs.host.localizedName() == "Michael’s MacBook Pro" then -- home laptop with firefox
 	web_browser = "Firefox"
 end
 
 toggle_window({ "ctrl" }, "`", "kitty")
 toggle_window({ "ctrl" }, "tab", web_browser)
 toggle_window({ "ctrl", "alt" }, "s", "Spotify", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
--- toggle_window({ "ctrl", "alt" }, "l", "Slicer")
 toggle_window({ "ctrl" }, "s", "Slack", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
+-- so glad to be rid of teams
 -- toggle_window({ "ctrl", "alt" }, "z", "Microsoft Teams (work or school)", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 toggle_window({ "ctrl", "alt" }, "z", "zoom.us")
 toggle_window({ "ctrl", "alt" }, "tab", "Emacs", { x = 0.01, y = 0.01, w = 0.49, h = 0.99 })
