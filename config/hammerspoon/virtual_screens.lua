@@ -29,6 +29,32 @@
 
 local M = {}
 
+-- The per_window_table has the following data structure
+-- virtual_screens : a descriptor of which virtual screens exist for this window
+-- floating size : how large the window is when in floating mode
+-- position : a tuple of virtual screen, anchor type (floating vs fixed)
+
+-- windows_table stores a per_window_table by window_id,
+-- when a window_id does not exist in the dictionary, we should look up what the
+-- per_window_table default is by the window name. This way, we can define
+-- different per_window_table defaults for different window types
+local default_window_table = {
+	["default"] = {
+		virtual_screens = { [0] = 1, [1] = 1 },
+		floating_size = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
+		position = { 0, "floating" },
+	},
+}
+
+local get_default_window_table = function(window_name)
+	local ret = default_window_table["window_name"]
+	if ret == nil then
+		return default_window_table["default"]
+	else
+		return ret
+	end
+end
+
 local virtual_screen_multiplier = { [0] = 1, [1] = 1 } --, [2] = 1, [3] = 1 }
 
 local spirals = {
