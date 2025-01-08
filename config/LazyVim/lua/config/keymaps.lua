@@ -75,7 +75,7 @@ key_mapper("i", "<F1>", "<Nop>")
 key_mapper("n", "<leader>,", ":s/,/,\\r/g<CR>`[v`]=<CR><Esc>:nohl<CR>")
 
 -- basic navigation if lsp isn't present
-ncmdmap("gF", "Telescope grep_string")
+vim.keymap.set("n", "gF", LazyVim.pick("grep_cword"), { silent = true })
 vim.keymap.set("n", "gr", vim.lsp.buf.rename, { silent = true })
 -- code actions
 vim.keymap.set({ "n", "v" }, "gx", vim.lsp.buf.code_action, { silent = true })

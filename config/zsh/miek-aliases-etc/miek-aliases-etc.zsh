@@ -1,6 +1,8 @@
 
 export LESS="--quit-if-one-screen --RAW-CONTROL-CHARS --no-init"
-export FZF_DEFAULT_OPTS="--layout=reverse --height=10 -0"
+# comment this out, as neovim/lazyvim now uses fzf and this 
+# setting was breaking the live search
+# export FZF_DEFAULT_OPTS="--layout=reverse --height=10 -0"
 
 # double check everything we expect to be installed actually is 
 # (since its a bit manual these days)
@@ -20,7 +22,6 @@ function health-check() {
   type -p tmux
   type -p mise
 }
-
 # from https://github.com/beauwilliams/awesome-fzf/blob/master/awesome-fzf.zsh
 # Checkout to existing branch or else create new branch. gco <branch-name>.
 # Falls back to fuzzy branch selector list powered by fzf if no args.
@@ -48,7 +49,7 @@ fzf-checkout(){
 # Lets you choose which nvim config to use with fzf for selection
 fzf-vim-config(){
     items=("default" "LazyVim")
-    config=$(printf "%s\n" "${items[@]}"| fzf --prompt="Choose your neovim config" --height=~10 --exit-0 )
+    config=$(printf "%s\n" "${items[@]}"| fzf --layout=reverse --prompt="Choose your neovim config" --height=~10 --exit-0 )
     if [[ -z $config ]]; then
         echo "Nothing selected"
         return 0
@@ -69,7 +70,7 @@ fi
 
 # pipes rg into fzf and bat to let you browse your search
 function search_code {
-   rg -n "$1" | fzf --delimiter=':' -n 1,3.. --preview-window 'right,70%,+{2}-/2' --preview 'bat --color=always {1} -H {2} --style=plain'
+   rg -n "$1" | fzf --layout=reverse --delimiter=':' -n 1,3.. --preview-window 'right,70%,+{2}-/2' --preview 'bat --color=always {1} -H {2} --style=plain'
 }
 
 # exec into the bamboo build nodes (legacy)
