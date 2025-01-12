@@ -11,39 +11,4 @@ return {
       keys[#keys + 1] = { "gx", vim.lsp.buf.code_action, mode = { "n", "v" }, has = "codeAction" }
     end,
   },
-  {
-    "nvimtools/none-ls.nvim",
-    opts = function()
-      local nls = require("null-ls")
-      local builtins = nls.builtins
-      return {
-        root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git"),
-        sources = {
-          builtins.formatting.stylua,
-          builtins.formatting.isort.with({
-            extra_args = { "--profile=black" },
-          }),
-          builtins.formatting.black,
-          builtins.formatting.prettier.with({
-            filetypes = {
-              "javascript",
-              "javascriptreact",
-              "typescript",
-              "typescriptreact",
-              "vue",
-              "css",
-              "scss",
-              "less",
-              "html",
-              "json",
-              "jsonc",
-              "markdown",
-              "graphql",
-              "handlebars",
-            },
-          }),
-        },
-      }
-    end,
-  },
 }
