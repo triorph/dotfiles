@@ -3,8 +3,23 @@ local earbuds_id = "f8-4e-17-ee-97-9f"
 local airpods_id = "b0-f1-d8-ac-3f-ba"
 
 local blueutil_command = function(args)
-	local t = hs.task.new("/opt/homebrew/bin/blueutil", nil, args)
+	local t = hs.task.new("/opt/homebrew/bin/blueutil", function(exitCode, stdout, _)
+		if exitCode == 6 then
+			print("The blueutil command exited with status 6. This usually implies that")
+			print("hammerspoon has not been granted permissions to modify bluetooth")
+			print("Go to settings>privacy&security>bluetooth and add hammerspoon to the list")
+		end
+		print(stdout)
+	end, function(_, stdout, _)
+		print(stdout)
+		return false
+	end, args)
 	t:start()
+	t:waitUntilExit()
+end
+
+local print_paired = function()
+	blueutil_command({ "--paired" })
 end
 
 local bluetooth_power = function(power)
@@ -14,7 +29,7 @@ end
 
 local connect_headphones = function()
 	print("Connecting headphones")
-	blueutil_command({ "--connect", headphones_id })
+	blueutil_command({ "--connect", headphones_id, "--wait-disconnect", airpods_id })
 end
 
 local disconnect_headphones = function()
@@ -29,12 +44,12 @@ end
 
 local connect_earbuds = function()
 	print("Connecting earbuds")
-	blueutil_command({ "--connect", earbuds_id })
+	blueutil_command({ "--connect", earbuds_id, "--wait-connect", earbuds_id })
 end
 
 local connect_airpods = function()
 	print("Connecting airpods")
-	blueutil_command({ "--connect", airpods_id })
+	blueutil_command({ "--connect", airpods_id, "--wait-connect", airpods_id })
 end
 
 local disconnect_airpods = function()
@@ -64,3 +79,4 @@ hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "e", disconnect_earbuds)
 hs.hotkey.bind({ "ctrl", "alt" }, "a", connect_airpods)
 hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "a", disconnect_airpods)
 hs.hotkey.bind({ "ctrl", "alt" }, "p", turn_on_bluetooth_power)
+hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "p", print_paired)
