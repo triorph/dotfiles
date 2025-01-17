@@ -39,6 +39,7 @@ if [[ $EUID == 0 ]]; then
     # Plugins for root user (same as main but no zoxide so as to 
     # stop the db getting permissions corrupted)
      plugins=(
+      mise
       git
       bgnotify
       colored-man-pages
@@ -59,6 +60,7 @@ if [[ $EUID == 0 ]]; then
 else
     # Plugins for regular user
     plugins=(
+      mise
       git
       zoxide
       bgnotify

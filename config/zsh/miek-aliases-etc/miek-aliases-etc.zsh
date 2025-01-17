@@ -138,10 +138,6 @@ bindkey '^x^e' edit-command-line
 # local fzf changes, if they exist
 [[ ! -f ~/.fzf.zsh ]] || (source ~/.fzf.zsh && bindkey "ç" fzf-cd-widget)
 
-# Activate mise, accounting for the 2 ways to install it
-[[ ! -f /opt/homebrew/bin/mise ]] || eval "$(/opt/homebrew/bin/mise activate zsh)"
-[[ ! -f $HOME/.local/bin/mise ]] || eval "$($HOME/.local/bin/mise activate zsh)"
-
 # atlas kitt context setup, only if atlas cli exists
 export KUBECONFIG=$([[ ! -f /opt/atlassian/bin/atlas ]] || /opt/atlassian/bin/atlas kitt context:create --pid=$$)
 
