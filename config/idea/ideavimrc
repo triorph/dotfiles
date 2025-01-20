@@ -23,16 +23,15 @@ set number
 
 " Telescope equivalents
 nmap <leader>bb <Action>(Switcher)
-nmap <leader>tp <Action>(SearchEverywhere)
-nmap <leader>t/ <Action>(FindInPath)
-vmap <leader>t/ <Action>(FindInPath)
-nmap <leader>tf <Action>(FileStructurePopup)
+nmap <leader>ff <Action>(SearchEverywhere)
+nmap <leader>/ <Action>(FindInPath)
+vmap <leader>/ <Action>(FindInPath)
+nmap <leader>fF <Action>(FileStructurePopup)
 
 " LSP equivalents
-nmap <leader>f <Action>(ReformatCode)
-nunmap grr
-nmap <nowait> gr <Action>(RenameElement)
-nmap gR <Action>(ShowUsages)
+nmap <leader>cf <Action>(ReformatCode)
+nmap <nowait> <leader>cr <Action>(RenameElement)
+nmap gr <Action>(ShowUsages)
 nmap [d <Action>(GotoPreviousError)
 nmap ]d <Action>(GotoNextError)
 nmap gx <Action>(ShowIntentionActions)
@@ -57,20 +56,14 @@ inoremap jj <ESC>
 inoremap kk <ESC>
 inoremap jk <ESC>
 
-" space+/ for comments
-nmap <leader>/ gcc
-vmap <leader>/ gc
-
 
 "" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
 "" Map \r to the Reformat Code action
 "map \r <Action>(ReformatCode)
 
-"" Map <leader>d to start debug
-"map <leader>d <Action>(Debug)
-
-"" Map \b to toggle the breakpoint on the current line
-"map \b <Action>(ToggleLineBreakpoint)
+map <leader>dr <Action>(Test)
+map <leader>dd <Action>(Debug)
+map <leader>db <Action>(ToggleLineBreakpoint)
 
 
 " Find more examples here: https://jb.gg/share-ideavimrc
