@@ -23,18 +23,21 @@ set number
 
 " Telescope equivalents
 nmap <leader>bb <Action>(Switcher)
-nmap <leader>ff <Action>(SearchEverywhere)
+nmap <leader>fF <Action>(SearchEverywhere)
 nmap <leader>/ <Action>(FindInPath)
 vmap <leader>/ <Action>(FindInPath)
-nmap <leader>fF <Action>(FileStructurePopup)
+nmap <leader>ff <Action>(FileStructurePopup)
 
 " LSP equivalents
 nmap <leader>cf <Action>(ReformatCode)
 nmap <nowait> <leader>cr <Action>(RenameElement)
+nmap gd <Action>(GotoImplementation)
 nmap gr <Action>(ShowUsages)
 nmap [d <Action>(GotoPreviousError)
 nmap ]d <Action>(GotoNextError)
 nmap gx <Action>(ShowIntentionActions)
+nmap gk <Action>(ShowErrorDescription)
+
 
 " Basic buffer switching
 nmap <leader><leader> <Action>(GoToLastTab)

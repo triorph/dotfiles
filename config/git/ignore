@@ -10,6 +10,14 @@ workspace
 .metadata/*
 jdt.ls*
 .tool-versions
+.direnv
+.envrc
+pylama.ini
+.mise.toml
+mise.toml
+kls_database.db
+.secrets*
+
 ## From MacOs gitignore on github/gitignore
 # General
 .DS_Store
@@ -37,8 +45,4 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-.direnv
-.envrc
-pylama.ini
-.mise.toml
-mise.toml
+

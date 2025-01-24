@@ -77,6 +77,7 @@ key_mapper("n", "<leader>,", ":s/,/,\\r/g<CR>`[v`]=<CR><Esc>:nohl<CR>")
 -- basic navigation if lsp isn't present
 vim.keymap.set("n", "gF", LazyVim.pick("grep_cword"), { silent = true })
 vim.keymap.set("n", "gr", vim.lsp.buf.rename, { silent = true })
+vim.keymap.set("n", "gk", vim.diagnostic.open_float, { silent = true })
 -- code actions
 vim.keymap.set({ "n", "v" }, "gx", vim.lsp.buf.code_action, { silent = true })
 
