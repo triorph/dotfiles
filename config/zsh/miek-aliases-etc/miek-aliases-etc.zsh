@@ -1,4 +1,3 @@
-
 export LESS="--quit-if-one-screen --RAW-CONTROL-CHARS --no-init"
 # comment this out, as neovim/lazyvim now uses fzf and this 
 # setting was breaking the live search
@@ -136,7 +135,10 @@ bindkey '^x^e' edit-command-line
 [[ ! -f ~/.zsh_profile ]] || source ~/.zsh_profile  
 
 # local fzf changes, if they exist
-[[ ! -f ~/.fzf.zsh ]] || (source ~/.fzf.zsh && bindkey "ç" fzf-cd-widget)
+if type fzf > /dev/null; then
+  source <(fzf --zsh)
+  bindkey "ç" fzf-cd-widget
+fi
 
 # atlas kitt context setup, only if atlas cli exists
 export KUBECONFIG=$([[ ! -f /opt/atlassian/bin/atlas ]] || /opt/atlassian/bin/atlas kitt context:create --pid=$$)
