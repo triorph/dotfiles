@@ -13,7 +13,11 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 			if not app:mainWindow() then
 				app = hs.application.open(launcher_name, 2.0, true)
 			elseif app:isFrontmost() then
-				app:hide()
+				if app:name() == "Arc" then
+					app:selectMenuItem("Hide Arc")
+				else
+					app:hide()
+				end
 			else
 				app:activate()
 			end
@@ -30,7 +34,7 @@ end
 
 print(hs.host.localizedName())
 if hs.host.localizedName() == "CJDPHHJW5Q" then -- work laptop uses Chrome
-	toggle_window({ "ctrl" }, "tab", "chrome")
+	toggle_window({ "ctrl" }, "tab", "Arc")
 	toggle_window({ "ctrl", "alt" }, "d", "IntelliJ IDEA", nil, "IntelliJ IDEA Ultimate")
 elseif hs.host.localizedName() == "Michael’s MacBook Pro" then -- home laptop with firefox
 	toggle_window({ "ctrl" }, "tab", "Firefox")
