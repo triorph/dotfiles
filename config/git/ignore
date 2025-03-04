@@ -11,6 +11,7 @@ workspace
 jdt.ls*
 .tool-versions
 .direnv
+.venv
 .envrc
 pylama.ini
 .mise.toml
