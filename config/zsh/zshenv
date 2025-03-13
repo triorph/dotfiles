@@ -2,14 +2,11 @@ export CPPFLAGS="-I$JAVA_HOME/include"
 
 typeset -U PATH path
 path=(
-  "/opt/openmpi-5.0.2/bin"
   "$HOME/.local/bin"
   "$HOME/.docker/bin"
   "$HOME/.cargo/bin"
-  "$HOME/.local/share/gem/ruby/3.0.0/bin"
-  "$HOME/.gem/ruby/2.6.0/bin"
   "$HOME/.config/emacs/bin"
-  "$JAVA_HOME/bin"
+  "$HOME/.orbit/bin"
   "$path[@]"
 )
 export PATH
