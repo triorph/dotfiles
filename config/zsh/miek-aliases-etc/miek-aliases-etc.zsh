@@ -16,6 +16,7 @@ function health-check() {
   type -p delta
   type -p docker
   type -p emacs
+  type -p ispell  # used for emacs spellcheck
   type -p jq
   type -p zoxide
   type -p tmux
