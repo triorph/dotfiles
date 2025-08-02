@@ -42,14 +42,15 @@ print(hs.host.localizedName())
 if hs.host.localizedName() == "CJDPHHJW5Q" then -- work laptop
 	toggle_window({ "ctrl", "alt" }, "d", "IntelliJ IDEA", nil, "IntelliJ IDEA Ultimate")
 	toggle_window({ "ctrl", "alt", "cmd" }, "d", "Cursor")
+	toggle_window({ "ctrl" }, "tab", "Arc")
 elseif hs.host.localizedName() == "Michael’s MacBook Pro" then -- home laptop
 	-- so glad to be rid of teams
 	-- toggle_window({ "ctrl", "alt" }, "z", "Microsoft Teams (work or school)", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 	toggle_window({ "ctrl", "alt" }, "d", "Parsec", nil, "Parsec")
 	toggle_window({ "ctrl", "alt" }, "k", "Messages", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
+	toggle_window({ "ctrl" }, "tab", "Firefox")
 end
 
-toggle_window({ "ctrl" }, "tab", "Arc")
 toggle_window({ "ctrl" }, "`", "kitty")
 toggle_window({ "ctrl", "alt" }, "s", "Spotify", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 toggle_window({ "ctrl" }, "s", "Slack", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
