@@ -24,7 +24,8 @@ set number
 " Telescope equivalents
 nmap <leader>b <Action>(Switcher)
 nmap <leader>fF <Action>(SearchEverywhere)
-nmap <leader>fm <Action>(ActivateProjectToolWindow)
+nmap <leader>fm <Action>(ShowNavBar)
+nmap <leader>fM <Action>(ActivateProjectToolWindow)
 nmap <leader>/ <Action>(FindInPath)
 vmap <leader>/ <Action>(FindInPath)
 
