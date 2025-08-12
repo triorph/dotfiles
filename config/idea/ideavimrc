@@ -22,11 +22,17 @@ set relativenumber
 set number
 
 " Telescope equivalents
-nmap <leader>bb <Action>(Switcher)
+nmap <leader>b <Action>(Switcher)
 nmap <leader>fF <Action>(SearchEverywhere)
+nmap <leader>fm <Action>(ActivateProjectToolWindow)
 nmap <leader>/ <Action>(FindInPath)
 vmap <leader>/ <Action>(FindInPath)
-nmap <leader>ff <Action>(FileStructurePopup)
+
+" toggle panes
+nmap <leader>xx <Action>(ActivateProblemsViewToolWindow)
+nmap <leader>xr <Action>(ActivateRunToolWindow)
+nmap <leader>xd <Action>(ActivateDebugToolWindow)
+nmap <leader>w <Action>(HideAllWindows)
 
 " LSP equivalents
 nmap <leader>cf <Action>(ReformatCode)
@@ -41,7 +47,7 @@ nmap gk <Action>(ShowErrorDescription)
 
 
 " Basic buffer switching
-nmap <leader><leader> <Action>(GoToLastTab)
+nnoremap <leader><leader> <C-6>
 nmap <leader>1 <Action>(GoToTab1)
 nmap <leader>2 <Action>(GoToTab2)
 nmap <leader>3 <Action>(GoToTab3)
@@ -61,13 +67,16 @@ inoremap kk <ESC>
 inoremap jk <ESC>
 
 
-"" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
-"" Map \r to the Reformat Code action
-"map \r <Action>(ReformatCode)
-
-map <leader>dr <Action>(Test)
+" Testing and debugging
+map <leader>tr <Action>(RunClass)
+map <leader>tt <Action>(RunAnything)
+map <leader>dr <Action>(DebugClass)
 map <leader>dd <Action>(Debug)
 map <leader>db <Action>(ToggleLineBreakpoint)
+map <leader>do <Action>(StepOver)
+map <leader>dO <Action>(StepOut)
+map <leader>di <Action>(StepIn)
+map <leader>dc <Action>(Resume)
 
 
 " Find more examples here: https://jb.gg/share-ideavimrc
