@@ -41,6 +41,7 @@ end
 print(hs.host.localizedName())
 if hs.host.localizedName() == "CJDPHHJW5Q" then -- work laptop
 	toggle_window({ "ctrl", "alt" }, "d", "IntelliJ IDEA", nil, "IntelliJ IDEA Ultimate")
+	toggle_window({ "ctrl", "alt" }, "g", "Goland", nil, "Goland")
 	toggle_window({ "ctrl", "alt", "cmd" }, "d", "Cursor")
 	toggle_window({ "ctrl" }, "tab", "Arc")
 elseif hs.host.localizedName() == "Michael’s MacBook Pro" then -- home laptop

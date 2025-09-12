@@ -79,6 +79,7 @@ else
       vi-mode
       kubectl
       miek-aliases-etc
+      acse-kratos
     )
 fi
 

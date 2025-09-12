@@ -142,6 +142,6 @@ if type fzf > /dev/null; then
 fi
 
 # atlas kitt context setup, only if atlas cli exists
-export KUBECONFIG=$([[ ! -f /opt/atlassian/bin/atlas ]] || /opt/atlassian/bin/atlas kitt context:create --pid=$$)
+# export KUBECONFIG=$([[ ! -f /opt/atlassian/bin/atlas ]] || /opt/atlassian/bin/atlas kitt context:create --pid=$$)
 
 
