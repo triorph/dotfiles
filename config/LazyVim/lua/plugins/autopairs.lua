@@ -1,4 +1,4 @@
 return {
   { "windwp/nvim-autopairs", opts = {} },
-  { "echasnovski/mini.pairs", enabled = false },
+  { "nvim-mini/mini.pairs", enabled = false },
 }
