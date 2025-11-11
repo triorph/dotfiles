@@ -15,12 +15,14 @@ function health-check() {
   type -p nvim
   type -p delta
   type -p docker
+  type -p jj  # alternative to git
   type -p emacs
   type -p ispell  # used for emacs spellcheck
   type -p jq
   type -p zoxide
   type -p tmux
   type -p mise
+  [[ "$ZPLUG_HOME" = "" ]] && echo "ZPLUG not setup for zsh" || echo "ZPLUG is installed at $ZPLUG_HOME"
 }
 # from https://github.com/beauwilliams/awesome-fzf/blob/master/awesome-fzf.zsh
 # Checkout to existing branch or else create new branch. gco <branch-name>.

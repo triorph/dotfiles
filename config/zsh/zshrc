@@ -1,10 +1,47 @@
 # Uncomment this zmodload and the `zprof` at the bottom of the file
 # to profile the startup time
 # zmodload zsh/zprof  
-export ZPLUG_HOME=/opt/homebrew/opt/zplug
-source $ZPLUG_HOME/init.zsh
-zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
-zplug load
+
+if [[ -f "/opt/homebrew/opt/zplug/init.zsh" ]]; then
+  export ZPLUG_HOME=/opt/homebrew/opt/zplug
+elif [[ -f "$HOME/.zplug/init.zsh" ]]; then
+  export ZPLUG_HOME=$HOME/.zplug
+fi
+
+if [[ "$ZPLUG_HOME" != "" ]]; then
+  source $ZPLUG_HOME/init.zsh
+  zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
+
+  zplug "plugins/mise", from:oh-my-zsh
+  zplug "plugins/bgnotify", from:oh-my-zsh
+  zplug "plugins/colored-man-pages", from:oh-my-zsh
+  zplug "plugins/command-not-found", from:oh-my-zsh
+  zplug "plugins/python", from:oh-my-zsh
+  zplug "plugins/git-auto-fetch", from:oh-my-zsh
+  zplug "plugins/gitfast", from:oh-my-zsh
+  zplug "plugins/docker", from:oh-my-zsh
+  zplug "plugins/tmux", from:oh-my-zsh
+  zplug "plugins/aws", from:oh-my-zsh
+  zplug "plugins/vi-mode", from:oh-my-zsh
+  zplug "plugins/kubectl", from:oh-my-zsh
+  zplug "triorph/dotfiles", use:"config/zsh/{acse-kratos,miek-aliases-etc}"
+  if [[ $EUID != 0 ]]; then
+    ## Skip zoxide for root user to avoid corrupting DB
+    zplug "plugins/zoxide", from:oh-my-zsh
+  fi
+  zplug "romkatv/powerlevel10k", as:theme, depth:1
+  zplug "davidde/git"
+  zplug "djui/alias-tips"
+  zplug "zsh-users/zsh-autosuggestions"
+  zplug "zdharma-continuum/fast-syntax-highlighting"
+  # Install plugins if there are plugins that have not been installed
+  if ! zplug check --verbose; then
+      printf "Install? [y/N]: "
+      if read -q; then
+          echo; zplug install
+      fi
+  fi
+fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -19,85 +56,24 @@ if [[ $EUID == 0 ]]; then
 fi
 
 HISTCONTROL="ignorespace"
-export ZSH="$HOME/.oh-my-zsh"
 
 # .zshenv is where I setup custom paths
 [[ ! -f ~!/.zshenv ]] || source ~/.zshenv
-ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Add wisely, as too many plugins slow down shell startup.
-if [[ $EUID == 0 ]]; then
-    # Plugins for root user (same as main but no zoxide so as to 
-    # stop the db getting permissions corrupted)
-     plugins=(
-      mise
-      git
-      bgnotify
-      colored-man-pages
-      command-not-found
-      python
-      git-auto-fetch
-      gitfast
-      docker
-      tmux
-      fast-syntax-highlighting
-      zsh-autosuggestions
-      alias-tips
-      aws
-      vi-mode
-      kubectl
-      miek-aliases-etc
-    )
-else
-    # Plugins for regular user
-    plugins=(
-      mise
-      git
-      zoxide
-      bgnotify
-      colored-man-pages
-      command-not-found
-      python
-      macos
-      git-auto-fetch
-      gitfast
-      docker
-      tmux
-      fast-syntax-highlighting
-      zsh-autosuggestions
-      alias-tips
-      aws
-      vi-mode
-      kubectl
-      miek-aliases-etc
-      acse-kratos
-    )
-fi
 
 # Uncomment the following line to have your zsh autostart/join a tmux session
 # export ZSH_TMUX_AUTOSTART=true
 
 
-source $ZSH/oh-my-zsh.sh
+if [[ "ZPLUG_HOME" != "" ]]; then
+  zplug load
+fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# uncomment this (and the first line of the file) to profile the startup
-# zprof
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/mwalsh2/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
 # End of Docker CLI completions
+
+# uncomment this (and the first line of the file) to profile the startup
+# zprof
