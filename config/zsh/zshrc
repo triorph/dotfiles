@@ -1,6 +1,10 @@
 # Uncomment this zmodload and the `zprof` at the bottom of the file
 # to profile the startup time
 # zmodload zsh/zprof  
+export ZPLUG_HOME=/opt/homebrew/opt/zplug
+source $ZPLUG_HOME/init.zsh
+zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
+zplug load
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # confirmations, etc.) must go above this block; everything else may go below.

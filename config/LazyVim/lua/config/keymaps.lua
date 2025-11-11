@@ -29,9 +29,9 @@ ncmdmap("<leader>8", "BufferLineGoToBuffer 8")
 ncmdmap("<leader>9", "BufferLineGoToBuffer 9")
 -- nmap_keymap("<leader><leader>", "<c-^>")
 
-key_mapper("i", "jj", "<ESC>")
-key_mapper("i", "kk", "<ESC>")
-key_mapper("i", "jk", "<ESC>")
+-- key_mapper("i", "jj", "<ESC>")
+-- key_mapper("i", "kk", "<ESC>")
+-- key_mapper("i", "jk", "<ESC>")
 
 -- ZenMode
 ncmdmap("<leader>vz", "ZenMode")
