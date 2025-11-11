@@ -88,6 +88,15 @@ function gitbranchcleanup {
     | xargs git branch -D
 }
 
+function yqdiff {
+  left_file=$(mktemp)
+  right_file=$(mktemp)
+  left=$(yq -P $1 > $left_file)
+  right=$(yq -P $2 > $right_file)
+  shift 2
+  diff -u $* $left_file $right_file
+}
+
 # Prefer kitty +kitten ssh, but be smart and only use it from kitty and from the host machine, and use
 # default ssh otherwise
 [ "$TERM" = "xterm-kitty" ] && [ "$SSH_CONNECTION" = "" ] && alias ssh="kitty +kitten ssh"
@@ -140,6 +149,8 @@ if type fzf > /dev/null; then
   source <(fzf --zsh)
   bindkey "ç" fzf-cd-widget
 fi
+
+alias scratch="$EDITOR $(mktemp)"
 
 # atlas kitt context setup, only if atlas cli exists
 # export KUBECONFIG=$([[ ! -f /opt/atlassian/bin/atlas ]] || /opt/atlassian/bin/atlas kitt context:create --pid=$$)
