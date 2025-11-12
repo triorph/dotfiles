@@ -25,7 +25,10 @@ if [[ "$ZPLUG_HOME" != "" ]]; then
   zplug "plugins/vi-mode", from:oh-my-zsh
   zplug "plugins/kubectl", from:oh-my-zsh
   zplug "lib/key-bindings.zsh", from:oh-my-zsh
-  zplug "dotfiles/config/zsh/acse-kratos", from:local, defer:2
+  if [[ "$USER" == "mwalsh2" ]]; then
+    # Only enable atlassian custom stuff if logged in via atlassian computer
+    zplug "dotfiles/config/zsh/acse-kratos", from:local, defer:2
+  fi
   zplug "dotfiles/config/zsh/miek-aliases-etc", from:local, defer:2
   if [[ $EUID != 0 ]]; then
     ## Skip zoxide for root user to avoid corrupting DB
