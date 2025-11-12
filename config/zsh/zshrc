@@ -24,7 +24,9 @@ if [[ "$ZPLUG_HOME" != "" ]]; then
   zplug "plugins/aws", from:oh-my-zsh
   zplug "plugins/vi-mode", from:oh-my-zsh
   zplug "plugins/kubectl", from:oh-my-zsh
-  zplug "triorph/dotfiles", use:"config/zsh/{acse-kratos,miek-aliases-etc}"
+  zplug "lib/key-bindings.zsh", from:oh-my-zsh
+  zplug "dotfiles/config/zsh/acse-kratos", from:local, defer:2
+  zplug "dotfiles/config/zsh/miek-aliases-etc", from:local, defer:2
   if [[ $EUID != 0 ]]; then
     ## Skip zoxide for root user to avoid corrupting DB
     zplug "plugins/zoxide", from:oh-my-zsh
