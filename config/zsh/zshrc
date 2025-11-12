@@ -24,7 +24,8 @@ if [[ "$ZPLUG_HOME" != "" ]]; then
   zplug "plugins/aws", from:oh-my-zsh
   zplug "plugins/vi-mode", from:oh-my-zsh
   zplug "plugins/kubectl", from:oh-my-zsh
-  zplug "lib/key-bindings.zsh", from:oh-my-zsh
+  zplug "lib/key-bindings", from:oh-my-zsh
+  zplug "lib/clipboard", from:oh-my-zsh
   if [[ "$USER" == "mwalsh2" ]]; then
     # Only enable atlassian custom stuff if logged in via atlassian computer
     zplug "dotfiles/config/zsh/acse-kratos", from:local, defer:2
@@ -73,6 +74,8 @@ if [[ "ZPLUG_HOME" != "" ]]; then
   zplug load
 fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# uncomment if debugging differences
+# source ~/.oh-my-zsh/oh-my-zsh.sh
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/mwalsh2/.docker/completions $fpath)
