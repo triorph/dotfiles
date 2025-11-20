@@ -1,52 +1,45 @@
 # Uncomment this zmodload and the `zprof` at the bottom of the file
 # to profile the startup time
 # zmodload zsh/zprof  
+set +x
 
-if [[ -f "/opt/homebrew/opt/zplug/init.zsh" ]]; then
-  export ZPLUG_HOME=/opt/homebrew/opt/zplug
-elif [[ -f "$HOME/.zplug/init.zsh" ]]; then
-  export ZPLUG_HOME=$HOME/.zplug
+if [[ -f "/opt/homebrew/share/antigen/antigen.zsh" ]]; then
+  export ANTIGEN_HOME="/opt/homebrew/share/antigen/"
+elif [[ -f "$HOME/.antigen/antigen.zsh" ]]; then
+  export ANTIGEN_HOME="$HOME/.antigen/antigen.zsh"
 fi
 
-if [[ "$ZPLUG_HOME" != "" ]]; then
-  source $ZPLUG_HOME/init.zsh
-  zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
+if [[ "$ANTIGEN_HOME" != "" ]]; then
+  source $ANTIGEN_HOME/antigen.zsh
+  antigen bundle "mafredri/zsh-async" --branch=main async.zsh
 
-  zplug "plugins/mise", from:oh-my-zsh
-  zplug "plugins/bgnotify", from:oh-my-zsh
-  zplug "plugins/colored-man-pages", from:oh-my-zsh
-  zplug "plugins/command-not-found", from:oh-my-zsh
-  zplug "plugins/python", from:oh-my-zsh
-  zplug "plugins/git-auto-fetch", from:oh-my-zsh
-  zplug "plugins/gitfast", from:oh-my-zsh
-  zplug "plugins/docker", from:oh-my-zsh
-  zplug "plugins/tmux", from:oh-my-zsh
-  zplug "plugins/aws", from:oh-my-zsh
-  zplug "plugins/vi-mode", from:oh-my-zsh
-  zplug "plugins/kubectl", from:oh-my-zsh
-  zplug "lib/key-bindings", from:oh-my-zsh
-  zplug "lib/clipboard", from:oh-my-zsh
+  antigen use oh-my-zsh
+  mkdir $ZSH_CACHE_DIR/completions 2>/dev/null
+  antigen bundle "mise"
+  antigen bundle "bgnotify"
+  antigen bundle "colored-man-pages"
+  antigen bundle "command-not-found"
+  antigen bundle "python"
+  antigen bundle "gitfast"
+  antigen bundle "docker"
+  antigen bundle "tmux"
+  antigen bundle "aws"
+  antigen bundle "vi-mode"
+  antigen bundle "kubectl"
   if [[ "$USER" == "mwalsh2" ]]; then
     # Only enable atlassian custom stuff if logged in via atlassian computer
-    zplug "dotfiles/config/zsh/acse-kratos", from:local, defer:2
+    antigen bundle "$HOME/dotfiles/config/zsh/acse-kratos"
   fi
-  zplug "dotfiles/config/zsh/miek-aliases-etc", from:local, defer:2
+  antigen bundle "$HOME/dotfiles/config/zsh/miek-aliases-etc"
   if [[ $EUID != 0 ]]; then
     ## Skip zoxide for root user to avoid corrupting DB
-    zplug "plugins/zoxide", from:oh-my-zsh
+    antigen bundle "zoxide"
   fi
-  zplug "romkatv/powerlevel10k", as:theme, depth:1
-  zplug "davidde/git"
-  zplug "djui/alias-tips"
-  zplug "zsh-users/zsh-autosuggestions"
-  zplug "zdharma-continuum/fast-syntax-highlighting"
-  # Install plugins if there are plugins that have not been installed
-  if ! zplug check --verbose; then
-      printf "Install? [y/N]: "
-      if read -q; then
-          echo; zplug install
-      fi
-  fi
+  antigen theme "romkatv/powerlevel10k"
+  antigen bundle "davidde/git"
+  antigen bundle "djui/alias-tips"
+  antigen bundle "zsh-users/zsh-autosuggestions"
+  antigen bundle "zdharma-continuum/fast-syntax-highlighting"
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -69,19 +62,13 @@ HISTCONTROL="ignorespace"
 # Uncomment the following line to have your zsh autostart/join a tmux session
 # export ZSH_TMUX_AUTOSTART=true
 
-
-if [[ "ZPLUG_HOME" != "" ]]; then
-  zplug load
+if [[ "$ANTIGEN_HOME" != "" ]]; then
+  antigen apply
 fi
+
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 # uncomment if debugging differences
 # source ~/.oh-my-zsh/oh-my-zsh.sh
-
-# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=(/Users/mwalsh2/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
-# End of Docker CLI completions
 
 # uncomment this (and the first line of the file) to profile the startup
 # zprof

@@ -21,28 +21,24 @@ set display+=lastline
 set autoread
 '
 
-kitt-admin() {
-  # Only create the KUBECONFIG if it hasn't been set already
-  if [[ "$KUBECONFIG"="" ]]; then
-    export KUBECONFIG=$(atlas kitt context:create --pid=$$)
-  fi
-	atlas kitt context -n default -a admin -f "$@"
-}
-
-kitt-local() {
-  # Only create the KUBECONFIG if it hasn't been set already
-  if [[ "$KUBECONFIG"="" ]]; then
-    export KUBECONFIG=$(atlas kitt context:create --pid=$$)
-  fi
-	atlas kitt context -n default -a local -f "$@"
-}
-
 kitt() {
   # Only create the KUBECONFIG if it hasn't been set already
   if [[ "$KUBECONFIG"="" ]]; then
     export KUBECONFIG=$(atlas kitt context:create --pid=$$)
   fi
 	atlas kitt context "$@"
+}
+
+kitt-admin() {
+	kitt -n default -a admin -f "$@"
+}
+
+kitt-local() {
+	kitt -n default -a local -f "$@"
+}
+
+kitt-read() {
+  kitt -n default -a read -f "$@"
 }
 
 icLogin() {

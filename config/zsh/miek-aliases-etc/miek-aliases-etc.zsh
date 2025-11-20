@@ -22,7 +22,7 @@ function health-check() {
   type -p zoxide
   type -p tmux
   type -p mise
-  [[ "$ZPLUG_HOME" = "" ]] && echo "ZPLUG not setup for zsh" || echo "ZPLUG is installed at $ZPLUG_HOME"
+  [[ "$ANTIGEN_HOME" = "" ]] && echo "ANTIGEN not setup for zsh" || echo "ANTIGEN is installed at $ANTIGEN_HOME"
 }
 # from https://github.com/beauwilliams/awesome-fzf/blob/master/awesome-fzf.zsh
 # Checkout to existing branch or else create new branch. gco <branch-name>.
@@ -153,8 +153,4 @@ if type fzf > /dev/null; then
 fi
 
 alias scratch="$EDITOR $(mktemp)"
-
-# atlas kitt context setup, only if atlas cli exists
-# export KUBECONFIG=$([[ ! -f /opt/atlassian/bin/atlas ]] || /opt/atlassian/bin/atlas kitt context:create --pid=$$)
-
 
