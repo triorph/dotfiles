@@ -91,12 +91,9 @@ function gitbranchcleanup {
 }
 
 function yqdiff {
-  left_file=$(mktemp)
-  right_file=$(mktemp)
   left=$(yq -P $1 > $left_file)
   right=$(yq -P $2 > $right_file)
-  shift 2
-  diff -u $* $left_file $right_file
+  diff -u <(yq -P $1) <(yq -P $2)
 }
 
 # Prefer kitty +kitten ssh, but be smart and only use it from kitty and from the host machine, and use

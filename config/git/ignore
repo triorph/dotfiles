@@ -14,8 +14,6 @@ jdt.ls*
 .venv
 .envrc
 pylama.ini
-.mise.toml
-mise.toml
 kls_database.db
 .secrets*
 
