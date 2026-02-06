@@ -6,7 +6,7 @@ set +x
 if [[ -f "/opt/homebrew/share/antigen/antigen.zsh" ]]; then
   export ANTIGEN_HOME="/opt/homebrew/share/antigen/"
 elif [[ -f "$HOME/.antigen/antigen.zsh" ]]; then
-  export ANTIGEN_HOME="$HOME/.antigen/antigen.zsh"
+  export ANTIGEN_HOME="$HOME/.antigen/"
 fi
 
 if [[ "$ANTIGEN_HOME" != "" ]]; then

@@ -15,7 +15,7 @@
 # permissions to access it. If it is a public collection, then you shold be
 # able to leave the API key blank
 config=$(cat $HOME/.config/wallhaven.json | jq)
-target_file=$HOME$(echo $config | jq -er ".file_location")
+target_dir=$HOME$(echo $config | jq -er ".directory_location")
 api_key=$(echo $config | jq -er ".api_key")
 username=$(echo $config | jq -er ".username")
 collection_id=$(echo $config | jq -er ".collection_id")
@@ -24,15 +24,18 @@ result=$(curl -s "$url" | jq)
 total=$(echo $result | jq -er ".meta.total")
 per_page=$(echo $result | jq -er ".meta.per_page")
 index=$1
-if [ -z $index ] ; then
-    index=$(($RANDOM % total))
+if [ -z $index ]; then
+  index=$(($RANDOM % total))
 fi
 page=$((1 + $index / $per_page))
 new_index=$(($index % $per_page))
 new_result=$(curl -s "$url&page=$page" | jq)
 filepath=$(echo $new_result | jq -er ".data[$new_index].path")
+target_file="$target_dir/$(basename $filepath)"
+echo "Saving to $target_file from URL $filepath"
 curl -o $target_file -sL "$filepath"
-sqlite3 ~/Library/Application\ Support/Dock/desktoppicture.db "update data set value = '$target_file'" && killall Dock
+hyprctl hyprpaper preload "$target_file"
+hyprctl hyprpaper wallpaper ",$target_file"
 config=$(echo $config | jq ". + {current_selection: $index, filepath: \"$filepath\"}")
-echo $config | jq > /tmp/wallhaven.json
+echo $config | jq >/tmp/wallhaven.json
 mv /tmp/wallhaven.json $HOME/.config/wallhaven.json
