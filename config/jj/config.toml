@@ -25,3 +25,10 @@ wip = "yellow"
 todo = "blue"
 vibe = "cyan"
 mega = "red"
+
+[ui]
+default-command = "log"
+
+[user]
+email = "mwalsh2@atlassian.com"
+name = "Michael Walsh"
