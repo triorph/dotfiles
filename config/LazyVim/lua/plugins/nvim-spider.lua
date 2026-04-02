@@ -1,4 +1,5 @@
 return {
+  -- Disabled for now; kept for reference in case camelCase/subword motion is wanted later
   "chrisgrieser/nvim-spider",
   enabled = false,
   keys = {

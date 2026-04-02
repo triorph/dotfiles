@@ -1,94 +1,63 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
---
 
-local opts = { noremap = true, silent = true }
-local key_mapper = function(mode, key, result)
-  vim.api.nvim_set_keymap(mode, key, result, { noremap = true, silent = true })
-end
-local verbal_key_mapper = function(mode, key, result)
-  vim.api.nvim_set_keymap(mode, key, result, { noremap = true })
-end
-local ncmdmap = function(key, cmd)
-  key_mapper("n", key, "<cmd>" .. cmd .. "<CR>")
+local function map(mode, lhs, rhs, opts)
+  vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", { noremap = true, silent = true }, opts or {}))
 end
 
-local function nmap_keymap(keymap, command)
-  vim.api.nvim_set_keymap("n", keymap, "<cmd>" .. command .. "<CR>", opts)
-end
+-- BufferLine: jump to buffer by index
+map("n", "<leader>1", "<cmd>BufferLineGoToBuffer 1<CR>", { desc = "Buffer 1" })
+map("n", "<leader>2", "<cmd>BufferLineGoToBuffer 2<CR>", { desc = "Buffer 2" })
+map("n", "<leader>3", "<cmd>BufferLineGoToBuffer 3<CR>", { desc = "Buffer 3" })
+map("n", "<leader>4", "<cmd>BufferLineGoToBuffer 4<CR>", { desc = "Buffer 4" })
+map("n", "<leader>5", "<cmd>BufferLineGoToBuffer 5<CR>", { desc = "Buffer 5" })
+map("n", "<leader>6", "<cmd>BufferLineGoToBuffer 6<CR>", { desc = "Buffer 6" })
+map("n", "<leader>7", "<cmd>BufferLineGoToBuffer 7<CR>", { desc = "Buffer 7" })
+map("n", "<leader>8", "<cmd>BufferLineGoToBuffer 8<CR>", { desc = "Buffer 8" })
+map("n", "<leader>9", "<cmd>BufferLineGoToBuffer 9<CR>", { desc = "Buffer 9" })
 
-ncmdmap("<leader>1", "BufferLineGoToBuffer 1")
-ncmdmap("<leader>2", "BufferLineGoToBuffer 2")
-ncmdmap("<leader>3", "BufferLineGoToBuffer 3")
-ncmdmap("<leader>4", "BufferLineGoToBuffer 4")
-ncmdmap("<leader>5", "BufferLineGoToBuffer 5")
-ncmdmap("<leader>6", "BufferLineGoToBuffer 6")
-ncmdmap("<leader>7", "BufferLineGoToBuffer 7")
-ncmdmap("<leader>8", "BufferLineGoToBuffer 8")
-ncmdmap("<leader>9", "BufferLineGoToBuffer 9")
--- nmap_keymap("<leader><leader>", "<c-^>")
+-- ZenMode (grouped with UI toggles)
+map("n", "<leader>uz", "<cmd>ZenMode<CR>", { desc = "Toggle Zen Mode" })
 
--- key_mapper("i", "jj", "<ESC>")
--- key_mapper("i", "kk", "<ESC>")
--- key_mapper("i", "jk", "<ESC>")
+-- Copy to clipboard
+map("v", "\\y", '"+y', { desc = "Yank to clipboard" })
+map("n", "\\Y", '"+yg_', { desc = "Yank to end of line to clipboard" })
+map("n", "\\y", '"+y', { desc = "Yank to clipboard" })
 
--- ZenMode
-ncmdmap("<leader>vz", "ZenMode")
+-- Paste from clipboard
+map("n", "\\p", '"+p', { desc = "Paste from clipboard" })
+map("n", "\\P", '"+P', { desc = "Paste from clipboard (before)" })
+map("v", "\\p", '"+p', { desc = "Paste from clipboard" })
+map("v", "\\P", '"+P', { desc = "Paste from clipboard (before)" })
 
---  Copy to clipboard
-verbal_key_mapper("v", "\\y", '"+y')
-verbal_key_mapper("n", "\\Y", '"+yg_')
-verbal_key_mapper("n", "\\y", '"+y')
+-- Move selected lines up/down (ThePrimeagen style)
+map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
---  Paste from clipboard
-verbal_key_mapper("n", "\\p", '"+p')
-verbal_key_mapper("n", "\\P", '"+P')
-verbal_key_mapper("v", "\\p", '"+p')
-verbal_key_mapper("v", "\\P", '"+P')
+-- Change all occurrences of word under cursor (MaskDask style)
+map("n", "cg*", "*Ncgn", { desc = "Change all occurrences of word" })
+map("n", "g.", '/\\V\\C<C-r>"<CR>cgn<C-a><Esc>', { desc = "Repeat last change on next match" })
 
--- primagen move visual chunk
-key_mapper("v", "J", ":m '>+1<CR>gv=gv")
-key_mapper("v", "K", ":m '<-2<CR>gv=gv")
-
--- MaskDask change same text again
-vim.api.nvim_set_keymap("n", "cg*", "*Ncgn", { silent = true })
-key_mapper("n", "g.", '/\\V\\C<C-r>"<CR>cgn<C-a><Esc>')
-
---  make extra pushes of escape clear various highlights
-vim.keymap.set("n", "<Esc>", function()
-  -- require("notify").dismiss({}) -- clear notifications
-  vim.cmd.nohlsearch() -- clear highlights
-  vim.cmd.echo() -- clear short-message
-  if require("flash.plugins.char").state ~= nil then -- clear flash char highlight
+-- Escape: clear highlights, flash char state, and short-message
+map("n", "<Esc>", function()
+  vim.cmd.nohlsearch()
+  vim.cmd.echo()
+  if require("flash.plugins.char").state ~= nil then
     require("flash.plugins.char").state:hide()
   end
 end)
 
--- Undo F1 as I keep hitting it accidentally when trying to hit ESC for exiting insert mode (less of a problem after capslock mapping)
-key_mapper("n", "<F1>", "<Nop>")
-key_mapper("i", "<F1>", "<Nop>")
+-- Disable F1 (too close to Esc)
+map("n", "<F1>", "<Nop>")
+map("i", "<F1>", "<Nop>")
 
--- Auto-split on commas (with auto-indent), in case you don't have autoformatting setup.
--- TODO: some version of this that checks that the , is of type @punctiation.delimiter
--- (might have to make a custom method)
-key_mapper("n", "<leader>,", ":s/,/,\\r/g<CR>`[v`]=<CR><Esc>:nohl<CR>")
+-- Auto-split on commas (with auto-indent), useful without autoformatting
+-- TODO: check that the comma is of type @punctuation.delimiter via treesitter
+map("n", "<leader>,", ":s/,/,\\r/g<CR>`[v`]=<CR><Esc>:nohl<CR>", { desc = "Split on commas" })
 
--- basic navigation if lsp isn't present
-vim.keymap.set("n", "gF", LazyVim.pick("grep_cword"), { silent = true })
-vim.keymap.set("n", "gr", vim.lsp.buf.rename, { silent = true })
-vim.keymap.set("n", "gk", vim.diagnostic.open_float, { silent = true })
--- code actions
-vim.keymap.set({ "n", "v" }, "gx", vim.lsp.buf.code_action, { silent = true })
-
-vim.api.nvim_create_user_command("SplunkFormat", function()
-  vim.cmd([[
-%!jq -c '{"t":.result._time, "m": .result.message}'
-%norm d3f"
-%norm f"df:
-%norm f"x$xx
-%g/^/m0
-	]])
-end, {})
-
--- vim.cmd([[Copilot disable]])
+-- Navigation / LSP helpers
+map("n", "gF", LazyVim.pick("grep_cword"), { desc = "Grep word under cursor" })
+map("n", "gk", vim.diagnostic.open_float, { desc = "Show diagnostics" })
+map({ "n", "v" }, "gx", vim.lsp.buf.code_action, { desc = "Code action" })
+-- Note: renaming is handled by LazyVim's default <leader>cr binding

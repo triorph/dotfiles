@@ -23,6 +23,9 @@ return {
       "rust",
       "typescript",
       "terraform",
+      "toml",
+      "vim",
+      "vimdoc",
       "yaml",
     },
     incremental_selection = {

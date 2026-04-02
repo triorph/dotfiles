@@ -1,6 +1,8 @@
 return {
   "nvim-mini/mini.files",
-  lazy = false,
+  keys = {
+    { "<leader>fm", function() require("mini.files").open() end, desc = "Open mini.files" },
+  },
   opts = {
     windows = {
       preview = true,
