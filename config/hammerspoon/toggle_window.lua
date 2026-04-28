@@ -62,7 +62,7 @@ if hs.host.localizedName() == "CJDPHHJW5Q" then -- work laptop
 elseif hs.host.localizedName() == "Michael’s MacBook Pro" then -- home laptop
 	-- so glad to be rid of teams
 	-- toggle_window({ "ctrl", "alt" }, "z", "Microsoft Teams (work or school)", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
-	-- toggle_window({ "ctrl", "alt" }, "d", "Parsec", nil, "Parsec")
+	toggle_window({ "ctrl", "alt" }, "d", "Moonlight", nil, "Moonlight")
 	toggle_window({ "ctrl", "alt" }, "k", "Messages", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 	toggle_window({ "ctrl" }, "tab", "Firefox")
 end
