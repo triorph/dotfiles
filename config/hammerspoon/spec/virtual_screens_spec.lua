@@ -87,10 +87,10 @@ describe("virtual_screens", function()
 		virtual_screens.set_debug(false)
 	end)
 
-	it("defaults the current virtual screen to zero on a single unsplit screen", function()
+	it("defaults the current virtual screen to one on a single unsplit screen", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 
-		assert.are.equal(0, virtual_screens.get_current_virtual_screen(window))
+		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 	end)
 
 	it("keeps the window on the current real screen and uses the provided unit when moving without a virtual target", function()
@@ -103,6 +103,12 @@ describe("virtual_screens", function()
 		assert_unit(window.moved_to_unit, unit)
 	end)
 
+	it("wraps to virtual screen one when asking for next on a single unsplit physical screen", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+
+		assert.are.equal(1, virtual_screens.get_next_virtual_screen(window))
+	end)
+
 	it("splits the current real screen into left and right halves when virtual screens are increased", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 		frontmost_window = window
@@ -112,8 +118,8 @@ describe("virtual_screens", function()
 		local left_window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
 		local right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
 
-		assert.are.equal(0, virtual_screens.get_current_virtual_screen(left_window))
-		assert.are.equal(1, virtual_screens.get_current_virtual_screen(right_window))
+		assert.are.equal(1, virtual_screens.get_current_virtual_screen(left_window))
+		assert.are.equal(2, virtual_screens.get_current_virtual_screen(right_window))
 	end)
 
 	it("uses the current hard-coded right-half spiral with edge padding when moving to the second virtual screen", function()
@@ -121,7 +127,7 @@ describe("virtual_screens", function()
 		frontmost_window = window
 		virtual_screens.increase_virtual_screens()
 
-		virtual_screens.move_to_virtual_screen(window, 1)
+		virtual_screens.move_to_virtual_screen(window, 2)
 
 		assert.are.equal(screens[1], window.moved_to_screen)
 		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
@@ -135,30 +141,30 @@ describe("virtual_screens", function()
 		virtual_screens.decrease_virtual_screens()
 
 		local right_side_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
-		assert.are.equal(0, virtual_screens.get_current_virtual_screen(right_side_window))
+		assert.are.equal(1, virtual_screens.get_current_virtual_screen(right_side_window))
 	end)
 
-	it("assigns the second physical screen to virtual screen one by default", function()
+	it("assigns the second physical screen to virtual screen two by default", function()
 		screens[2] = make_screen("secondary", { x = 1000, y = 0, w = 1000, h = 1000 })
 		local window = make_window(screens[2], { x = 1100, y = 100, w = 400, h = 400 })
 
-		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
+		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 	end)
 
-	it("moves virtual screen one to the second physical screen when two physical screens exist", function()
+	it("moves virtual screen two to the second physical screen when two physical screens exist", function()
 		screens[2] = make_screen("secondary", { x = 1000, y = 0, w = 1000, h = 1000 })
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 
-		virtual_screens.move_to_virtual_screen(window, 1)
+		virtual_screens.move_to_virtual_screen(window, 2)
 
 		assert.are.equal(screens[2], window.moved_to_screen)
 		assert_unit(window.moved_to_unit, { x = 0.02, y = 0.02, w = 0.96, h = 0.96 })
 	end)
 
-	it("wraps from the second physical screen back to virtual screen zero", function()
+	it("wraps from the second physical screen back to virtual screen one", function()
 		screens[2] = make_screen("secondary", { x = 1000, y = 0, w = 1000, h = 1000 })
 		local window = make_window(screens[2], { x = 1100, y = 100, w = 400, h = 400 })
 
-		assert.are.equal(0, virtual_screens.get_next_virtual_screen(window))
+		assert.are.equal(1, virtual_screens.get_next_virtual_screen(window))
 	end)
 end)
