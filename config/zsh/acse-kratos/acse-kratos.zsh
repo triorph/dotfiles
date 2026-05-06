@@ -19,3 +19,4 @@ kitt-read() {
   kitt -n default -a read -f "$@"
 }
 
+alias rovo="acli rovodev tui"
