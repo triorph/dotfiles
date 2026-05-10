@@ -47,8 +47,10 @@ local get_default_window_table = function(window_name)
 end
 
 local default_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
+local default_floating_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
 local virtual_screen_edge_size = 0.01
 local screen_layouts = {}
+local window_states = {}
 
 local screen_size = function(screen)
 	local frame = screen:frame()
@@ -102,6 +104,69 @@ end
 
 local copy_unit = function(unit)
 	return { x = unit.x, y = unit.y, w = unit.w, h = unit.h }
+end
+
+local window_key = function(window)
+	if window.id ~= nil then
+		local ok, id = pcall(function()
+			return window:id()
+		end)
+		if ok and id ~= nil then
+			return id
+		end
+	end
+	return tostring(window)
+end
+
+local get_window_state = function(window)
+	local key = window_key(window)
+	if window_states[key] == nil then
+		window_states[key] = {
+			mode = "fixed",
+			floating_unit = copy_unit(default_floating_unit),
+		}
+	end
+	return window_states[key]
+end
+
+local unit_within_region = function(region, unit)
+	return {
+		x = region.x + unit.x * region.w,
+		y = region.y + unit.y * region.h,
+		w = unit.w * region.w,
+		h = unit.h * region.h,
+	}
+end
+
+local unit_for_window_in_leaf = function(window, leaf, is_split)
+	local state = get_window_state(window)
+	if state.mode == "floating" then
+		return unit_within_region(leaf.rect, state.floating_unit)
+	end
+	if is_split then
+		return apply_edge_padding(leaf.rect)
+	end
+	return copy_unit(default_unit)
+end
+
+function M.configure_window(window, config)
+	local state = get_window_state(window)
+	if config.mode ~= nil then
+		state.mode = config.mode
+	end
+	if config.floating_unit ~= nil then
+		state.floating_unit = copy_unit(config.floating_unit)
+	end
+end
+
+function M.toggle_floating(window)
+	local state = get_window_state(window)
+	if state.mode == "floating" then
+		state.mode = "fixed"
+	else
+		state.mode = "floating"
+	end
+	return state.mode
 end
 
 local relative_window_position = function(window, screen)
@@ -203,21 +268,22 @@ function M.get_next_virtual_screen(window)
 end
 
 function M.move_to_virtual_screen(window, virtual_screen, unit)
-	if unit == nil then
-		unit = copy_unit(default_unit)
+	if unit ~= nil then
+		M.configure_window(window, {
+			mode = "floating",
+			floating_unit = unit,
+		})
 	end
 	if virtual_screen == nil then
 		virtual_screen = M.get_current_virtual_screen(window)
 	end
 	debug_log("Moving to virtual screen " .. virtual_screen)
 	local physical_screen_index, _, leaf = deindex_virtual_screens(virtual_screen)
-	if virtual_screen_count_for_screen(physical_screen_index) > 1 then
-		unit = apply_edge_padding(leaf.rect)
-	end
+	local target_unit = unit_for_window_in_leaf(window, leaf, virtual_screen_count_for_screen(physical_screen_index) > 1)
 	debug_log("Moving to physical screen index " .. physical_screen_index .. " giving us the location ")
-	debug_log(unit.x .. " " .. unit.y .. " " .. unit.w .. " " .. unit.h)
+	debug_log(target_unit.x .. " " .. target_unit.y .. " " .. target_unit.w .. " " .. target_unit.h)
 	window:moveToScreen(hs.screen.allScreens()[physical_screen_index])
-	window:moveToUnit(unit)
+	window:moveToUnit(target_unit)
 end
 
 return M

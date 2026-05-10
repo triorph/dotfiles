@@ -32,8 +32,16 @@ local decrease_virtual_screens = function()
 	embiggen_window(nil)
 end
 
+local toggle_floating = function()
+	print("Toggling floating mode")
+	local window = hs.window.frontmostWindow()
+	virtual_screens.toggle_floating(window)
+	virtual_screens.move_to_virtual_screen(window)
+end
+
 hs.hotkey.bind({ "ctrl", "alt" }, "m", move_screen)
 hs.hotkey.bind({ "ctrl", "alt" }, "b", embiggen_window)
+hs.hotkey.bind({ "ctrl", "alt" }, "f", toggle_floating)
 hs.hotkey.bind({ "ctrl", "alt" }, "=", increase_virtual_screens)
 hs.hotkey.bind({ "ctrl", "alt" }, "-", decrease_virtual_screens)
 

@@ -29,7 +29,16 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 		end
 		-- set app size and position
 		if app:focusedWindow() then
-			virtual_screens.move_to_virtual_screen(app:focusedWindow(), nil, unit)
+			local window = app:focusedWindow()
+			if unit ~= nil then
+				virtual_screens.configure_window(window, {
+					mode = "floating",
+					floating_unit = unit,
+				})
+			else
+				virtual_screens.configure_window(window, { mode = "fixed" })
+			end
+			virtual_screens.move_to_virtual_screen(window)
 		else
 			-- this usually means a setup error - probably hammerspoon doesn't
 			-- have privacy permissions added

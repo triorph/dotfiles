@@ -126,15 +126,89 @@ describe("virtual_screens", function()
 		assert.are.equal(2, virtual_screens.get_current_virtual_screen(right_window))
 	end)
 
-	it("uses the current hard-coded right-half spiral with edge padding when moving to the second virtual screen", function()
+	it("uses fixed mode with edge padding when moving to the second virtual screen", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 		frontmost_window = window
 		virtual_screens.increase_virtual_screens()
 
+		virtual_screens.configure_window(window, { mode = "fixed" })
 		virtual_screens.move_to_virtual_screen(window, 2)
 
 		assert.are.equal(screens[1], window.moved_to_screen)
 		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
+	end)
+
+	it("uses floating mode dimensions inside the target virtual screen", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+		virtual_screens.increase_virtual_screens()
+
+		virtual_screens.configure_window(window, {
+			mode = "floating",
+			floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
+		})
+		virtual_screens.move_to_virtual_screen(window, 2)
+
+		assert.are.equal(screens[1], window.moved_to_screen)
+		assert_unit(window.moved_to_unit, { x = 0.55, y = 0.1, w = 0.4, h = 0.8 })
+	end)
+
+	it("treats a legacy unit argument as floating dimensions inside the target virtual screen", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+		virtual_screens.increase_virtual_screens()
+
+		virtual_screens.move_to_virtual_screen(window, 2, { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
+
+		assert.are.equal(screens[1], window.moved_to_screen)
+		assert_unit(window.moved_to_unit, { x = 0.55, y = 0.1, w = 0.4, h = 0.8 })
+	end)
+
+	it("remembers floating mode for later moves without a unit argument", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+		virtual_screens.increase_virtual_screens()
+
+		virtual_screens.configure_window(window, {
+			mode = "floating",
+			floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
+		})
+		virtual_screens.move_to_virtual_screen(window, 2)
+		virtual_screens.move_to_virtual_screen(window, 1)
+
+		assert.are.equal(screens[1], window.moved_to_screen)
+		assert_unit(window.moved_to_unit, { x = 0.05, y = 0.1, w = 0.4, h = 0.8 })
+	end)
+
+	it("toggles a floating window to fixed mode", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+		virtual_screens.increase_virtual_screens()
+
+		virtual_screens.configure_window(window, {
+			mode = "floating",
+			floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
+		})
+		virtual_screens.toggle_floating(window)
+		virtual_screens.move_to_virtual_screen(window, 2)
+
+		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
+	end)
+
+	it("toggles a fixed window back to its remembered floating mode", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+		virtual_screens.increase_virtual_screens()
+
+		virtual_screens.configure_window(window, {
+			mode = "floating",
+			floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
+		})
+		virtual_screens.toggle_floating(window)
+		virtual_screens.toggle_floating(window)
+		virtual_screens.move_to_virtual_screen(window, 2)
+
+		assert_unit(window.moved_to_unit, { x = 0.55, y = 0.1, w = 0.4, h = 0.8 })
 	end)
 
 	it("returns to a single full-screen virtual screen after increasing and then decreasing", function()
