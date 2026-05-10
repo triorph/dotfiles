@@ -90,6 +90,49 @@ local spirals = {
 }
 
 local fallback_spiral = { [1] = hs.geometry(0, 0, 1, 1) }
+local generated_spirals = {}
+
+local copy_geometry = function(unit)
+	return hs.geometry(unit.x, unit.y, unit.w, unit.h)
+end
+
+local copy_layout = function(layout)
+	local ret = {}
+	for i, unit in pairs(layout) do
+		ret[i] = copy_geometry(unit)
+	end
+	return ret
+end
+
+local split_region_for_new_virtual_screen = function(layout, split_index, new_index)
+	local region = layout[split_index]
+	if region.w >= region.h then
+		local half_width = region.w / 2
+		layout[new_index] = hs.geometry(region.x, region.y, half_width, region.h)
+		layout[split_index] = hs.geometry(region.x + half_width, region.y, half_width, region.h)
+	else
+		local half_height = region.h / 2
+		layout[new_index] = hs.geometry(region.x, region.y, region.w, half_height)
+		layout[split_index] = hs.geometry(region.x, region.y + half_height, region.w, half_height)
+	end
+end
+
+local generate_spiral = function(count)
+	if spirals[count] ~= nil then
+		return spirals[count]
+	end
+	if generated_spirals[count] ~= nil then
+		return generated_spirals[count]
+	end
+
+	local layout = copy_layout(spirals[4])
+	for new_index = 5, count do
+		local split_index = ((new_index - 5) % (new_index - 2)) + 2
+		split_region_for_new_virtual_screen(layout, split_index, new_index)
+	end
+	generated_spirals[count] = layout
+	return layout
+end
 
 local virtual_screen_count_before = function(physical_screen_index)
 	local count = 0
@@ -117,11 +160,11 @@ local total_virtual_screen_count = function()
 end
 
 local get_spirals_for_screen = function(physical_screen_index)
-	local this_spirals = spirals[virtual_screen_multiplier[physical_screen_index]]
-	if this_spirals == nil then
+	local count = virtual_screen_multiplier[physical_screen_index]
+	if count == nil then
 		return fallback_spiral
 	end
-	return this_spirals
+	return generate_spiral(count)
 end
 
 local apply_edge_padding = function(unit)
