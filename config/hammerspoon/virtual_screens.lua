@@ -1,31 +1,10 @@
 -- virtual screens are smaller subsections that divide up a main screen
 --
--- I think I am inspiring myself too much by tiling windows here
--- and need to maintain all the use cases I want to consider:
---
--- use case 1:
---  I am on a giant mofo screen that is just too wide and doesn't really work
---  as a single screen, so  I want to do my usual thing with 2 sections being
---  treated as separate screens
---
---  use case 2:
---   I want to divide up the screen I am using in a spiral for tiling within it.
---
---  Other considerations:
---   Floating within the screen vs taking up the full section
---   Per window settings - floating in a larger space than others are bound to
---
---  Proposed solution:
---    - Each window has its screen possibilities and locations separately defined
---    - Each window can be floating or full-screen within those bounds, and
---    remembers which it is set to
---    - increasing the virtual screen count splits in half thecurrent virtual
---    screen for a windows
---    - we always split along the largest edge, so if halving a giant screen still
---    leaves a desktop sized area, furthre splits will half that same direction
---
---    still TODO for now
---
+-- Public virtual screen IDs are 1-based, matching Lua/Hammerspoon table indexes.
+-- Internally, each physical screen has a tree layout. Flat virtual screen IDs are
+-- derived by flattening that tree's leaves.
+
+local layout = require("virtual_screen_layout")
 
 local M = {}
 
@@ -69,77 +48,32 @@ end
 
 local default_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
 local virtual_screen_edge_size = 0.01
-local virtual_screen_multiplier = { [1] = 1, [2] = 1 } --, [3] = 1, [4] = 1 }
+local screen_layouts = {}
 
-local spirals = {
-	[2] = {
-		[1] = hs.geometry(0, 0, 0.5, 1.0),
-		[2] = hs.geometry(0.5, 0, 0.5, 1.0),
-	},
-	[3] = {
-		[1] = hs.geometry(0, 0, 0.5, 1.0),
-		[2] = hs.geometry(0.5, 0, 0.5, 0.5),
-		[3] = hs.geometry(0.5, 0.5, 0.5, 0.5),
-	},
-	[4] = {
-		[1] = hs.geometry(0, 0, 0.5, 1.0),
-		[2] = hs.geometry(0.5, 0, 0.5, 0.5),
-		[3] = hs.geometry(0.75, 0.5, 0.25, 0.5),
-		[4] = hs.geometry(0.5, 0.5, 0.25, 0.5),
-	},
-}
-
-local fallback_spiral = { [1] = hs.geometry(0, 0, 1, 1) }
-local generated_spirals = {}
-
-local copy_geometry = function(unit)
-	return hs.geometry(unit.x, unit.y, unit.w, unit.h)
+local screen_size = function(screen)
+	local frame = screen:frame()
+	return { w = frame.w, h = frame.h }
 end
 
-local copy_layout = function(layout)
-	local ret = {}
-	for i, unit in pairs(layout) do
-		ret[i] = copy_geometry(unit)
+local get_layout_for_screen = function(physical_screen_index)
+	if screen_layouts[physical_screen_index] == nil then
+		screen_layouts[physical_screen_index] = layout.new(screen_size(hs.screen.allScreens()[physical_screen_index]))
 	end
-	return ret
+	return screen_layouts[physical_screen_index]
 end
 
-local split_region_for_new_virtual_screen = function(layout, split_index, new_index)
-	local region = layout[split_index]
-	if region.w >= region.h then
-		local half_width = region.w / 2
-		layout[new_index] = hs.geometry(region.x, region.y, half_width, region.h)
-		layout[split_index] = hs.geometry(region.x + half_width, region.y, half_width, region.h)
-	else
-		local half_height = region.h / 2
-		layout[new_index] = hs.geometry(region.x, region.y, region.w, half_height)
-		layout[split_index] = hs.geometry(region.x, region.y + half_height, region.w, half_height)
-	end
+local leaves_for_screen = function(physical_screen_index)
+	return layout.leaves(get_layout_for_screen(physical_screen_index))
 end
 
-local generate_spiral = function(count)
-	if spirals[count] ~= nil then
-		return spirals[count]
-	end
-	if generated_spirals[count] ~= nil then
-		return generated_spirals[count]
-	end
-
-	local layout = copy_layout(spirals[4])
-	for new_index = 5, count do
-		local split_index = ((new_index - 5) % (new_index - 2)) + 2
-		split_region_for_new_virtual_screen(layout, split_index, new_index)
-	end
-	generated_spirals[count] = layout
-	return layout
+local virtual_screen_count_for_screen = function(physical_screen_index)
+	return #leaves_for_screen(physical_screen_index)
 end
 
 local virtual_screen_count_before = function(physical_screen_index)
 	local count = 0
 	for i = 1, physical_screen_index - 1 do
-		if virtual_screen_multiplier[i] ~= nil then
-			count = count + virtual_screen_multiplier[i]
-		end
+		count = count + virtual_screen_count_for_screen(i)
 	end
 	return count
 end
@@ -152,19 +86,9 @@ local total_virtual_screen_count = function()
 	local total = 0
 	local total_screens = #(hs.screen.allScreens())
 	for physical_screen_index = 1, total_screens do
-		if virtual_screen_multiplier[physical_screen_index] ~= nil then
-			total = total + virtual_screen_multiplier[physical_screen_index]
-		end
+		total = total + virtual_screen_count_for_screen(physical_screen_index)
 	end
 	return total
-end
-
-local get_spirals_for_screen = function(physical_screen_index)
-	local count = virtual_screen_multiplier[physical_screen_index]
-	if count == nil then
-		return fallback_spiral
-	end
-	return generate_spiral(count)
 end
 
 local apply_edge_padding = function(unit)
@@ -191,28 +115,6 @@ local is_position_in_unit = function(position, unit)
 	return position.x >= unit.x and position.x < unit.x + unit.w and position.y >= unit.y and position.y < unit.y + unit.h
 end
 
-local deindex_virtual_screens = function(virtual_screen_id)
-	debug_log("Trying to de-index virtual screen " .. virtual_screen_id)
-	local remaining_virtual_screens = virtual_screen_id
-	local total_screens = #(hs.screen.allScreens())
-	for physical_screen_index = 1, total_screens do
-		local multiplier = virtual_screen_multiplier[physical_screen_index]
-		if multiplier ~= nil and remaining_virtual_screens <= multiplier then
-			debug_log(
-				"Virtual screen de-indexed to physical screen index "
-					.. physical_screen_index
-					.. " at virtual index "
-					.. remaining_virtual_screens
-			)
-			return physical_screen_index, remaining_virtual_screens
-		elseif multiplier ~= nil then
-			remaining_virtual_screens = remaining_virtual_screens - multiplier
-		end
-	end
-	debug_log("Was unable to de-index virtual screen, so defaulting to 1,1")
-	return 1, 1
-end
-
 local get_physical_screen_index_for_window = function(window)
 	local physical_screen_index = nil
 	for i, v in pairs(hs.screen.allScreens()) do
@@ -228,44 +130,63 @@ local get_physical_screen_index_for_window = function(window)
 	return physical_screen_index
 end
 
+local leaf_for_window = function(window)
+	local physical_screen_index = get_physical_screen_index_for_window(window)
+	local physical_screen = hs.screen.allScreens()[physical_screen_index]
+	local position = relative_window_position(window, physical_screen)
+	local leaves = leaves_for_screen(physical_screen_index)
+
+	for virtual_screen_index, leaf in ipairs(leaves) do
+		if is_position_in_unit(position, leaf.rect) then
+			return physical_screen_index, virtual_screen_index, leaf
+		end
+	end
+
+	debug_log("No layout leaf matched; defaulting to first leaf")
+	return physical_screen_index, 1, leaves[1]
+end
+
+local deindex_virtual_screens = function(virtual_screen_id)
+	debug_log("Trying to de-index virtual screen " .. virtual_screen_id)
+	local remaining_virtual_screens = virtual_screen_id
+	local total_screens = #(hs.screen.allScreens())
+	for physical_screen_index = 1, total_screens do
+		local leaves = leaves_for_screen(physical_screen_index)
+		if remaining_virtual_screens <= #leaves then
+			debug_log(
+				"Virtual screen de-indexed to physical screen index "
+					.. physical_screen_index
+					.. " at virtual index "
+					.. remaining_virtual_screens
+			)
+			return physical_screen_index, remaining_virtual_screens, leaves[remaining_virtual_screens]
+		end
+		remaining_virtual_screens = remaining_virtual_screens - #leaves
+	end
+	debug_log("Was unable to de-index virtual screen, so defaulting to 1,1")
+	local leaves = leaves_for_screen(1)
+	return 1, 1, leaves[1]
+end
+
 M.increase_virtual_screens = function()
 	local window = hs.window.frontmostWindow()
-	local physical_screen_index = get_physical_screen_index_for_window(window)
+	local physical_screen_index, _, leaf = leaf_for_window(window)
 	debug_log("Increasing virtual screens for physical screen index " .. physical_screen_index)
-	virtual_screen_multiplier[physical_screen_index] = virtual_screen_multiplier[physical_screen_index] + 1
-	debug_log("New virtual screens are " .. virtual_screen_multiplier[physical_screen_index])
+	layout.split(get_layout_for_screen(physical_screen_index), leaf.path)
+	debug_log("New virtual screens are " .. virtual_screen_count_for_screen(physical_screen_index))
 end
 
 M.decrease_virtual_screens = function()
 	local window = hs.window.frontmostWindow()
-	local physical_screen_index = get_physical_screen_index_for_window(window)
+	local physical_screen_index, _, leaf = leaf_for_window(window)
 	debug_log("Decreasing virtual screens for physical screen index " .. physical_screen_index)
-	local new_multiplier = virtual_screen_multiplier[physical_screen_index] - 1
-	if new_multiplier < 1 then
-		new_multiplier = 1
-	end
-	debug_log("New virtual screens are " .. new_multiplier)
-	virtual_screen_multiplier[physical_screen_index] = new_multiplier
+	layout.merge(get_layout_for_screen(physical_screen_index), leaf.path)
+	debug_log("New virtual screens are " .. virtual_screen_count_for_screen(physical_screen_index))
 end
 
 function M.get_current_virtual_screen(window)
-	local physical_screen_index = get_physical_screen_index_for_window(window)
-	local physical_screen = hs.screen.allScreens()[physical_screen_index]
-	-- TODO: make virtual_screens configurable and not limited to x-only directions
-	debug_log(physical_screen_index)
-	debug_log(window)
-	debug_log(window:frame())
-	debug_log(physical_screen:absoluteToLocal(window:frame()))
-	local position = relative_window_position(window, physical_screen)
-	local this_spirals = get_spirals_for_screen(physical_screen_index)
-	for virtual_screen_index = 1, virtual_screen_multiplier[physical_screen_index] do
-		debug_log(position.x .. " , " .. position.y)
-		if is_position_in_unit(position, this_spirals[virtual_screen_index]) then
-			return virtual_screen_id_start(physical_screen_index) + virtual_screen_index - 1
-		end
-	end
-	debug_log("No spirals matched")
-	return virtual_screen_id_start(physical_screen_index)
+	local physical_screen_index, virtual_screen_index = leaf_for_window(window)
+	return virtual_screen_id_start(physical_screen_index) + virtual_screen_index - 1
 end
 
 function M.get_next_virtual_screen(window)
@@ -289,18 +210,11 @@ function M.move_to_virtual_screen(window, virtual_screen, unit)
 		virtual_screen = M.get_current_virtual_screen(window)
 	end
 	debug_log("Moving to virtual screen " .. virtual_screen)
-	local physical_screen_index, virtual_screen_index = deindex_virtual_screens(virtual_screen)
-	if virtual_screen_multiplier[physical_screen_index] > 1 then
-		local this_spirals = get_spirals_for_screen(physical_screen_index)
-		unit = apply_edge_padding(this_spirals[virtual_screen_index])
+	local physical_screen_index, _, leaf = deindex_virtual_screens(virtual_screen)
+	if virtual_screen_count_for_screen(physical_screen_index) > 1 then
+		unit = apply_edge_padding(leaf.rect)
 	end
-	debug_log(
-		"Moving to physical screen index "
-			.. physical_screen_index
-			.. " with virtual screen index "
-			.. virtual_screen_index
-			.. " giving us the location "
-	)
+	debug_log("Moving to physical screen index " .. physical_screen_index .. " giving us the location ")
 	debug_log(unit.x .. " " .. unit.y .. " " .. unit.w .. " " .. unit.h)
 	window:moveToScreen(hs.screen.allScreens()[physical_screen_index])
 	window:moveToUnit(unit)

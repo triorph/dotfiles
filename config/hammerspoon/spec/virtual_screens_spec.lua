@@ -198,7 +198,7 @@ describe("virtual_screens", function()
 		virtual_screens.move_to_virtual_screen(window, 5)
 
 		assert.are.equal(screens[1], window.moved_to_screen)
-		assert_unit(window.moved_to_unit, { x = 0.5025, y = 0.005, w = 0.245, h = 0.49 })
+		assert_unit(window.moved_to_unit, { x = 0.0025, y = 0.2525, w = 0.245, h = 0.245 })
 	end)
 
 	it("splits the frontmost window's currently occupied virtual region", function()
@@ -235,7 +235,7 @@ describe("virtual_screens", function()
 		virtual_screens.move_to_virtual_screen(window, 4)
 
 		assert.are.equal(screens[1], window.moved_to_screen)
-		assert_unit(window.moved_to_unit, { x = 0.5025, y = 0.505, w = 0.245, h = 0.49 })
+		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
 	end)
 
 	it("decreasing from the newly split active region merges it back into its parent size", function()
