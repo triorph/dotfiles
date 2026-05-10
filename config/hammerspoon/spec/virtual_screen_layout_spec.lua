@@ -58,16 +58,16 @@ describe("virtual_screen_layout", function()
 		assert_rect(leaf_rects(state)[3], { x = 0.5, y = 0.5, w = 0.5, h = 0.5 })
 	end)
 
-	it("splits the selected left leaf without renumbering its right sibling on a square screen", function()
+	it("splits the selected left leaf and flattens leaves in depth-first order on a square screen", function()
 		local state = square_state()
 		layout.split(state, {})
 
 		layout.split(state, { 1 })
 
-		assert_paths(leaf_paths(state), { { 1, 1 }, { 2 }, { 1, 2 } })
+		assert_paths(leaf_paths(state), { { 1, 1 }, { 1, 2 }, { 2 } })
 		assert_rect(leaf_rects(state)[1], { x = 0, y = 0, w = 0.5, h = 0.5 })
-		assert_rect(leaf_rects(state)[2], { x = 0.5, y = 0, w = 0.5, h = 1 })
-		assert_rect(leaf_rects(state)[3], { x = 0, y = 0.5, w = 0.5, h = 0.5 })
+		assert_rect(leaf_rects(state)[2], { x = 0, y = 0.5, w = 0.5, h = 0.5 })
+		assert_rect(leaf_rects(state)[3], { x = 0.5, y = 0, w = 0.5, h = 1 })
 	end)
 
 	it("splits by physical edge length, not normalized edge length", function()
@@ -76,10 +76,10 @@ describe("virtual_screen_layout", function()
 
 		layout.split(state, { 1 })
 
-		assert_paths(leaf_paths(state), { { 1, 1 }, { 2 }, { 1, 2 } })
+		assert_paths(leaf_paths(state), { { 1, 1 }, { 1, 2 }, { 2 } })
 		assert_rect(leaf_rects(state)[1], { x = 0, y = 0, w = 0.25, h = 1 })
-		assert_rect(leaf_rects(state)[2], { x = 0.5, y = 0, w = 0.5, h = 1 })
-		assert_rect(leaf_rects(state)[3], { x = 0.25, y = 0, w = 0.25, h = 1 })
+		assert_rect(leaf_rects(state)[2], { x = 0.25, y = 0, w = 0.25, h = 1 })
+		assert_rect(leaf_rects(state)[3], { x = 0.5, y = 0, w = 0.5, h = 1 })
 	end)
 
 	it("resolves a stale path to the deepest existing ancestor", function()

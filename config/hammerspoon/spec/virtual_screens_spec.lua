@@ -198,7 +198,7 @@ describe("virtual_screens", function()
 		virtual_screens.move_to_virtual_screen(window, 5)
 
 		assert.are.equal(screens[1], window.moved_to_screen)
-		assert_unit(window.moved_to_unit, { x = 0.0025, y = 0.2525, w = 0.245, h = 0.245 })
+		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
 	end)
 
 	it("splits the frontmost window's currently occupied virtual region", function()
@@ -213,8 +213,24 @@ describe("virtual_screens", function()
 		local right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
 
 		assert.are.equal(1, virtual_screens.get_current_virtual_screen(upper_left_window))
-		assert.are.equal(3, virtual_screens.get_current_virtual_screen(lower_left_window))
-		assert.are.equal(2, virtual_screens.get_current_virtual_screen(right_window))
+		assert.are.equal(2, virtual_screens.get_current_virtual_screen(lower_left_window))
+		assert.are.equal(3, virtual_screens.get_current_virtual_screen(right_window))
+	end)
+
+	it("moves to the next virtual screen using depth-first leaf traversal", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		frontmost_window = window
+
+		virtual_screens.increase_virtual_screens()
+		virtual_screens.increase_virtual_screens()
+
+		local upper_left_window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		local lower_left_window = make_window(screens[1], { x = 100, y = 600, w = 100, h = 100 })
+		local right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
+
+		assert.are.equal(2, virtual_screens.get_next_virtual_screen(upper_left_window))
+		assert.are.equal(3, virtual_screens.get_next_virtual_screen(lower_left_window))
+		assert.are.equal(1, virtual_screens.get_next_virtual_screen(right_window))
 	end)
 
 	it("decreasing virtual screens removes the last virtual screen and wraps within the reduced count", function()

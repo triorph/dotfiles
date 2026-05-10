@@ -63,42 +63,6 @@ local function collect_leaves(node, leaves)
 	collect_leaves(node.children[2], leaves)
 end
 
-local function insert_split_leaves(node, leaves)
-	-- Keep the first child at the split leaf's original flattened location,
-	-- append the second child after existing siblings. This preserves flat indexes
-	-- for unrelated leaves while still giving the split region a stable path.
-	leaves[#leaves + 1] = make_leaf(node.children[1])
-end
-
-local function collect_leaves_preserving_split_order(node, leaves, split_path)
-	if node.children == nil then
-		leaves[#leaves + 1] = make_leaf(node)
-		return
-	end
-
-	if paths_equal(node.path, split_path) then
-		insert_split_leaves(node, leaves)
-		return
-	end
-
-	collect_leaves_preserving_split_order(node.children[1], leaves, split_path)
-	collect_leaves_preserving_split_order(node.children[2], leaves, split_path)
-end
-
-local function append_second_child_for_split(node, leaves, split_path)
-	if node.children == nil then
-		return
-	end
-
-	if paths_equal(node.path, split_path) then
-		leaves[#leaves + 1] = make_leaf(node.children[2])
-		return
-	end
-
-	append_second_child_for_split(node.children[1], leaves, split_path)
-	append_second_child_for_split(node.children[2], leaves, split_path)
-end
-
 local function split_node(state, node)
 	local rect = node.rect
 	local physical_width = rect.w * state.screen.w
@@ -141,19 +105,12 @@ function M.new(screen)
 			path = {},
 			rect = { x = 0, y = 0, w = 1, h = 1 },
 		},
-		last_split_path = nil,
 	}
 end
 
 function M.leaves(state)
 	local leaves = {}
-	if state.last_split_path == nil then
-		collect_leaves(state.root, leaves)
-		return leaves
-	end
-
-	collect_leaves_preserving_split_order(state.root, leaves, state.last_split_path)
-	append_second_child_for_split(state.root, leaves, state.last_split_path)
+	collect_leaves(state.root, leaves)
 	return leaves
 end
 
@@ -172,7 +129,6 @@ function M.split(state, path)
 	end
 
 	split_node(state, node)
-	state.last_split_path = copy_path(node.path)
 end
 
 function M.merge(state, path)
@@ -188,7 +144,6 @@ function M.merge(state, path)
 	end
 
 	parent.children = nil
-	state.last_split_path = nil
 end
 
 return M
