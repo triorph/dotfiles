@@ -1,4 +1,5 @@
 local debug_log = require("debug_log")
+local virtual_screens = require("virtual_screens")
 math.randomseed(os.time())
 
 local config_path = "~/.config/wallhaven.json"
@@ -128,4 +129,18 @@ newwp = function(index, screen)
 	end
 end
 
+local newwp_for_active_window_screen = function(index)
+	local window = hs.window.frontmostWindow()
+	if window == nil then
+		debug_log.log("No frontmost window")
+		return
+	end
+
+	local screen = virtual_screens.get_physical_screen_for_window(window) or window:screen()
+	if screen ~= nil then
+		newwp(index, screen)
+	end
+end
+
 hs.hotkey.bind({ "ctrl", "cmd", "alt" }, "w", newwp)
+hs.hotkey.bind({ "ctrl", "alt" }, "w", newwp_for_active_window_screen)

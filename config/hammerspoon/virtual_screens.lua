@@ -344,6 +344,18 @@ function M.move_to_virtual_screen(window, virtual_screen, unit)
 	window:moveToUnit(target_unit)
 end
 
+function M.get_physical_screen_for_window(window)
+	if window == nil then
+		debug_log.log("No window provided")
+		return nil
+	end
+	local state = window_states[window_key(window)]
+	if state ~= nil and state.physical_screen_index ~= nil then
+		return hs.screen.allScreens()[state.physical_screen_index]
+	end
+	return window:screen()
+end
+
 function M.reapply_window_layout(window)
 	M.move_to_virtual_screen(window)
 end

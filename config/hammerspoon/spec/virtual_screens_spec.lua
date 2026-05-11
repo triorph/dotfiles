@@ -538,6 +538,23 @@ describe("virtual_screens", function()
 		assert.are.equal(1, virtual_screens.get_next_virtual_screen(kitty))
 	end)
 
+	it("returns the selected physical screen for a known window", function()
+		screens[2] = make_screen("secondary", { x = 1000, y = 0, w = 1000, h = 1000 })
+		local window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		frontmost_window = window
+
+		virtual_screens.increase_virtual_screens()
+		virtual_screens.move_to_virtual_screen(window, 3)
+
+		assert.are.equal(screens[2], virtual_screens.get_physical_screen_for_window(window))
+	end)
+
+	it("falls back to the window's current screen when no virtual state exists", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+
+		assert.are.equal(screens[1], virtual_screens.get_physical_screen_for_window(window))
+	end)
+
 	it("traverses a window's split tree across physical screens", function()
 		screens[2] = make_screen("secondary", { x = 1000, y = 0, w = 1000, h = 1000 })
 		local slack = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })

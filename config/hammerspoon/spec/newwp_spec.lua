@@ -6,14 +6,28 @@ describe("newwp", function()
 	local written_files
 	local desktop_urls
 	local original_getenv
+	local frontmost_window
+	local selected_screen
+
+	local function same_modifiers(actual, expected)
+		if #actual ~= #expected then
+			return false
+		end
+		for i, modifier in ipairs(expected) do
+			if actual[i] ~= modifier then
+				return false
+			end
+		end
+		return true
+	end
 
 	local function find_binding(modifiers, key)
 		for _, binding in ipairs(bindings) do
-			if binding.key == key then
+			if binding.key == key and same_modifiers(binding.modifiers, modifiers) then
 				return binding.callback
 			end
 		end
-		error("binding not found for " .. key)
+		error("binding not found for " .. table.concat(modifiers, "+") .. "+" .. key)
 	end
 
 	local function make_screen(name)
@@ -32,6 +46,13 @@ describe("newwp", function()
 		opened_files = {}
 		written_files = {}
 		desktop_urls = {}
+
+		frontmost_window = {
+			screen = function()
+				return screens[1]
+			end,
+		}
+		selected_screen = screens[2]
 
 		_G.hs = {
 			json = {
@@ -71,6 +92,11 @@ describe("newwp", function()
 					return screens
 				end,
 			},
+			window = {
+				frontmostWindow = function()
+					return frontmost_window
+				end,
+			},
 			hotkey = {
 				bind = function(modifiers, key, callback)
 					bindings[#bindings + 1] = { modifiers = modifiers, key = key, callback = callback }
@@ -106,6 +132,17 @@ describe("newwp", function()
 		end
 
 		package.loaded["newwp"] = nil
+		package.loaded["virtual_screens"] = nil
+		package.preload["virtual_screens"] = function()
+			return {
+				get_physical_screen_for_window = function(window)
+					if window == frontmost_window then
+						return selected_screen
+					end
+					return nil
+				end,
+			}
+		end
 		package.loaded["debug_log"] = nil
 		require("debug_log").set_enabled(false)
 	end)
@@ -118,10 +155,39 @@ describe("newwp", function()
 		_G.newwp = nil
 	end)
 
-	it("binds the wallpaper hotkey", function()
+	it("binds the wallpaper hotkeys", function()
 		require("newwp")
 
 		assert.is_function(find_binding({ "ctrl", "cmd", "alt" }, "w"))
+		assert.is_function(find_binding({ "ctrl", "alt" }, "w"))
+	end)
+
+	it("sets wallpaper for the active window's selected physical screen", function()
+		require("newwp")
+
+		find_binding({ "ctrl", "alt" }, "w")(1)
+
+		assert.are.equal(screens[2], desktop_urls[1].screen)
+		assert.are.equal("file:///home/test/.wallpapers/second.jpg", desktop_urls[1].url)
+	end)
+
+	it("falls back to the active window's current screen when virtual screens has no selected screen", function()
+		selected_screen = nil
+		require("newwp")
+
+		find_binding({ "ctrl", "alt" }, "w")(1)
+
+		assert.are.equal(screens[1], desktop_urls[1].screen)
+		assert.are.equal("file:///home/test/.wallpapers/second.jpg", desktop_urls[1].url)
+	end)
+
+	it("does nothing for active-screen wallpaper when no window is focused", function()
+		frontmost_window = nil
+		require("newwp")
+
+		find_binding({ "ctrl", "alt" }, "w")(1)
+
+		assert.are.equal(0, #desktop_urls)
 	end)
 
 	it("sets wallpaper for a numeric screen index", function()
