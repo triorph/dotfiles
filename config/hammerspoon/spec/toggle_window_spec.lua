@@ -101,10 +101,8 @@ describe("toggle_window", function()
 
 		package.loaded["toggle_window"] = nil
 		package.loaded["debug_log"] = nil
+		require("debug_log").set_enabled(false)
 		package.loaded["virtual_screens"] = nil
-		package.preload["debug_log"] = function()
-			return { log = function() end, set_enabled = function() end }
-		end
 		package.preload["virtual_screens"] = function()
 			return {
 				configure_window = function(window, config)

@@ -83,13 +83,10 @@ describe("bluetooth", function()
 
 		package.loaded["bluetooth"] = nil
 		package.loaded["debug_log"] = nil
-		package.preload["debug_log"] = function()
-			return { log = function() end, set_enabled = function() end }
-		end
+		require("debug_log").set_enabled(false)
 	end)
 
 	after_each(function()
-		package.preload["debug_log"] = nil
 		package.loaded["bluetooth"] = nil
 	end)
 
