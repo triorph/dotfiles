@@ -1,6 +1,20 @@
 local debug_log = require("debug_log")
 local virtual_screens = require("virtual_screens")
-local toggle_window = function(opts, key, name, unit, launcher_name)
+
+local window_config_for = function(window_config)
+	if window_config == nil then
+		return { mode = "fixed" }
+	end
+	if window_config.mode ~= nil then
+		return window_config
+	end
+	return {
+		mode = "floating",
+		floating_unit = window_config,
+	}
+end
+
+local toggle_window = function(opts, key, name, window_config, launcher_name)
 	if launcher_name == nil then
 		-- usually launcher is the same as the app
 		launcher_name = name
@@ -28,18 +42,7 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 		if app:focusedWindow() then
 			local window = app:focusedWindow()
 			if not virtual_screens.has_window_state(window) then
-				if unit ~= nil then
-					if unit.mode ~= nil then
-						virtual_screens.configure_window(window, unit)
-					else
-						virtual_screens.configure_window(window, {
-							mode = "floating",
-							floating_unit = unit,
-						})
-					end
-				else
-					virtual_screens.configure_window(window, { mode = "fixed" })
-				end
+				virtual_screens.configure_window(window, window_config_for(window_config))
 			end
 			virtual_screens.move_to_virtual_screen(window)
 		else

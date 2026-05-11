@@ -63,6 +63,7 @@ describe("virtual_screens", function()
 	local screens
 	local frontmost_window
 	local virtual_screens
+	local debug_log
 
 	before_each(function()
 		screens = {
@@ -86,6 +87,9 @@ describe("virtual_screens", function()
 			},
 		}
 
+		package.loaded["debug_log"] = nil
+		debug_log = require("debug_log")
+		debug_log.set_enabled(false)
 		package.loaded["virtual_screens"] = nil
 		virtual_screens = require("virtual_screens")
 		virtual_screens.set_debug(false)
@@ -188,15 +192,13 @@ describe("virtual_screens", function()
 
 	it("logs the current gap when increasing it", function()
 		local messages = {}
-		local original_print = _G.print
-		_G.print = function(...)
+		debug_log.set_sink(function(...)
 			messages[#messages + 1] = { ... }
-		end
+		end)
 		virtual_screens.set_debug(true)
 
 		virtual_screens.increase_gap()
 
-		_G.print = original_print
 		virtual_screens.set_debug(false)
 		assert.are.same({ { "Virtual screen gap is now 0.025" } }, messages)
 	end)
@@ -219,15 +221,13 @@ describe("virtual_screens", function()
 
 	it("logs the current gap when decreasing it", function()
 		local messages = {}
-		local original_print = _G.print
-		_G.print = function(...)
+		debug_log.set_sink(function(...)
 			messages[#messages + 1] = { ... }
-		end
+		end)
 		virtual_screens.set_debug(true)
 
 		virtual_screens.decrease_gap()
 
-		_G.print = original_print
 		virtual_screens.set_debug(false)
 		assert.are.same({ { "Virtual screen gap is now 0.015" } }, messages)
 	end)

@@ -116,8 +116,16 @@ local window_key = function(window)
 	return tostring(window)
 end
 
+local has_window = function(window)
+	if window == nil then
+		debug_log.log("No window provided")
+		return false
+	end
+	return true
+end
+
 function M.has_window_state(window)
-	return window_states[window_key(window)] ~= nil
+	return has_window(window) and window_states[window_key(window)] ~= nil
 end
 
 get_window_state = function(window)
@@ -171,6 +179,9 @@ local ensure_path_exists = function(state, path)
 end
 
 function M.configure_window(window, config)
+	if not has_window(window) then
+		return
+	end
 	local state = get_window_state(window)
 	if config.mode ~= nil then
 		state.mode = config.mode
@@ -186,6 +197,9 @@ function M.configure_window(window, config)
 end
 
 function M.toggle_floating(window)
+	if not has_window(window) then
+		return
+	end
 	local state = get_window_state(window)
 	if state.mode == "floating" then
 		state.mode = "fixed"
@@ -251,6 +265,9 @@ end
 
 M.increase_virtual_screens = function()
 	local window = hs.window.frontmostWindow()
+	if not has_window(window) then
+		return
+	end
 	local state = get_window_state(window)
 	local physical_screen_index, _, leaf = leaf_for_window(window)
 	debug_log.log("Increasing virtual screens for physical screen index " .. physical_screen_index)
@@ -261,6 +278,9 @@ end
 
 M.decrease_virtual_screens = function()
 	local window = hs.window.frontmostWindow()
+	if not has_window(window) then
+		return
+	end
 	local state = get_window_state(window)
 	local physical_screen_index, _, leaf = leaf_for_window(window)
 	debug_log.log("Decreasing virtual screens for physical screen index " .. physical_screen_index)
@@ -271,11 +291,17 @@ M.decrease_virtual_screens = function()
 end
 
 function M.get_current_virtual_screen(window)
+	if not has_window(window) then
+		return nil
+	end
 	local physical_screen_index, virtual_screen_index = leaf_for_window(window)
 	return virtual_screen_id_for(window, physical_screen_index, virtual_screen_index)
 end
 
 function M.get_next_virtual_screen(window)
+	if not has_window(window) then
+		return nil
+	end
 	local total_virtual_screens = total_virtual_screen_count(window)
 	debug_log.log(
 		"We have "
@@ -289,6 +315,9 @@ function M.get_next_virtual_screen(window)
 end
 
 function M.move_to_virtual_screen(window, virtual_screen, unit)
+	if not has_window(window) then
+		return
+	end
 	if unit ~= nil then
 		M.configure_window(window, {
 			mode = "floating",
@@ -328,7 +357,10 @@ function M.reapply_all_window_layouts()
 end
 
 function M.move_to_next_virtual_screen(window)
-	M.move_to_virtual_screen(window, M.get_next_virtual_screen(window))
+	local next_virtual_screen = M.get_next_virtual_screen(window)
+	if next_virtual_screen ~= nil then
+		M.move_to_virtual_screen(window, next_virtual_screen)
+	end
 end
 
 return M

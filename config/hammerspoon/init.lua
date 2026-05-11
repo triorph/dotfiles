@@ -7,15 +7,29 @@ spoon.Caffeine:start()
 
 local virtual_screens = require("virtual_screens")
 
+local frontmost_window = function()
+	local window = hs.window.frontmostWindow()
+	if window == nil then
+		debug_log.log("No frontmost window")
+	end
+	return window
+end
+
 local move_screen = function()
 	debug_log.log("Moving window")
-	local window = hs.window.frontmostWindow()
+	local window = frontmost_window()
+	if window == nil then
+		return
+	end
 	virtual_screens.move_to_next_virtual_screen(window)
 end
 
 local embiggen_window = function(unit)
 	debug_log.log("Embiggening this window")
-	local window = hs.window.frontmostWindow()
+	local window = frontmost_window()
+	if window == nil then
+		return
+	end
 	if unit == nil then
 		virtual_screens.configure_window(window, { mode = "fixed" })
 	else
@@ -28,7 +42,10 @@ local embiggen_window = function(unit)
 end
 
 local reapply_window_layout = function()
-	local window = hs.window.frontmostWindow()
+	local window = frontmost_window()
+	if window == nil then
+		return
+	end
 	virtual_screens.reapply_window_layout(window)
 end
 
@@ -44,7 +61,10 @@ end
 
 local toggle_floating = function()
 	debug_log.log("Toggling floating mode")
-	local window = hs.window.frontmostWindow()
+	local window = frontmost_window()
+	if window == nil then
+		return
+	end
 	virtual_screens.toggle_floating(window)
 	virtual_screens.reapply_window_layout(window)
 end

@@ -1,20 +1,18 @@
 describe("debug_log", function()
 	local messages
 	local debug_log
-	local original_print
 
 	before_each(function()
 		messages = {}
-		original_print = _G.print
-		_G.print = function(...)
-			messages[#messages + 1] = { ... }
-		end
 		package.loaded["debug_log"] = nil
 		debug_log = require("debug_log")
+		debug_log.set_sink(function(...)
+			messages[#messages + 1] = { ... }
+		end)
 	end)
 
 	after_each(function()
-		_G.print = original_print
+		debug_log.set_sink(nil)
 		package.loaded["debug_log"] = nil
 	end)
 
@@ -39,5 +37,18 @@ describe("debug_log", function()
 		debug_log.log("shown")
 
 		assert.are.same({ { "shown" } }, messages)
+	end)
+
+	it("can reset the sink back to print", function()
+		local original_print = _G.print
+		_G.print = function(...)
+			messages[#messages + 1] = { ... }
+		end
+
+		debug_log.set_sink(nil)
+		debug_log.log("printed")
+
+		_G.print = original_print
+		assert.are.same({ { "printed" } }, messages)
 	end)
 end)

@@ -70,7 +70,7 @@ local turn_on_bluetooth_power = function()
 	bluetooth_power("on")
 end
 
-watcher = hs.caffeinate.watcher.new(bluetooth_watcher)
+local watcher = hs.caffeinate.watcher.new(bluetooth_watcher)
 watcher:start()
 
 hs.hotkey.bind({ "ctrl", "alt" }, "h", connect_headphones)

@@ -192,4 +192,20 @@ describe("init", function()
 		assert.are.same({ name = "decrease_gap" }, calls[#calls - 1])
 		assert.are.same({ name = "reapply_all" }, calls[#calls])
 	end)
+
+	it("does nothing for frontmost-window hotkeys when no window is focused", function()
+		frontmost_window = nil
+		require("init")
+
+		find_binding({ "ctrl", "alt" }, "m")()
+		find_binding({ "ctrl", "alt" }, "b")()
+		find_binding({ "ctrl", "alt" }, "f")()
+
+		for _, call in ipairs(calls) do
+			assert.is_not.equal("move_next", call.name)
+			assert.is_not.equal("configure", call.name)
+			assert.is_not.equal("toggle_floating", call.name)
+			assert.is_not.equal("reapply", call.name)
+		end
+	end)
 end)

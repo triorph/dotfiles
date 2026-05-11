@@ -127,7 +127,7 @@ describe("newwp", function()
 	it("sets wallpaper for a numeric screen index", function()
 		require("newwp")
 
-		newwp(1, 2)
+		find_binding({ "ctrl", "cmd", "alt" }, "w")(1, 2)
 
 		assert.are.equal(screens[2], desktop_urls[1].screen)
 		assert.are.equal("file:///home/test/.wallpapers/second.jpg", desktop_urls[1].url)
@@ -136,7 +136,7 @@ describe("newwp", function()
 	it("fetches collection metadata and the selected page using configured credentials", function()
 		require("newwp")
 
-		newwp(3, screens[1])
+		find_binding({ "ctrl", "cmd", "alt" }, "w")(3, screens[1])
 
 		assert.are.equal("https://wallhaven.cc/api/v1/collections/user/collection/?apikey=secret&page=0", http_gets[1])
 		assert.are.equal("https://wallhaven.cc/api/v1/collections/user/collection/?apikey=secret&page=1", http_gets[2])
@@ -145,7 +145,7 @@ describe("newwp", function()
 	it("downloads the image when it is not already cached", function()
 		require("newwp")
 
-		newwp(1, screens[1])
+		find_binding({ "ctrl", "cmd", "alt" }, "w")(1, screens[1])
 
 		assert.are.equal("https://images.example/second.jpg", http_gets[3])
 		assert.are.same({ path = "/home/test/.wallpapers/second.jpg", body = "image-body" }, written_files[1])
@@ -154,10 +154,30 @@ describe("newwp", function()
 	it("applies wallpaper to every screen when no screen is provided", function()
 		require("newwp")
 
-		newwp(0)
+		find_binding({ "ctrl", "cmd", "alt" }, "w")(0)
 
 		assert.are.equal(2, #desktop_urls)
 		assert.are.equal(screens[1], desktop_urls[1].screen)
 		assert.are.equal(screens[2], desktop_urls[2].screen)
+	end)
+
+	it("does nothing when the requested numeric screen does not exist", function()
+		require("newwp")
+
+		find_binding({ "ctrl", "cmd", "alt" }, "w")(0, 99)
+
+		assert.are.equal(0, #http_gets)
+		assert.are.equal(0, #desktop_urls)
+	end)
+
+	it("does nothing when wallpaper config is missing", function()
+		hs.json.read = function()
+			return nil
+		end
+		require("newwp")
+
+		find_binding({ "ctrl", "cmd", "alt" }, "w")(0, screens[1])
+
+		assert.are.equal(0, #desktop_urls)
 	end)
 end)
