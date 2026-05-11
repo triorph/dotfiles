@@ -71,9 +71,11 @@ describe("init", function()
 		package.loaded["virtual_screens"] = nil
 		package.preload["virtual_screens"] = function()
 			return {
-				get_next_virtual_screen = function(window)
-					calls[#calls + 1] = { name = "get_next", window = window }
-					return 7
+				move_to_next_virtual_screen = function(window)
+					calls[#calls + 1] = { name = "move_next", window = window }
+				end,
+				reapply_window_layout = function(window)
+					calls[#calls + 1] = { name = "reapply", window = window }
 				end,
 				move_to_virtual_screen = function(window, virtual_screen)
 					calls[#calls + 1] = { name = "move", window = window, virtual_screen = virtual_screen }
@@ -131,8 +133,7 @@ describe("init", function()
 
 		find_binding({ "ctrl", "alt" }, "m")()
 
-		assert.are.same({ name = "get_next", window = frontmost_window }, calls[#calls - 1])
-		assert.are.same({ name = "move", window = frontmost_window, virtual_screen = 7 }, calls[#calls])
+		assert.are.same({ name = "move_next", window = frontmost_window }, calls[#calls])
 	end)
 
 	it("configures the frontmost window as fixed when embiggening", function()
@@ -141,7 +142,7 @@ describe("init", function()
 		find_binding({ "ctrl", "alt" }, "b")()
 
 		assert.are.same({ name = "configure", window = frontmost_window, config = { mode = "fixed" } }, calls[#calls - 1])
-		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
+		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
 	end)
 
 	it("toggles floating mode and reapplies the frontmost window layout", function()
@@ -150,7 +151,7 @@ describe("init", function()
 		find_binding({ "ctrl", "alt" }, "f")()
 
 		assert.are.same({ name = "toggle_floating", window = frontmost_window }, calls[#calls - 1])
-		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
+		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
 	end)
 
 	it("increases virtual screens without reconfiguring the frontmost window", function()
@@ -159,7 +160,7 @@ describe("init", function()
 		find_binding({ "ctrl", "alt" }, "=")()
 
 		assert.are.same({ name = "increase" }, calls[#calls - 1])
-		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
+		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
 	end)
 
 	it("decreases virtual screens without reconfiguring the frontmost window", function()
@@ -168,7 +169,7 @@ describe("init", function()
 		find_binding({ "ctrl", "alt" }, "-")()
 
 		assert.are.same({ name = "decrease" }, calls[#calls - 1])
-		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
+		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
 	end)
 
 	it("increases the gap and reapplies the frontmost window layout", function()
@@ -177,7 +178,7 @@ describe("init", function()
 		find_binding({ "ctrl", "alt" }, "]")()
 
 		assert.are.same({ name = "increase_gap" }, calls[#calls - 1])
-		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
+		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
 	end)
 
 	it("decreases the gap and reapplies the frontmost window layout", function()
@@ -186,6 +187,6 @@ describe("init", function()
 		find_binding({ "ctrl", "alt" }, "[")()
 
 		assert.are.same({ name = "decrease_gap" }, calls[#calls - 1])
-		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
+		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
 	end)
 end)

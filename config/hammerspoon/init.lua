@@ -10,8 +10,7 @@ local virtual_screens = require("virtual_screens")
 local move_screen = function()
 	debug_log.log("Moving window")
 	local window = hs.window.frontmostWindow()
-	local next = virtual_screens.get_next_virtual_screen(window)
-	virtual_screens.move_to_virtual_screen(window, next)
+	virtual_screens.move_to_next_virtual_screen(window)
 end
 
 local embiggen_window = function(unit)
@@ -25,12 +24,12 @@ local embiggen_window = function(unit)
 			floating_unit = unit,
 		})
 	end
-	virtual_screens.move_to_virtual_screen(window)
+	virtual_screens.reapply_window_layout(window)
 end
 
 local reapply_window_layout = function()
 	local window = hs.window.frontmostWindow()
-	virtual_screens.move_to_virtual_screen(window)
+	virtual_screens.reapply_window_layout(window)
 end
 
 local increase_virtual_screens = function()
@@ -47,7 +46,7 @@ local toggle_floating = function()
 	debug_log.log("Toggling floating mode")
 	local window = hs.window.frontmostWindow()
 	virtual_screens.toggle_floating(window)
-	virtual_screens.move_to_virtual_screen(window)
+	virtual_screens.reapply_window_layout(window)
 end
 
 local increase_gap = function()

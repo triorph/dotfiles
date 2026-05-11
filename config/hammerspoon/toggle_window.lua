@@ -29,10 +29,14 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 			local window = app:focusedWindow()
 			if not virtual_screens.has_window_state(window) then
 				if unit ~= nil then
-					virtual_screens.configure_window(window, {
-						mode = "floating",
-						floating_unit = unit,
-					})
+					if unit.mode ~= nil then
+						virtual_screens.configure_window(window, unit)
+					else
+						virtual_screens.configure_window(window, {
+							mode = "floating",
+							floating_unit = unit,
+						})
+					end
 				else
 					virtual_screens.configure_window(window, { mode = "fixed" })
 				end
@@ -65,6 +69,6 @@ toggle_window({ "ctrl", "alt" }, "s", "Spotify", { x = 0.1, y = 0.1, w = 0.8, h 
 toggle_window({ "ctrl" }, "s", "Slack", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 toggle_window({ "ctrl", "alt" }, "z", "zoom.us")
 -- notes app
-toggle_window({ "ctrl", "alt" }, "tab", "Emacs", { x = 0.01, y = 0.01, w = 0.49, h = 0.99 })
+toggle_window({ "ctrl", "alt" }, "tab", "Emacs", { mode = "fixed", default_path = { 1 } })
 -- hammerspoon console
 toggle_window({ "ctrl", "alt" }, "c", "hammerspoon", { x = 0.2, y = 0.2, w = 0.5, h = 0.5 })

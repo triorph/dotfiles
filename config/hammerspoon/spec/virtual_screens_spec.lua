@@ -117,6 +117,32 @@ describe("virtual_screens", function()
 		assert_unit(window.moved_to_unit, { x = 0.02, y = 0.02, w = 0.96, h = 0.96 })
 	end)
 
+	it("applies default path placement for newly configured fixed windows", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+
+		virtual_screens.configure_window(window, {
+			mode = "fixed",
+			default_path = { 1 },
+		})
+		virtual_screens.move_to_virtual_screen(window)
+
+		assert.are.equal(screens[1], window.moved_to_screen)
+		assert_unit(window.moved_to_unit, { x = 0.01, y = 0.02, w = 0.48, h = 0.96 })
+	end)
+
+	it("creates parent splits implied by a deeper default path", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+
+		virtual_screens.configure_window(window, {
+			mode = "fixed",
+			default_path = { 1, 2 },
+		})
+		virtual_screens.move_to_virtual_screen(window)
+
+		assert.are.equal(screens[1], window.moved_to_screen)
+		assert_unit(window.moved_to_unit, { x = 0.01, y = 0.51, w = 0.48, h = 0.48 })
+	end)
+
 	it("wraps to virtual screen one when asking for next on a single unsplit physical screen", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 
@@ -129,10 +155,10 @@ describe("virtual_screens", function()
 
 		virtual_screens.increase_virtual_screens()
 
-		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 1)
 		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 
-		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 2)
 		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 	end)
 
@@ -350,10 +376,10 @@ describe("virtual_screens", function()
 		virtual_screens.increase_virtual_screens()
 		virtual_screens.increase_virtual_screens()
 
-		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 2)
 		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 
-		window:setFrame({ x = 600, y = 600, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 3)
 		assert.are.equal(3, virtual_screens.get_current_virtual_screen(window))
 	end)
 
@@ -379,13 +405,13 @@ describe("virtual_screens", function()
 		virtual_screens.increase_virtual_screens()
 		virtual_screens.increase_virtual_screens()
 
-		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 1)
 		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 
-		window:setFrame({ x = 100, y = 600, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 2)
 		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 
-		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 3)
 		assert.are.equal(3, virtual_screens.get_current_virtual_screen(window))
 	end)
 
@@ -396,13 +422,13 @@ describe("virtual_screens", function()
 		virtual_screens.increase_virtual_screens()
 		virtual_screens.increase_virtual_screens()
 
-		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 1)
 		assert.are.equal(2, virtual_screens.get_next_virtual_screen(window))
 
-		window:setFrame({ x = 100, y = 600, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 2)
 		assert.are.equal(3, virtual_screens.get_next_virtual_screen(window))
 
-		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 3)
 		assert.are.equal(1, virtual_screens.get_next_virtual_screen(window))
 	end)
 
@@ -416,7 +442,7 @@ describe("virtual_screens", function()
 		virtual_screens.increase_virtual_screens()
 		virtual_screens.decrease_virtual_screens()
 
-		window:setFrame({ x = 600, y = 600, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 4)
 
 		assert.are.equal(4, virtual_screens.get_current_virtual_screen(window))
 		assert.are.equal(1, virtual_screens.get_next_virtual_screen(window))
@@ -436,10 +462,10 @@ describe("virtual_screens", function()
 		window:setFrame({ x = 100, y = 600, w = 100, h = 100 })
 		virtual_screens.decrease_virtual_screens()
 
-		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 1)
 		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 
-		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 2)
 		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 
 		virtual_screens.move_to_virtual_screen(window, 1)
@@ -458,10 +484,10 @@ describe("virtual_screens", function()
 		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
 		virtual_screens.decrease_virtual_screens()
 
-		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 1)
 		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 
-		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		virtual_screens.move_to_virtual_screen(window, 2)
 		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 
 		virtual_screens.move_to_virtual_screen(window, 1)

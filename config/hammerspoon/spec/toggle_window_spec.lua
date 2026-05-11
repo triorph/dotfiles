@@ -135,6 +135,20 @@ describe("toggle_window", function()
 		assert.are.equal(apps["zoom.us"].window, moved_windows[1])
 	end)
 
+	it("configures Emacs as fixed with a default split placement", function()
+		apps["Emacs"] = make_app("Emacs")
+		require("toggle_window")
+
+		find_binding({ "ctrl", "alt" }, "tab")()
+
+		assert.are.equal(apps["Emacs"].window, configured_windows[1].window)
+		assert.are.same({
+			mode = "fixed",
+			default_path = { 1 },
+		}, configured_windows[1].config)
+		assert.are.equal(apps["Emacs"].window, moved_windows[1])
+	end)
+
 	it("configures custom-unit app bindings as floating windows", function()
 		require("toggle_window")
 
