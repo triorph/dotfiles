@@ -5,6 +5,7 @@ describe("toggle_window", function()
 	local launched_apps
 	local apps
 	local host_name
+	local known_window_states
 
 	local function same_modifiers(actual, expected)
 		if #actual ~= #expected then
@@ -67,6 +68,7 @@ describe("toggle_window", function()
 		moved_windows = {}
 		launched_apps = {}
 		host_name = "test-host"
+		known_window_states = {}
 		apps = {
 			["zoom.us"] = make_app("zoom.us"),
 			["Slack"] = make_app("Slack"),
@@ -105,7 +107,11 @@ describe("toggle_window", function()
 		package.loaded["virtual_screens"] = nil
 		package.preload["virtual_screens"] = function()
 			return {
+				has_window_state = function(window)
+					return known_window_states[window] == true
+				end,
 				configure_window = function(window, config)
+					known_window_states[window] = true
 					configured_windows[#configured_windows + 1] = { window = window, config = config }
 				end,
 				move_to_virtual_screen = function(window)
@@ -140,6 +146,26 @@ describe("toggle_window", function()
 			floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
 		}, configured_windows[1].config)
 		assert.are.equal(apps["Slack"].window, moved_windows[1])
+	end)
+
+	it("preserves existing virtual screen state for custom-unit app bindings", function()
+		known_window_states[apps["Slack"].window] = true
+		require("toggle_window")
+
+		find_binding({ "ctrl" }, "s")()
+
+		assert.are.equal(0, #configured_windows)
+		assert.are.equal(apps["Slack"].window, moved_windows[1])
+	end)
+
+	it("preserves existing virtual screen state for nil-unit app bindings", function()
+		known_window_states[apps["zoom.us"].window] = true
+		require("toggle_window")
+
+		find_binding({ "ctrl", "alt" }, "z")()
+
+		assert.are.equal(0, #configured_windows)
+		assert.are.equal(apps["zoom.us"].window, moved_windows[1])
 	end)
 
 	it("hides an existing frontmost non-Arc app", function()

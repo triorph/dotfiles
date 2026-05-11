@@ -27,13 +27,15 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 		-- set app size and position
 		if app:focusedWindow() then
 			local window = app:focusedWindow()
-			if unit ~= nil then
-				virtual_screens.configure_window(window, {
-					mode = "floating",
-					floating_unit = unit,
-				})
-			else
-				virtual_screens.configure_window(window, { mode = "fixed" })
+			if not virtual_screens.has_window_state(window) then
+				if unit ~= nil then
+					virtual_screens.configure_window(window, {
+						mode = "floating",
+						floating_unit = unit,
+					})
+				else
+					virtual_screens.configure_window(window, { mode = "fixed" })
+				end
 			end
 			virtual_screens.move_to_virtual_screen(window)
 		else

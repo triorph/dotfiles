@@ -90,6 +90,10 @@ local window_key = function(window)
 	return tostring(window)
 end
 
+function M.has_window_state(window)
+	return window_states[window_key(window)] ~= nil
+end
+
 local get_window_state = function(window)
 	local key = window_key(window)
 	if window_states[key] == nil then
