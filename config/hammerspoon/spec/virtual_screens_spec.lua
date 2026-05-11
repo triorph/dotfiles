@@ -107,6 +107,16 @@ describe("virtual_screens", function()
 		assert_unit(window.moved_to_unit, unit)
 	end)
 
+	it("applies the configured gap to fixed windows on an unsplit screen", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+
+		virtual_screens.configure_window(window, { mode = "fixed" })
+		virtual_screens.move_to_virtual_screen(window)
+
+		assert.are.equal(screens[1], window.moved_to_screen)
+		assert_unit(window.moved_to_unit, { x = 0.02, y = 0.02, w = 0.96, h = 0.96 })
+	end)
+
 	it("wraps to virtual screen one when asking for next on a single unsplit physical screen", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 
@@ -135,7 +145,65 @@ describe("virtual_screens", function()
 		virtual_screens.move_to_virtual_screen(window, 2)
 
 		assert.are.equal(screens[1], window.moved_to_screen)
-		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
+		assert_unit(window.moved_to_unit, { x = 0.51, y = 0.02, w = 0.48, h = 0.96 })
+	end)
+
+	it("uses a configurable gap for fixed split windows", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+		virtual_screens.increase_virtual_screens()
+
+		virtual_screens.increase_gap()
+		virtual_screens.configure_window(window, { mode = "fixed" })
+		virtual_screens.move_to_virtual_screen(window, 2)
+
+		assert_unit(window.moved_to_unit, { x = 0.5125, y = 0.025, w = 0.475, h = 0.95 })
+	end)
+
+	it("logs the current gap when increasing it", function()
+		local messages = {}
+		local original_print = _G.print
+		_G.print = function(...)
+			messages[#messages + 1] = { ... }
+		end
+		virtual_screens.set_debug(true)
+
+		virtual_screens.increase_gap()
+
+		_G.print = original_print
+		virtual_screens.set_debug(false)
+		assert.are.same({ { "Virtual screen gap is now 0.025" } }, messages)
+	end)
+
+	it("does not decrease the configurable gap below zero", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+		virtual_screens.increase_virtual_screens()
+
+		virtual_screens.decrease_gap()
+		virtual_screens.decrease_gap()
+		virtual_screens.decrease_gap()
+		virtual_screens.decrease_gap()
+		virtual_screens.decrease_gap()
+		virtual_screens.configure_window(window, { mode = "fixed" })
+		virtual_screens.move_to_virtual_screen(window, 2)
+
+		assert_unit(window.moved_to_unit, { x = 0.5, y = 0, w = 0.5, h = 1 })
+	end)
+
+	it("logs the current gap when decreasing it", function()
+		local messages = {}
+		local original_print = _G.print
+		_G.print = function(...)
+			messages[#messages + 1] = { ... }
+		end
+		virtual_screens.set_debug(true)
+
+		virtual_screens.decrease_gap()
+
+		_G.print = original_print
+		virtual_screens.set_debug(false)
+		assert.are.same({ { "Virtual screen gap is now 0.015" } }, messages)
 	end)
 
 	it("uses floating mode dimensions inside the target virtual screen", function()
@@ -192,7 +260,7 @@ describe("virtual_screens", function()
 		virtual_screens.toggle_floating(window)
 		virtual_screens.move_to_virtual_screen(window, 2)
 
-		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
+		assert_unit(window.moved_to_unit, { x = 0.51, y = 0.02, w = 0.48, h = 0.96 })
 	end)
 
 	it("toggles a fixed window back to its remembered floating mode", function()
@@ -301,7 +369,7 @@ describe("virtual_screens", function()
 		virtual_screens.move_to_virtual_screen(window, 5)
 
 		assert.are.equal(screens[1], window.moved_to_screen)
-		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
+		assert_unit(window.moved_to_unit, { x = 0.51, y = 0.02, w = 0.48, h = 0.96 })
 	end)
 
 	it("splits the frontmost window's currently occupied virtual region", function()
@@ -354,7 +422,7 @@ describe("virtual_screens", function()
 		virtual_screens.move_to_virtual_screen(window, 4)
 
 		assert.are.equal(screens[1], window.moved_to_screen)
-		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
+		assert_unit(window.moved_to_unit, { x = 0.51, y = 0.02, w = 0.48, h = 0.96 })
 	end)
 
 	it("decreasing from the newly split active region merges it back into its parent size", function()
@@ -373,10 +441,10 @@ describe("virtual_screens", function()
 		assert.are.equal(2, virtual_screens.get_current_virtual_screen(right_window))
 
 		virtual_screens.move_to_virtual_screen(window, 1)
-		assert_unit(window.moved_to_unit, { x = 0.005, y = 0.01, w = 0.49, h = 0.98 })
+		assert_unit(window.moved_to_unit, { x = 0.01, y = 0.02, w = 0.48, h = 0.96 })
 
 		virtual_screens.move_to_virtual_screen(window, 2)
-		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
+		assert_unit(window.moved_to_unit, { x = 0.51, y = 0.02, w = 0.48, h = 0.96 })
 	end)
 
 	it("decreasing from a sibling active region merges the newest region back into that sibling", function()
@@ -395,9 +463,9 @@ describe("virtual_screens", function()
 		assert.are.equal(2, virtual_screens.get_current_virtual_screen(right_window))
 
 		virtual_screens.move_to_virtual_screen(window, 1)
-		assert_unit(window.moved_to_unit, { x = 0.005, y = 0.01, w = 0.49, h = 0.98 })
+		assert_unit(window.moved_to_unit, { x = 0.01, y = 0.02, w = 0.48, h = 0.96 })
 
 		virtual_screens.move_to_virtual_screen(window, 2)
-		assert_unit(window.moved_to_unit, { x = 0.505, y = 0.01, w = 0.49, h = 0.98 })
+		assert_unit(window.moved_to_unit, { x = 0.51, y = 0.02, w = 0.48, h = 0.96 })
 	end)
 end)

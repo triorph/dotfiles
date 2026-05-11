@@ -50,11 +50,23 @@ local toggle_floating = function()
 	virtual_screens.move_to_virtual_screen(window)
 end
 
+local increase_gap = function()
+	virtual_screens.increase_gap()
+	reapply_window_layout()
+end
+
+local decrease_gap = function()
+	virtual_screens.decrease_gap()
+	reapply_window_layout()
+end
+
 hs.hotkey.bind({ "ctrl", "alt" }, "m", move_screen)
 hs.hotkey.bind({ "ctrl", "alt" }, "b", embiggen_window)
 hs.hotkey.bind({ "ctrl", "alt" }, "f", toggle_floating)
 hs.hotkey.bind({ "ctrl", "alt" }, "=", increase_virtual_screens)
 hs.hotkey.bind({ "ctrl", "alt" }, "-", decrease_virtual_screens)
+hs.hotkey.bind({ "ctrl", "alt" }, "]", increase_gap)
+hs.hotkey.bind({ "ctrl", "alt" }, "[", decrease_gap)
 
 require("toggle_window")
 require("newwp")

@@ -87,6 +87,12 @@ describe("init", function()
 				decrease_virtual_screens = function()
 					calls[#calls + 1] = { name = "decrease" }
 				end,
+				increase_gap = function()
+					calls[#calls + 1] = { name = "increase_gap" }
+				end,
+				decrease_gap = function()
+					calls[#calls + 1] = { name = "decrease_gap" }
+				end,
 				toggle_floating = function(window)
 					calls[#calls + 1] = { name = "toggle_floating", window = window }
 				end,
@@ -116,6 +122,8 @@ describe("init", function()
 		assert.is_function(find_binding({ "ctrl", "alt" }, "f"))
 		assert.is_function(find_binding({ "ctrl", "alt" }, "="))
 		assert.is_function(find_binding({ "ctrl", "alt" }, "-"))
+		assert.is_function(find_binding({ "ctrl", "alt" }, "]"))
+		assert.is_function(find_binding({ "ctrl", "alt" }, "["))
 	end)
 
 	it("moves the frontmost window to the next virtual screen", function()
@@ -160,6 +168,24 @@ describe("init", function()
 		find_binding({ "ctrl", "alt" }, "-")()
 
 		assert.are.same({ name = "decrease" }, calls[#calls - 1])
+		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
+	end)
+
+	it("increases the gap and reapplies the frontmost window layout", function()
+		require("init")
+
+		find_binding({ "ctrl", "alt" }, "]")()
+
+		assert.are.same({ name = "increase_gap" }, calls[#calls - 1])
+		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
+	end)
+
+	it("decreases the gap and reapplies the frontmost window layout", function()
+		require("init")
+
+		find_binding({ "ctrl", "alt" }, "[")()
+
+		assert.are.same({ name = "decrease_gap" }, calls[#calls - 1])
 		assert.are.same({ name = "move", window = frontmost_window }, calls[#calls])
 	end)
 end)

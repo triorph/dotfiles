@@ -14,13 +14,37 @@ local layout = require("virtual_screen_layout")
 
 local M = {}
 
+local default_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
+local default_floating_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
+local virtual_screen_gap = 0.02
+local virtual_screen_gap_step = 0.005
+
 M.set_debug = function(enabled)
 	debug_log.set_enabled(enabled)
 end
 
-local default_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
-local default_floating_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
-local virtual_screen_edge_size = 0.01
+local log_gap = function()
+	debug_log.log("Virtual screen gap is now " .. virtual_screen_gap)
+end
+
+function M.increase_gap()
+	virtual_screen_gap = virtual_screen_gap + virtual_screen_gap_step
+	log_gap()
+	return virtual_screen_gap
+end
+
+function M.decrease_gap()
+	virtual_screen_gap = virtual_screen_gap - virtual_screen_gap_step
+	if virtual_screen_gap < 0 then
+		virtual_screen_gap = 0
+	end
+	log_gap()
+	return virtual_screen_gap
+end
+
+function M.get_gap()
+	return virtual_screen_gap
+end
 local screen_layouts = {}
 local window_states = {}
 
@@ -67,10 +91,10 @@ end
 
 local apply_edge_padding = function(unit)
 	return {
-		x = unit.x + unit.w * virtual_screen_edge_size,
-		y = unit.y + unit.h * virtual_screen_edge_size,
-		h = unit.h * (1.0 - virtual_screen_edge_size * 2),
-		w = unit.w * (1.0 - virtual_screen_edge_size * 2),
+		x = unit.x + unit.w * virtual_screen_gap,
+		y = unit.y + unit.h * virtual_screen_gap,
+		h = unit.h * (1.0 - virtual_screen_gap * 2),
+		w = unit.w * (1.0 - virtual_screen_gap * 2),
 	}
 end
 
@@ -114,15 +138,12 @@ local unit_within_region = function(region, unit)
 	}
 end
 
-local unit_for_window_in_leaf = function(window, leaf, is_split)
+local unit_for_window_in_leaf = function(window, leaf)
 	local state = get_window_state(window)
 	if state.mode == "floating" then
 		return unit_within_region(leaf.rect, state.floating_unit)
 	end
-	if is_split then
-		return apply_edge_padding(leaf.rect)
-	end
-	return copy_unit(default_unit)
+	return apply_edge_padding(leaf.rect)
 end
 
 function M.configure_window(window, config)
