@@ -211,6 +211,35 @@ describe("virtual_screens", function()
 		assert_unit(window.moved_to_unit, { x = 0.55, y = 0.1, w = 0.4, h = 0.8 })
 	end)
 
+	it("preserves floating dimensions relative to the current region when virtual screens increase", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+
+		virtual_screens.configure_window(window, {
+			mode = "floating",
+			floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
+		})
+		virtual_screens.increase_virtual_screens()
+		virtual_screens.move_to_virtual_screen(window)
+
+		assert_unit(window.moved_to_unit, { x = 0.05, y = 0.1, w = 0.4, h = 0.8 })
+	end)
+
+	it("preserves floating dimensions relative to the current region when virtual screens decrease", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		frontmost_window = window
+
+		virtual_screens.configure_window(window, {
+			mode = "floating",
+			floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
+		})
+		virtual_screens.increase_virtual_screens()
+		virtual_screens.decrease_virtual_screens()
+		virtual_screens.move_to_virtual_screen(window)
+
+		assert_unit(window.moved_to_unit, { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
+	end)
+
 	it("returns to a single full-screen virtual screen after increasing and then decreasing", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 		frontmost_window = window

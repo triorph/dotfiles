@@ -17,19 +17,29 @@ local embiggen_window = function(unit)
 	print("Embiggening this window")
 	local window = hs.window.frontmostWindow()
 	if unit == nil then
-		unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
+		virtual_screens.configure_window(window, { mode = "fixed" })
+	else
+		virtual_screens.configure_window(window, {
+			mode = "floating",
+			floating_unit = unit,
+		})
 	end
-	virtual_screens.move_to_virtual_screen(window, nil, unit)
+	virtual_screens.move_to_virtual_screen(window)
+end
+
+local reapply_window_layout = function()
+	local window = hs.window.frontmostWindow()
+	virtual_screens.move_to_virtual_screen(window)
 end
 
 local increase_virtual_screens = function()
 	virtual_screens.increase_virtual_screens()
-	embiggen_window(nil)
+	reapply_window_layout()
 end
 
 local decrease_virtual_screens = function()
 	virtual_screens.decrease_virtual_screens()
-	embiggen_window(nil)
+	reapply_window_layout()
 end
 
 local toggle_floating = function()
