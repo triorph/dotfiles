@@ -1,23 +1,23 @@
--- Virtual screens are tree-based subsections of physical screens.
+-- Virtual screens are path-based subsections of physical screens.
 --
--- Public physical screen indexes and virtual screen IDs are 1-based, matching
--- Lua/Hammerspoon table indexes. Each physical screen owns a tree layout from
--- virtual_screen_layout.lua; flat virtual screen IDs are derived by traversing
--- the layout leaves in depth-first order.
+-- Each managed window stores:
+--   physical_screen_index: current target monitor
+--   current_path: binary split path within that monitor, e.g. { 1, 2 }
+--   mode/floating_unit: how to occupy the selected path rectangle
 --
--- Windows also have local occupancy state:
---   fixed: fill the current virtual screen, with padding when split
---   floating: apply a remembered unit inside the current virtual screen
+-- No possible split tree is stored. The set of possible leaves is inferred from
+-- current_path depth. For example { 1, 2 } means all depth-2 paths are possible:
+-- {1,1}, {1,2}, {2,1}, {2,2}.
 
-local debug_log = require("debug_log")
 local layout = require("virtual_screen_layout")
+local debug_log = require("debug_log")
 
 local M = {}
 
-local default_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
 local default_floating_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
 local virtual_screen_gap = 0.02
 local virtual_screen_gap_step = 0.005
+local window_states = {}
 
 M.set_debug = function(enabled)
 	debug_log.set_enabled(enabled)
@@ -45,30 +45,10 @@ end
 function M.get_gap()
 	return virtual_screen_gap
 end
-local window_states = {}
-local get_window_state
-local get_physical_screen_index_for_window
 
 local screen_size = function(screen)
 	local frame = screen:frame()
 	return { w = frame.w, h = frame.h }
-end
-
-local leaves_for_window_on_screen = function(window, physical_screen_index)
-	return layout.leaves(get_window_state(window).layout, screen_size(hs.screen.allScreens()[physical_screen_index]))
-end
-
-local virtual_screen_count_for_window = function(window)
-	return #leaves_for_window_on_screen(window, get_physical_screen_index_for_window(window))
-end
-
-local total_virtual_screen_count = function(window)
-	return virtual_screen_count_for_window(window) * #(hs.screen.allScreens())
-end
-
-local virtual_screen_id_for = function(window, physical_screen_index, virtual_screen_index)
-	local leaf_count = virtual_screen_count_for_window(window)
-	return ((physical_screen_index - 1) * leaf_count) + virtual_screen_index
 end
 
 local apply_edge_padding = function(unit)
@@ -92,28 +72,8 @@ local copy_path = function(path)
 	return copied
 end
 
-local paths_equal = function(left, right)
-	if #left ~= #right then
-		return false
-	end
-	for i, value in ipairs(left) do
-		if right[i] ~= value then
-			return false
-		end
-	end
-	return true
-end
-
 local window_key = function(window)
-	if window.id ~= nil then
-		local ok, id = pcall(function()
-			return window:id()
-		end)
-		if ok and id ~= nil then
-			return id
-		end
-	end
-	return tostring(window)
+	return window:id()
 end
 
 local has_window = function(window)
@@ -124,17 +84,26 @@ local has_window = function(window)
 	return true
 end
 
+local get_physical_screen_index_for_window = function(window)
+	local this_screen = window:screen()
+	for physical_screen_index, screen in ipairs(hs.screen.allScreens()) do
+		if screen == this_screen then
+			return physical_screen_index
+		end
+	end
+	return 1
+end
+
 function M.has_window_state(window)
 	return has_window(window) and window_states[window_key(window)] ~= nil
 end
 
-get_window_state = function(window)
+local get_window_state = function(window)
 	local key = window_key(window)
 	if window_states[key] == nil then
 		window_states[key] = {
 			window = window,
 			physical_screen_index = get_physical_screen_index_for_window(window),
-			layout = layout.new(),
 			current_path = {},
 			mode = "fixed",
 			floating_unit = copy_unit(default_floating_unit),
@@ -146,42 +115,38 @@ end
 
 local unit_within_region = function(region, unit)
 	return {
-		x = region.x + unit.x * region.w,
-		y = region.y + unit.y * region.h,
-		w = unit.w * region.w,
-		h = unit.h * region.h,
+		x = region.x + region.w * unit.x,
+		y = region.y + region.h * unit.y,
+		w = region.w * unit.w,
+		h = region.h * unit.h,
 	}
 end
 
-local unit_for_window_in_leaf = function(window, leaf)
+local unit_for_window_in_rect = function(window, rect)
 	local state = get_window_state(window)
 	if state.mode == "floating" then
-		return unit_within_region(leaf.rect, state.floating_unit)
+		return unit_within_region(rect, state.floating_unit)
 	end
-	return apply_edge_padding(leaf.rect)
+	return apply_edge_padding(rect)
 end
 
-local leaf_index_for_path = function(leaves, path)
-	for index, leaf in ipairs(leaves) do
-		if paths_equal(leaf.path, path) then
-			return index, leaf
-		end
-	end
-	return 1, leaves[1]
+local path_rect = function(path, physical_screen_index)
+	return layout.rect_for_path(path, screen_size(hs.screen.allScreens()[physical_screen_index]))
 end
 
-local ensure_path_exists = function(state, path)
-	local parent = {}
-	for _, side in ipairs(path or {}) do
-		layout.split(state.layout, parent)
-		parent[#parent + 1] = side
-	end
+local apply_window_location = function(window, physical_screen_index, path)
+	local target_unit = unit_for_window_in_rect(window, path_rect(path, physical_screen_index))
+	debug_log.log("Moving to physical screen index " .. physical_screen_index .. " giving us the location ")
+	debug_log.log(target_unit.x .. " " .. target_unit.y .. " " .. target_unit.w .. " " .. target_unit.h)
+	window:moveToScreen(hs.screen.allScreens()[physical_screen_index])
+	window:moveToUnit(target_unit)
 end
 
 function M.configure_window(window, config)
 	if not has_window(window) then
 		return
 	end
+	config = config or {}
 	local state = get_window_state(window)
 	if config.mode ~= nil then
 		state.mode = config.mode
@@ -190,7 +155,6 @@ function M.configure_window(window, config)
 		state.floating_unit = copy_unit(config.floating_unit)
 	end
 	if config.default_path ~= nil then
-		ensure_path_exists(state, config.default_path)
 		state.current_path = copy_path(config.default_path)
 		state.physical_screen_index = get_physical_screen_index_for_window(window)
 	end
@@ -206,61 +170,6 @@ function M.toggle_floating(window)
 	else
 		state.mode = "floating"
 	end
-	return state.mode
-end
-
-local relative_window_position = function(window, screen)
-	return {
-		x = (window:frame().x - screen:frame().x) / screen:frame().w,
-		y = (window:frame().y - screen:frame().y) / screen:frame().h,
-	}
-end
-
-local is_position_in_unit = function(position, unit)
-	return position.x >= unit.x and position.x < unit.x + unit.w and position.y >= unit.y and position.y < unit.y + unit.h
-end
-
-get_physical_screen_index_for_window = function(window)
-	local physical_screen_index = nil
-	for i, v in pairs(hs.screen.allScreens()) do
-		if v == window:screen() then
-			physical_screen_index = i
-			break
-		end
-	end
-	if physical_screen_index == nil then
-		debug_log.log("Unable to find physical screen for window. defaulting to 1")
-		physical_screen_index = 1
-	end
-	return physical_screen_index
-end
-
-local leaf_for_window = function(window)
-	local state = get_window_state(window)
-	local physical_screen_index = state.physical_screen_index or get_physical_screen_index_for_window(window)
-	local leaves = leaves_for_window_on_screen(window, physical_screen_index)
-	local virtual_screen_index, leaf = leaf_index_for_path(leaves, state.current_path or {})
-	return physical_screen_index, virtual_screen_index, leaf
-end
-
-local deindex_virtual_screens = function(window, virtual_screen_id)
-	debug_log.log("Trying to de-index virtual screen " .. virtual_screen_id)
-	local leaf_count = virtual_screen_count_for_window(window)
-	local physical_screen_index = math.floor((virtual_screen_id - 1) / leaf_count) + 1
-	local virtual_screen_index = ((virtual_screen_id - 1) % leaf_count) + 1
-	local leaves = leaves_for_window_on_screen(window, physical_screen_index)
-	if physical_screen_index <= #(hs.screen.allScreens()) and leaves[virtual_screen_index] ~= nil then
-		debug_log.log(
-			"Virtual screen de-indexed to physical screen index "
-				.. physical_screen_index
-				.. " at virtual index "
-				.. virtual_screen_index
-		)
-		return physical_screen_index, virtual_screen_index, leaves[virtual_screen_index]
-	end
-	debug_log.log("Was unable to de-index virtual screen, so defaulting to 1,1")
-	local fallback_leaves = leaves_for_window_on_screen(window, 1)
-	return 1, 1, fallback_leaves[1]
 end
 
 M.increase_virtual_screens = function()
@@ -269,11 +178,9 @@ M.increase_virtual_screens = function()
 		return
 	end
 	local state = get_window_state(window)
-	local physical_screen_index, _, leaf = leaf_for_window(window)
-	debug_log.log("Increasing virtual screens for physical screen index " .. physical_screen_index)
-	layout.split(state.layout, leaf.path)
-	state.current_path = copy_path(leaf.path)
-	debug_log.log("New virtual screens are " .. virtual_screen_count_for_window(window))
+	state.current_path[#state.current_path + 1] = 1
+	state.physical_screen_index = state.physical_screen_index or get_physical_screen_index_for_window(window)
+	debug_log.log("Increased virtual screen depth to " .. #state.current_path)
 end
 
 M.decrease_virtual_screens = function()
@@ -282,66 +189,39 @@ M.decrease_virtual_screens = function()
 		return
 	end
 	local state = get_window_state(window)
-	local physical_screen_index, _, leaf = leaf_for_window(window)
-	debug_log.log("Decreasing virtual screens for physical screen index " .. physical_screen_index)
-	layout.merge(state.layout, leaf.path)
-	local resolved = layout.resolve(state.layout, leaf.path, screen_size(hs.screen.allScreens()[physical_screen_index]))
-	state.current_path = resolved and copy_path(resolved.path) or {}
-	debug_log.log("New virtual screens are " .. virtual_screen_count_for_window(window))
+	state.current_path = layout.decrease_path(state.current_path)
+	state.physical_screen_index = state.physical_screen_index or get_physical_screen_index_for_window(window)
+	debug_log.log("Decreased virtual screen depth to " .. #state.current_path)
 end
 
-function M.get_current_virtual_screen(window)
-	if not has_window(window) then
-		return nil
+local next_location_for_window = function(window)
+	local state = get_window_state(window)
+	local next_path = layout.next_path(state.current_path)
+	if next_path ~= nil then
+		return state.physical_screen_index, next_path
 	end
-	local physical_screen_index, virtual_screen_index = leaf_for_window(window)
-	return virtual_screen_id_for(window, physical_screen_index, virtual_screen_index)
+
+	local screen_count = #(hs.screen.allScreens())
+	local next_physical_screen_index = (state.physical_screen_index % screen_count) + 1
+	return next_physical_screen_index, layout.first_path(layout.depth_for_path(state.current_path))
 end
 
-function M.get_next_virtual_screen(window)
-	if not has_window(window) then
-		return nil
-	end
-	local total_virtual_screens = total_virtual_screen_count(window)
-	debug_log.log(
-		"We have "
-			.. total_virtual_screens
-			.. " virtual screens and our current virtual screen is "
-			.. M.get_current_virtual_screen(window)
-	)
-	local ret = (M.get_current_virtual_screen(window) % total_virtual_screens) + 1
-	debug_log.log("So we are moving to screen " .. ret)
-	return ret
-end
-
-function M.move_to_virtual_screen(window, virtual_screen, unit)
+function M.move_to_path(window, path, physical_screen_index)
 	if not has_window(window) then
 		return
 	end
-	if unit ~= nil then
-		M.configure_window(window, {
-			mode = "floating",
-			floating_unit = unit,
-		})
-	end
-
 	local state = get_window_state(window)
-	local physical_screen_index, leaf
-	if virtual_screen ~= nil then
-		debug_log.log("Moving to virtual screen " .. virtual_screen)
-		local virtual_screen_index
-		physical_screen_index, virtual_screen_index, leaf = deindex_virtual_screens(window, virtual_screen)
-		state.physical_screen_index = physical_screen_index
-		state.current_path = copy_path(leaf.path)
-	else
-		physical_screen_index, _, leaf = leaf_for_window(window)
-	end
+	state.physical_screen_index = physical_screen_index or state.physical_screen_index or get_physical_screen_index_for_window(window)
+	state.current_path = copy_path(path or state.current_path or {})
+	apply_window_location(window, state.physical_screen_index, state.current_path)
+end
 
-	local target_unit = unit_for_window_in_leaf(window, leaf)
-	debug_log.log("Moving to physical screen index " .. physical_screen_index .. " giving us the location ")
-	debug_log.log(target_unit.x .. " " .. target_unit.y .. " " .. target_unit.w .. " " .. target_unit.h)
-	window:moveToScreen(hs.screen.allScreens()[physical_screen_index])
-	window:moveToUnit(target_unit)
+function M.reapply_window(window)
+	if not has_window(window) then
+		return
+	end
+	local state = get_window_state(window)
+	M.move_to_path(window, state.current_path, state.physical_screen_index)
 end
 
 function M.get_physical_screen_for_window(window)
@@ -356,23 +236,23 @@ function M.get_physical_screen_for_window(window)
 	return window:screen()
 end
 
-function M.reapply_window_layout(window)
-	M.move_to_virtual_screen(window)
-end
-
-function M.reapply_all_window_layouts()
+function M.reapply_all_windows()
 	for _, state in pairs(window_states) do
 		if state.window ~= nil then
-			M.reapply_window_layout(state.window)
+			M.reapply_window(state.window)
 		end
 	end
 end
 
-function M.move_to_next_virtual_screen(window)
-	local next_virtual_screen = M.get_next_virtual_screen(window)
-	if next_virtual_screen ~= nil then
-		M.move_to_virtual_screen(window, next_virtual_screen)
+function M.move_to_next_leaf(window)
+	if not has_window(window) then
+		return
 	end
+	local physical_screen_index, path = next_location_for_window(window)
+	local state = get_window_state(window)
+	state.physical_screen_index = physical_screen_index
+	state.current_path = copy_path(path)
+	apply_window_location(window, physical_screen_index, path)
 end
 
 return M

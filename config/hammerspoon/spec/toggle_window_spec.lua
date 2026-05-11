@@ -114,7 +114,7 @@ describe("toggle_window", function()
 					known_window_states[window] = true
 					configured_windows[#configured_windows + 1] = { window = window, config = config }
 				end,
-				move_to_virtual_screen = function(window)
+				reapply_window = function(window)
 					moved_windows[#moved_windows + 1] = window
 				end,
 			}

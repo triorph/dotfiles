@@ -21,7 +21,7 @@ local move_screen = function()
 	if window == nil then
 		return
 	end
-	virtual_screens.move_to_next_virtual_screen(window)
+	virtual_screens.move_to_next_leaf(window)
 end
 
 local embiggen_window = function(unit)
@@ -38,25 +38,25 @@ local embiggen_window = function(unit)
 			floating_unit = unit,
 		})
 	end
-	virtual_screens.reapply_window_layout(window)
+	virtual_screens.reapply_window(window)
 end
 
-local reapply_window_layout = function()
+local reapply_window = function()
 	local window = frontmost_window()
 	if window == nil then
 		return
 	end
-	virtual_screens.reapply_window_layout(window)
+	virtual_screens.reapply_window(window)
 end
 
 local increase_virtual_screens = function()
 	virtual_screens.increase_virtual_screens()
-	reapply_window_layout()
+	reapply_window()
 end
 
 local decrease_virtual_screens = function()
 	virtual_screens.decrease_virtual_screens()
-	reapply_window_layout()
+	reapply_window()
 end
 
 local toggle_floating = function()
@@ -66,17 +66,17 @@ local toggle_floating = function()
 		return
 	end
 	virtual_screens.toggle_floating(window)
-	virtual_screens.reapply_window_layout(window)
+	virtual_screens.reapply_window(window)
 end
 
 local increase_gap = function()
 	virtual_screens.increase_gap()
-	virtual_screens.reapply_all_window_layouts()
+	virtual_screens.reapply_all_windows()
 end
 
 local decrease_gap = function()
 	virtual_screens.decrease_gap()
-	virtual_screens.reapply_all_window_layouts()
+	virtual_screens.reapply_all_windows()
 end
 
 hs.hotkey.bind({ "ctrl", "alt" }, "m", move_screen)

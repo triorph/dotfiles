@@ -71,17 +71,17 @@ describe("init", function()
 		package.loaded["virtual_screens"] = nil
 		package.preload["virtual_screens"] = function()
 			return {
-				move_to_next_virtual_screen = function(window)
+				move_to_next_leaf = function(window)
 					calls[#calls + 1] = { name = "move_next", window = window }
 				end,
-				reapply_window_layout = function(window)
+				reapply_window = function(window)
 					calls[#calls + 1] = { name = "reapply", window = window }
 				end,
-				reapply_all_window_layouts = function()
+				reapply_all_windows = function()
 					calls[#calls + 1] = { name = "reapply_all" }
 				end,
-				move_to_virtual_screen = function(window, virtual_screen)
-					calls[#calls + 1] = { name = "move", window = window, virtual_screen = virtual_screen }
+				move_to_path = function(window, path, physical_screen_index)
+					calls[#calls + 1] = { name = "move", window = window, path = path, physical_screen_index = physical_screen_index }
 				end,
 				configure_window = function(window, config)
 					calls[#calls + 1] = { name = "configure", window = window, config = config }

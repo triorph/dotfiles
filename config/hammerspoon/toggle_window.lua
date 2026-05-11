@@ -44,7 +44,7 @@ local toggle_window = function(opts, key, name, window_config, launcher_name)
 			if not virtual_screens.has_window_state(window) then
 				virtual_screens.configure_window(window, window_config_for(window_config))
 			end
-			virtual_screens.move_to_virtual_screen(window)
+			virtual_screens.reapply_window(window)
 		else
 			-- this usually means a setup error - probably hammerspoon doesn't
 			-- have privacy permissions added
