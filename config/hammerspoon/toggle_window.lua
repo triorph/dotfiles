@@ -1,9 +1,5 @@
 local virtual_screens = require("virtual_screens")
 local toggle_window = function(opts, key, name, unit, launcher_name)
-	if unit == nil then
-		-- default size/position
-		unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
-	end
 	if launcher_name == nil then
 		-- usually launcher is the same as the app
 		launcher_name = name
