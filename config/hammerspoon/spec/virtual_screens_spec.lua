@@ -129,11 +129,11 @@ describe("virtual_screens", function()
 
 		virtual_screens.increase_virtual_screens()
 
-		local left_window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
-		local right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
+		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 
-		assert.are.equal(1, virtual_screens.get_current_virtual_screen(left_window))
-		assert.are.equal(2, virtual_screens.get_current_virtual_screen(right_window))
+		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 	end)
 
 	it("uses fixed mode with edge padding when moving to the second virtual screen", function()
@@ -350,11 +350,11 @@ describe("virtual_screens", function()
 		virtual_screens.increase_virtual_screens()
 		virtual_screens.increase_virtual_screens()
 
-		local upper_right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
-		local lower_right_window = make_window(screens[1], { x = 600, y = 600, w = 100, h = 100 })
+		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 
-		assert.are.equal(2, virtual_screens.get_current_virtual_screen(upper_right_window))
-		assert.are.equal(3, virtual_screens.get_current_virtual_screen(lower_right_window))
+		window:setFrame({ x = 600, y = 600, w = 100, h = 100 })
+		assert.are.equal(3, virtual_screens.get_current_virtual_screen(window))
 	end)
 
 	it("supports moving to a fifth generated virtual screen", function()
@@ -379,13 +379,14 @@ describe("virtual_screens", function()
 		virtual_screens.increase_virtual_screens()
 		virtual_screens.increase_virtual_screens()
 
-		local upper_left_window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
-		local lower_left_window = make_window(screens[1], { x = 100, y = 600, w = 100, h = 100 })
-		local right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
+		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 
-		assert.are.equal(1, virtual_screens.get_current_virtual_screen(upper_left_window))
-		assert.are.equal(2, virtual_screens.get_current_virtual_screen(lower_left_window))
-		assert.are.equal(3, virtual_screens.get_current_virtual_screen(right_window))
+		window:setFrame({ x = 100, y = 600, w = 100, h = 100 })
+		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
+
+		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		assert.are.equal(3, virtual_screens.get_current_virtual_screen(window))
 	end)
 
 	it("moves to the next virtual screen using depth-first leaf traversal", function()
@@ -395,13 +396,14 @@ describe("virtual_screens", function()
 		virtual_screens.increase_virtual_screens()
 		virtual_screens.increase_virtual_screens()
 
-		local upper_left_window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
-		local lower_left_window = make_window(screens[1], { x = 100, y = 600, w = 100, h = 100 })
-		local right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
+		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		assert.are.equal(2, virtual_screens.get_next_virtual_screen(window))
 
-		assert.are.equal(2, virtual_screens.get_next_virtual_screen(upper_left_window))
-		assert.are.equal(3, virtual_screens.get_next_virtual_screen(lower_left_window))
-		assert.are.equal(1, virtual_screens.get_next_virtual_screen(right_window))
+		window:setFrame({ x = 100, y = 600, w = 100, h = 100 })
+		assert.are.equal(3, virtual_screens.get_next_virtual_screen(window))
+
+		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		assert.are.equal(1, virtual_screens.get_next_virtual_screen(window))
 	end)
 
 	it("decreasing virtual screens removes the last virtual screen and wraps within the reduced count", function()
@@ -414,10 +416,10 @@ describe("virtual_screens", function()
 		virtual_screens.increase_virtual_screens()
 		virtual_screens.decrease_virtual_screens()
 
-		local fourth_region_window = make_window(screens[1], { x = 600, y = 600, w = 100, h = 100 })
+		window:setFrame({ x = 600, y = 600, w = 100, h = 100 })
 
-		assert.are.equal(4, virtual_screens.get_current_virtual_screen(fourth_region_window))
-		assert.are.equal(1, virtual_screens.get_next_virtual_screen(fourth_region_window))
+		assert.are.equal(4, virtual_screens.get_current_virtual_screen(window))
+		assert.are.equal(1, virtual_screens.get_next_virtual_screen(window))
 
 		virtual_screens.move_to_virtual_screen(window, 4)
 
@@ -434,11 +436,11 @@ describe("virtual_screens", function()
 		window:setFrame({ x = 100, y = 600, w = 100, h = 100 })
 		virtual_screens.decrease_virtual_screens()
 
-		local left_window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
-		local right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
+		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 
-		assert.are.equal(1, virtual_screens.get_current_virtual_screen(left_window))
-		assert.are.equal(2, virtual_screens.get_current_virtual_screen(right_window))
+		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 
 		virtual_screens.move_to_virtual_screen(window, 1)
 		assert_unit(window.moved_to_unit, { x = 0.01, y = 0.02, w = 0.48, h = 0.96 })
@@ -456,16 +458,57 @@ describe("virtual_screens", function()
 		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
 		virtual_screens.decrease_virtual_screens()
 
-		local left_window = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
-		local right_window = make_window(screens[1], { x = 600, y = 100, w = 100, h = 100 })
+		window:setFrame({ x = 100, y = 100, w = 100, h = 100 })
+		assert.are.equal(1, virtual_screens.get_current_virtual_screen(window))
 
-		assert.are.equal(1, virtual_screens.get_current_virtual_screen(left_window))
-		assert.are.equal(2, virtual_screens.get_current_virtual_screen(right_window))
+		window:setFrame({ x = 600, y = 100, w = 100, h = 100 })
+		assert.are.equal(2, virtual_screens.get_current_virtual_screen(window))
 
 		virtual_screens.move_to_virtual_screen(window, 1)
 		assert_unit(window.moved_to_unit, { x = 0.01, y = 0.02, w = 0.48, h = 0.96 })
 
 		virtual_screens.move_to_virtual_screen(window, 2)
 		assert_unit(window.moved_to_unit, { x = 0.51, y = 0.02, w = 0.48, h = 0.96 })
+	end)
+
+	it("keeps virtual split trees independent per window", function()
+		local slack = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		local kitty = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		frontmost_window = slack
+
+		virtual_screens.increase_virtual_screens()
+
+		virtual_screens.configure_window(slack, { mode = "fixed" })
+		virtual_screens.move_to_virtual_screen(slack, 2)
+		assert_unit(slack.moved_to_unit, { x = 0.51, y = 0.02, w = 0.48, h = 0.96 })
+
+		virtual_screens.configure_window(kitty, { mode = "fixed" })
+		virtual_screens.move_to_virtual_screen(kitty)
+		assert_unit(kitty.moved_to_unit, { x = 0.02, y = 0.02, w = 0.96, h = 0.96 })
+	end)
+
+	it("uses each window's own split tree when finding the next virtual screen", function()
+		local slack = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		local kitty = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		frontmost_window = slack
+
+		virtual_screens.increase_virtual_screens()
+
+		assert.are.equal(2, virtual_screens.get_next_virtual_screen(slack))
+		assert.are.equal(1, virtual_screens.get_next_virtual_screen(kitty))
+	end)
+
+	it("traverses a window's split tree across physical screens", function()
+		screens[2] = make_screen("secondary", { x = 1000, y = 0, w = 1000, h = 1000 })
+		local slack = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		frontmost_window = slack
+
+		virtual_screens.increase_virtual_screens()
+
+		assert.are.equal(2, virtual_screens.get_next_virtual_screen(slack))
+		virtual_screens.move_to_virtual_screen(slack, 3)
+
+		assert.are.equal(screens[2], slack.moved_to_screen)
+		assert_unit(slack.moved_to_unit, { x = 0.01, y = 0.02, w = 0.48, h = 0.96 })
 	end)
 end)
