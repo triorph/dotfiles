@@ -1,8 +1,13 @@
--- virtual screens are smaller subsections that divide up a main screen
+-- Virtual screens are tree-based subsections of physical screens.
 --
--- Public virtual screen IDs are 1-based, matching Lua/Hammerspoon table indexes.
--- Internally, each physical screen has a tree layout. Flat virtual screen IDs are
--- derived by flattening that tree's leaves.
+-- Public physical screen indexes and virtual screen IDs are 1-based, matching
+-- Lua/Hammerspoon table indexes. Each physical screen owns a tree layout from
+-- virtual_screen_layout.lua; flat virtual screen IDs are derived by traversing
+-- the layout leaves in depth-first order.
+--
+-- Windows also have local occupancy state:
+--   fixed: fill the current virtual screen, with padding when split
+--   floating: apply a remembered unit inside the current virtual screen
 
 local layout = require("virtual_screen_layout")
 
@@ -18,32 +23,6 @@ end
 
 M.set_debug = function(enabled)
 	debug_enabled = enabled
-end
-
--- The per_window_table has the following data structure
--- virtual_screens : a descriptor of which virtual screens exist for this window
--- floating size : how large the window is when in floating mode
--- position : a tuple of virtual screen, anchor type (floating vs fixed)
-
--- windows_table stores a per_window_table by window_id,
--- when a window_id does not exist in the dictionary, we should look up what the
--- per_window_table default is by the window name. This way, we can define
--- different per_window_table defaults for different window types
-local default_window_table = {
-	["default"] = {
-		virtual_screens = { [1] = 1, [2] = 1 },
-		floating_size = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
-		position = { 1, "floating" },
-	},
-}
-
-local get_default_window_table = function(window_name)
-	local ret = default_window_table["window_name"]
-	if ret == nil then
-		return default_window_table["default"]
-	else
-		return ret
-	end
 end
 
 local default_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
