@@ -1,3 +1,4 @@
+local debug_log = require("debug_log")
 local headphones_id = "88-c9-e8-37-35-61"
 local earbuds_id = "f8-4e-17-ee-97-9f"
 local airpods_id = "b0-f1-d8-ac-3f-ba"
@@ -5,13 +6,13 @@ local airpods_id = "b0-f1-d8-ac-3f-ba"
 local blueutil_command = function(args)
 	local t = hs.task.new("/opt/homebrew/bin/blueutil", function(exitCode, stdout, _)
 		if exitCode == 6 then
-			print("The blueutil command exited with status 6. This usually implies that")
-			print("hammerspoon has not been granted permissions to modify bluetooth")
-			print("Go to settings>privacy&security>bluetooth and add hammerspoon to the list")
+			debug_log.log("The blueutil command exited with status 6. This usually implies that")
+			debug_log.log("hammerspoon has not been granted permissions to modify bluetooth")
+			debug_log.log("Go to settings>privacy&security>bluetooth and add hammerspoon to the list")
 		end
-		print(stdout)
+		debug_log.log(stdout)
 	end, function(_, stdout, _)
-		print(stdout)
+		debug_log.log(stdout)
 		return false
 	end, args)
 	t:start()
@@ -23,37 +24,37 @@ local print_paired = function()
 end
 
 local bluetooth_power = function(power)
-	print("Setting bluetooth power to " .. power)
+	debug_log.log("Setting bluetooth power to " .. power)
 	blueutil_command({ "--power", power })
 end
 
 local connect_headphones = function()
-	print("Connecting headphones")
+	debug_log.log("Connecting headphones")
 	blueutil_command({ "--connect", headphones_id, "--wait-disconnect", airpods_id })
 end
 
 local disconnect_headphones = function()
-	print("Disconnecting headphones")
+	debug_log.log("Disconnecting headphones")
 	blueutil_command({ "--disconnect", headphones_id, "--wait-disconnect", headphones_id })
 end
 
 local disconnect_earbuds = function()
-	print("Disconnecting earbuds")
+	debug_log.log("Disconnecting earbuds")
 	blueutil_command({ "--disconnect", earbuds_id, "--wait-disconnect", earbuds_id })
 end
 
 local connect_earbuds = function()
-	print("Connecting earbuds")
+	debug_log.log("Connecting earbuds")
 	blueutil_command({ "--connect", earbuds_id, "--wait-connect", earbuds_id })
 end
 
 local connect_airpods = function()
-	print("Connecting airpods")
+	debug_log.log("Connecting airpods")
 	blueutil_command({ "--connect", airpods_id, "--wait-connect", airpods_id })
 end
 
 local disconnect_airpods = function()
-	print("Disconnecting airpods")
+	debug_log.log("Disconnecting airpods")
 	blueutil_command({ "--disconnect", airpods_id, "--wait-disconnect", airpods_id })
 end
 

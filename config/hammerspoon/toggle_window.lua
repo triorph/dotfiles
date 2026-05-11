@@ -1,3 +1,4 @@
+local debug_log = require("debug_log")
 local virtual_screens = require("virtual_screens")
 local toggle_window = function(opts, key, name, unit, launcher_name)
 	if launcher_name == nil then
@@ -38,12 +39,12 @@ local toggle_window = function(opts, key, name, unit, launcher_name)
 		else
 			-- this usually means a setup error - probably hammerspoon doesn't
 			-- have privacy permissions added
-			print("Error, app did not have a mainWindow at any point")
+			debug_log.log("Error, app did not have a mainWindow at any point")
 		end
 	end)
 end
 
-print(hs.host.localizedName())
+debug_log.log(hs.host.localizedName())
 if hs.host.localizedName() == "CJDPHHJW5Q" then -- work laptop
 	toggle_window({ "ctrl", "alt" }, "d", "IntelliJ IDEA", nil, "IntelliJ IDEA Ultimate")
 	toggle_window({ "ctrl", "alt" }, "g", "Goland", nil, "Goland")

@@ -1,3 +1,4 @@
+local debug_log = require("debug_log")
 math.randomseed(os.time())
 local call_url = function(page)
 	local config = hs.json.read("~/.config/wallhaven.json")
@@ -27,7 +28,7 @@ local check_file_exists = function(filepath)
 	end
 end
 local download_from_url = function(url, filepath)
-	print("Writing url ", url, "to file", filepath)
+	debug_log.log("Writing url ", url, "to file", filepath)
 	if not check_file_exists(filepath) then
 		local _status, body, _headers = hs.http.get(url)
 		local this_file, error = io.open(filepath, "w")
@@ -35,22 +36,22 @@ local download_from_url = function(url, filepath)
 			this_file:write(body)
 			this_file:close()
 		else
-			print("error opening file", error)
+			debug_log.log("error opening file", error)
 		end
 	else
-		print("Skipping download as file already exists on disk")
+		debug_log.log("Skipping download as file already exists on disk")
 	end
 end
 
 local get_screen_by_index = function(index)
 	for i, screen in ipairs(hs.screen.allScreens()) do
-		print("Checking screen", i, index, screen)
+		debug_log.log("Checking screen", i, index, screen)
 		if i == index then
-			print("Found screen")
+			debug_log.log("Found screen")
 			return screen
 		end
 	end
-	print("No screen found for index", index)
+	debug_log.log("No screen found for index", index)
 	return nil
 end
 
@@ -64,14 +65,14 @@ function newwp(index, screen)
 	if type(screen) == "number" then
 		screen = get_screen_by_index(screen)
 	end
-	print("Screen is:", screen)
+	debug_log.log("Screen is:", screen)
 
 	local meta = call_url(0).meta
 	local per_page = meta.per_page
 	local total = meta.total
 	if index == nil then
 		index = math.floor(math.random() * total)
-		print("index chosen is", index)
+		debug_log.log("index chosen is", index)
 	end
 	local page = math.floor(index / per_page)
 	local new_index = index % per_page + 1

@@ -9,20 +9,13 @@
 --   fixed: fill the current virtual screen, with padding when split
 --   floating: apply a remembered unit inside the current virtual screen
 
+local debug_log = require("debug_log")
 local layout = require("virtual_screen_layout")
 
 local M = {}
 
-local debug_enabled = true
-
-local debug_log = function(...)
-	if debug_enabled then
-		print(...)
-	end
-end
-
 M.set_debug = function(enabled)
-	debug_enabled = enabled
+	debug_log.set_enabled(enabled)
 end
 
 local default_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
@@ -168,7 +161,7 @@ local get_physical_screen_index_for_window = function(window)
 		end
 	end
 	if physical_screen_index == nil then
-		debug_log("Unable to find physical screen for window. defaulting to 1")
+		debug_log.log("Unable to find physical screen for window. defaulting to 1")
 		physical_screen_index = 1
 	end
 	return physical_screen_index
@@ -186,18 +179,18 @@ local leaf_for_window = function(window)
 		end
 	end
 
-	debug_log("No layout leaf matched; defaulting to first leaf")
+	debug_log.log("No layout leaf matched; defaulting to first leaf")
 	return physical_screen_index, 1, leaves[1]
 end
 
 local deindex_virtual_screens = function(virtual_screen_id)
-	debug_log("Trying to de-index virtual screen " .. virtual_screen_id)
+	debug_log.log("Trying to de-index virtual screen " .. virtual_screen_id)
 	local remaining_virtual_screens = virtual_screen_id
 	local total_screens = #(hs.screen.allScreens())
 	for physical_screen_index = 1, total_screens do
 		local leaves = leaves_for_screen(physical_screen_index)
 		if remaining_virtual_screens <= #leaves then
-			debug_log(
+			debug_log.log(
 				"Virtual screen de-indexed to physical screen index "
 					.. physical_screen_index
 					.. " at virtual index "
@@ -207,7 +200,7 @@ local deindex_virtual_screens = function(virtual_screen_id)
 		end
 		remaining_virtual_screens = remaining_virtual_screens - #leaves
 	end
-	debug_log("Was unable to de-index virtual screen, so defaulting to 1,1")
+	debug_log.log("Was unable to de-index virtual screen, so defaulting to 1,1")
 	local leaves = leaves_for_screen(1)
 	return 1, 1, leaves[1]
 end
@@ -215,17 +208,17 @@ end
 M.increase_virtual_screens = function()
 	local window = hs.window.frontmostWindow()
 	local physical_screen_index, _, leaf = leaf_for_window(window)
-	debug_log("Increasing virtual screens for physical screen index " .. physical_screen_index)
+	debug_log.log("Increasing virtual screens for physical screen index " .. physical_screen_index)
 	layout.split(get_layout_for_screen(physical_screen_index), leaf.path)
-	debug_log("New virtual screens are " .. virtual_screen_count_for_screen(physical_screen_index))
+	debug_log.log("New virtual screens are " .. virtual_screen_count_for_screen(physical_screen_index))
 end
 
 M.decrease_virtual_screens = function()
 	local window = hs.window.frontmostWindow()
 	local physical_screen_index, _, leaf = leaf_for_window(window)
-	debug_log("Decreasing virtual screens for physical screen index " .. physical_screen_index)
+	debug_log.log("Decreasing virtual screens for physical screen index " .. physical_screen_index)
 	layout.merge(get_layout_for_screen(physical_screen_index), leaf.path)
-	debug_log("New virtual screens are " .. virtual_screen_count_for_screen(physical_screen_index))
+	debug_log.log("New virtual screens are " .. virtual_screen_count_for_screen(physical_screen_index))
 end
 
 function M.get_current_virtual_screen(window)
@@ -235,14 +228,14 @@ end
 
 function M.get_next_virtual_screen(window)
 	local total_virtual_screens = total_virtual_screen_count()
-	debug_log(
+	debug_log.log(
 		"We have "
 			.. total_virtual_screens
 			.. " virtual screens and our current virtual screen is "
 			.. M.get_current_virtual_screen(window)
 	)
 	local ret = (M.get_current_virtual_screen(window) % total_virtual_screens) + 1
-	debug_log("So we are moving to screen " .. ret)
+	debug_log.log("So we are moving to screen " .. ret)
 	return ret
 end
 
@@ -256,11 +249,11 @@ function M.move_to_virtual_screen(window, virtual_screen, unit)
 	if virtual_screen == nil then
 		virtual_screen = M.get_current_virtual_screen(window)
 	end
-	debug_log("Moving to virtual screen " .. virtual_screen)
+	debug_log.log("Moving to virtual screen " .. virtual_screen)
 	local physical_screen_index, _, leaf = deindex_virtual_screens(virtual_screen)
 	local target_unit = unit_for_window_in_leaf(window, leaf, virtual_screen_count_for_screen(physical_screen_index) > 1)
-	debug_log("Moving to physical screen index " .. physical_screen_index .. " giving us the location ")
-	debug_log(target_unit.x .. " " .. target_unit.y .. " " .. target_unit.w .. " " .. target_unit.h)
+	debug_log.log("Moving to physical screen index " .. physical_screen_index .. " giving us the location ")
+	debug_log.log(target_unit.x .. " " .. target_unit.y .. " " .. target_unit.w .. " " .. target_unit.h)
 	window:moveToScreen(hs.screen.allScreens()[physical_screen_index])
 	window:moveToUnit(target_unit)
 end

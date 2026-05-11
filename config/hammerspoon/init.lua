@@ -1,3 +1,4 @@
+local debug_log = require("debug_log")
 hs.loadSpoon("ReloadConfiguration")
 spoon.ReloadConfiguration:start()
 hs.loadSpoon("Caffeine")
@@ -7,14 +8,14 @@ spoon.Caffeine:start()
 local virtual_screens = require("virtual_screens")
 
 local move_screen = function()
-	print("Moving window")
+	debug_log.log("Moving window")
 	local window = hs.window.frontmostWindow()
 	local next = virtual_screens.get_next_virtual_screen(window)
 	virtual_screens.move_to_virtual_screen(window, next)
 end
 
 local embiggen_window = function(unit)
-	print("Embiggening this window")
+	debug_log.log("Embiggening this window")
 	local window = hs.window.frontmostWindow()
 	if unit == nil then
 		virtual_screens.configure_window(window, { mode = "fixed" })
@@ -43,7 +44,7 @@ local decrease_virtual_screens = function()
 end
 
 local toggle_floating = function()
-	print("Toggling floating mode")
+	debug_log.log("Toggling floating mode")
 	local window = hs.window.frontmostWindow()
 	virtual_screens.toggle_floating(window)
 	virtual_screens.move_to_virtual_screen(window)

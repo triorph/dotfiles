@@ -1,3 +1,4 @@
+local debug_log = require("debug_log")
 -- midi.lua
 -- Specifies controls for the MVAVE chocolate bluetooth midi controller
 --
@@ -83,7 +84,7 @@ end
 local function registerDevices(devices, _virtualDevices)
 	for _i, device in pairs(devices) do
 		if device == "FootCtrl" then
-			print("Adding callback on device " .. device)
+			debug_log.log("Adding callback on device " .. device)
 			midiDevice = hs.midi.new(device)
 			midiDevice:callback(handleMIDI)
 		end
