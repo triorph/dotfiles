@@ -124,6 +124,7 @@ get_window_state = function(window)
 	local key = window_key(window)
 	if window_states[key] == nil then
 		window_states[key] = {
+			window = window,
 			physical_screen_index = get_physical_screen_index_for_window(window),
 			layout = layout.new(),
 			current_path = {},
@@ -131,6 +132,7 @@ get_window_state = function(window)
 			floating_unit = copy_unit(default_floating_unit),
 		}
 	end
+	window_states[key].window = window
 	return window_states[key]
 end
 
@@ -315,6 +317,14 @@ end
 
 function M.reapply_window_layout(window)
 	M.move_to_virtual_screen(window)
+end
+
+function M.reapply_all_window_layouts()
+	for _, state in pairs(window_states) do
+		if state.window ~= nil then
+			M.reapply_window_layout(state.window)
+		end
+	end
 end
 
 function M.move_to_next_virtual_screen(window)

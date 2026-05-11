@@ -51,12 +51,12 @@ end
 
 local increase_gap = function()
 	virtual_screens.increase_gap()
-	reapply_window_layout()
+	virtual_screens.reapply_all_window_layouts()
 end
 
 local decrease_gap = function()
 	virtual_screens.decrease_gap()
-	reapply_window_layout()
+	virtual_screens.reapply_all_window_layouts()
 end
 
 hs.hotkey.bind({ "ctrl", "alt" }, "m", move_screen)

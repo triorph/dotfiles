@@ -77,6 +77,9 @@ describe("init", function()
 				reapply_window_layout = function(window)
 					calls[#calls + 1] = { name = "reapply", window = window }
 				end,
+				reapply_all_window_layouts = function()
+					calls[#calls + 1] = { name = "reapply_all" }
+				end,
 				move_to_virtual_screen = function(window, virtual_screen)
 					calls[#calls + 1] = { name = "move", window = window, virtual_screen = virtual_screen }
 				end,
@@ -172,21 +175,21 @@ describe("init", function()
 		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
 	end)
 
-	it("increases the gap and reapplies the frontmost window layout", function()
+	it("increases the gap and reapplies every known window layout", function()
 		require("init")
 
 		find_binding({ "ctrl", "alt" }, "]")()
 
 		assert.are.same({ name = "increase_gap" }, calls[#calls - 1])
-		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
+		assert.are.same({ name = "reapply_all" }, calls[#calls])
 	end)
 
-	it("decreases the gap and reapplies the frontmost window layout", function()
+	it("decreases the gap and reapplies every known window layout", function()
 		require("init")
 
 		find_binding({ "ctrl", "alt" }, "[")()
 
 		assert.are.same({ name = "decrease_gap" }, calls[#calls - 1])
-		assert.are.same({ name = "reapply", window = frontmost_window }, calls[#calls])
+		assert.are.same({ name = "reapply_all" }, calls[#calls])
 	end)
 end)

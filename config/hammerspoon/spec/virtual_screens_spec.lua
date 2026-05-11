@@ -232,6 +232,20 @@ describe("virtual_screens", function()
 		assert.are.same({ { "Virtual screen gap is now 0.015" } }, messages)
 	end)
 
+	it("reapplies every known window layout", function()
+		local slack = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+		local kitty = make_window(screens[1], { x = 100, y = 100, w = 100, h = 100 })
+
+		virtual_screens.configure_window(slack, { mode = "fixed", default_path = { 1 } })
+		virtual_screens.configure_window(kitty, { mode = "fixed" })
+
+		virtual_screens.increase_gap()
+		virtual_screens.reapply_all_window_layouts()
+
+		assert_unit(slack.moved_to_unit, { x = 0.0125, y = 0.025, w = 0.475, h = 0.95 })
+		assert_unit(kitty.moved_to_unit, { x = 0.025, y = 0.025, w = 0.95, h = 0.95 })
+	end)
+
 	it("uses floating mode dimensions inside the target virtual screen", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 		frontmost_window = window
