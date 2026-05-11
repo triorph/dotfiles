@@ -1,9 +1,5 @@
 local M = {}
 
-local function copy_rect(rect)
-	return { x = rect.x, y = rect.y, w = rect.w, h = rect.h }
-end
-
 local function copy_path(path)
 	local ret = {}
 	for i, part in ipairs(path) do
@@ -46,76 +42,74 @@ local function resolved_node_for_path(root, path)
 	return node
 end
 
-local function make_leaf(node)
+local function make_leaf(node, rect)
 	return {
 		path = copy_path(node.path),
-		rect = copy_rect(node.rect),
+		rect = { x = rect.x, y = rect.y, w = rect.w, h = rect.h },
 	}
 end
 
-local function collect_leaves(node, leaves)
-	if node.children == nil then
-		leaves[#leaves + 1] = make_leaf(node)
-		return
-	end
-
-	collect_leaves(node.children[1], leaves)
-	collect_leaves(node.children[2], leaves)
-end
-
-local function split_node(state, node)
-	local rect = node.rect
-	local physical_width = rect.w * state.screen.w
-	local physical_height = rect.h * state.screen.h
+local function split_rect(rect, screen)
+	local physical_width = rect.w * screen.w
+	local physical_height = rect.h * screen.h
 
 	if physical_width >= physical_height then
 		local half_width = rect.w / 2
-		node.children = {
-			[1] = {
-				path = copy_path(node.path),
-				rect = { x = rect.x, y = rect.y, w = half_width, h = rect.h },
-			},
-			[2] = {
-				path = copy_path(node.path),
-				rect = { x = rect.x + half_width, y = rect.y, w = half_width, h = rect.h },
-			},
-		}
-	else
-		local half_height = rect.h / 2
-		node.children = {
-			[1] = {
-				path = copy_path(node.path),
-				rect = { x = rect.x, y = rect.y, w = rect.w, h = half_height },
-			},
-			[2] = {
-				path = copy_path(node.path),
-				rect = { x = rect.x, y = rect.y + half_height, w = rect.w, h = half_height },
-			},
+		return {
+			[1] = { x = rect.x, y = rect.y, w = half_width, h = rect.h },
+			[2] = { x = rect.x + half_width, y = rect.y, w = half_width, h = rect.h },
 		}
 	end
 
+	local half_height = rect.h / 2
+	return {
+		[1] = { x = rect.x, y = rect.y, w = rect.w, h = half_height },
+		[2] = { x = rect.x, y = rect.y + half_height, w = rect.w, h = half_height },
+	}
+end
+
+local function collect_leaves(node, rect, screen, leaves)
+	if node.children == nil then
+		leaves[#leaves + 1] = make_leaf(node, rect)
+		return
+	end
+
+	local child_rects = split_rect(rect, screen)
+	collect_leaves(node.children[1], child_rects[1], screen, leaves)
+	collect_leaves(node.children[2], child_rects[2], screen, leaves)
+end
+
+local function split_node(node)
+	node.children = {
+		[1] = { path = copy_path(node.path) },
+		[2] = { path = copy_path(node.path) },
+	}
 	node.children[1].path[#node.children[1].path + 1] = 1
 	node.children[2].path[#node.children[2].path + 1] = 2
 end
 
-function M.new(screen)
+function M.new()
 	return {
-		screen = { w = screen.w, h = screen.h },
 		root = {
 			path = {},
-			rect = { x = 0, y = 0, w = 1, h = 1 },
 		},
 	}
 end
 
-function M.leaves(state)
+function M.leaves(state, screen)
 	local leaves = {}
-	collect_leaves(state.root, leaves)
+	collect_leaves(state.root, { x = 0, y = 0, w = 1, h = 1 }, screen, leaves)
 	return leaves
 end
 
-function M.resolve(state, path)
-	return make_leaf(resolved_node_for_path(state.root, path))
+function M.resolve(state, path, screen)
+	local resolved = resolved_node_for_path(state.root, path)
+	for _, leaf in ipairs(M.leaves(state, screen)) do
+		if paths_equal(leaf.path, resolved.path) then
+			return leaf
+		end
+	end
+	return nil
 end
 
 function M.split(state, path)
@@ -128,7 +122,7 @@ function M.split(state, path)
 		return
 	end
 
-	split_node(state, node)
+	split_node(node)
 end
 
 function M.merge(state, path)

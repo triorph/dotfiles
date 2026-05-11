@@ -55,13 +55,13 @@ end
 
 local get_layout_for_screen = function(physical_screen_index)
 	if screen_layouts[physical_screen_index] == nil then
-		screen_layouts[physical_screen_index] = layout.new(screen_size(hs.screen.allScreens()[physical_screen_index]))
+		screen_layouts[physical_screen_index] = layout.new()
 	end
 	return screen_layouts[physical_screen_index]
 end
 
 local leaves_for_screen = function(physical_screen_index)
-	return layout.leaves(get_layout_for_screen(physical_screen_index))
+	return layout.leaves(get_layout_for_screen(physical_screen_index), screen_size(hs.screen.allScreens()[physical_screen_index]))
 end
 
 local virtual_screen_count_for_screen = function(physical_screen_index)
