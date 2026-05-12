@@ -94,19 +94,31 @@ local get_physical_screen_index_for_window = function(window)
 	return 1
 end
 
+local floating_unit_for_current_frame = function(window)
+	local screen = window:screen()
+	local screen_frame = screen:frame()
+	local frame = window:frame()
+	return {
+		x = (frame.x - screen_frame.x) / screen_frame.w,
+		y = (frame.y - screen_frame.y) / screen_frame.h,
+		w = frame.w / screen_frame.w,
+		h = frame.h / screen_frame.h,
+	}
+end
+
 function M.has_window_state(window)
 	return has_window(window) and window_states[window_key(window)] ~= nil
 end
 
-local get_window_state = function(window)
+local get_window_state = function(window, adopt_current_frame)
 	local key = window_key(window)
 	if window_states[key] == nil then
 		window_states[key] = {
 			window = window,
 			physical_screen_index = get_physical_screen_index_for_window(window),
 			current_path = {},
-			mode = "fixed",
-			floating_unit = copy_unit(default_floating_unit),
+			mode = adopt_current_frame and "floating" or "fixed",
+			floating_unit = adopt_current_frame and floating_unit_for_current_frame(window) or copy_unit(default_floating_unit),
 		}
 	end
 	window_states[key].window = window
@@ -194,8 +206,8 @@ M.decrease_virtual_screens = function()
 	debug_log.log("Decreased virtual screen depth to " .. #state.current_path)
 end
 
-local next_location_for_window = function(window)
-	local state = get_window_state(window)
+local next_location_for_window = function(window, adopt_current_frame)
+	local state = get_window_state(window, adopt_current_frame)
 	local next_path = layout.next_path(state.current_path)
 	if next_path ~= nil then
 		return state.physical_screen_index, next_path
@@ -248,7 +260,7 @@ function M.move_to_next_leaf(window)
 	if not has_window(window) then
 		return
 	end
-	local physical_screen_index, path = next_location_for_window(window)
+	local physical_screen_index, path = next_location_for_window(window, not M.has_window_state(window))
 	local state = get_window_state(window)
 	state.physical_screen_index = physical_screen_index
 	state.current_path = copy_path(path)

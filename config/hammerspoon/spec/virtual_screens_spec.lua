@@ -97,6 +97,16 @@ describe("virtual_screens", function()
 		virtual_screens.set_debug(false)
 	end)
 
+	it("adopts an unmanaged window as floating from its current frame before moving to the next location", function()
+		screens[2] = make_screen("secondary", { x = 1000, y = 0, w = 1000, h = 1000 })
+		local window = make_window(screens[1], { x = 100, y = 200, w = 300, h = 400 })
+
+		virtual_screens.move_to_next_leaf(window)
+
+		assert.are.equal(screens[2], window.moved_to_screen)
+		assert_unit(window.moved_to_unit, { x = 0.1, y = 0.2, w = 0.3, h = 0.4 })
+	end)
+
 	it("applies the configured gap to fixed windows on an unsplit screen", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 
