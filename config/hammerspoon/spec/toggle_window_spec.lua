@@ -162,6 +162,20 @@ describe("toggle_window", function()
 		assert.are.equal(apps["Slack"].window, moved_windows[1])
 	end)
 
+	it("uses toggle defaults before reapplying first-time app windows", function()
+		require("toggle_window")
+
+		find_binding({ "ctrl" }, "s")()
+
+		assert.are.equal(apps["Slack"].window, configured_windows[1].window)
+		assert.are.same({
+			mode = "floating",
+			floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 },
+		}, configured_windows[1].config)
+		assert.are.equal(apps["Slack"].window, moved_windows[1])
+		assert.are.equal(1, #configured_windows)
+	end)
+
 	it("preserves existing virtual screen state for custom-unit app bindings", function()
 		known_window_states[apps["Slack"].window] = true
 		require("toggle_window")
