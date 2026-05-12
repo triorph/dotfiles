@@ -14,7 +14,7 @@ local debug_log = require("debug_log")
 
 local M = {}
 
-local default_floating_unit = { x = 0.02, y = 0.02, w = 0.96, h = 0.96 }
+local default_floating_unit = { x = 0.1, y = 0.1, w = 0.8, h = 0.8 }
 local virtual_screen_gap = 0.02
 local virtual_screen_gap_step = 0.005
 local window_states = {}

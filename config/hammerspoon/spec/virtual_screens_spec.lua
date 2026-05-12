@@ -264,6 +264,16 @@ describe("virtual_screens", function()
 		assert_unit(window.moved_to_unit, { x = 0.55, y = 0.1, w = 0.4, h = 0.8 })
 	end)
 
+	it("toggles fixed windows to a useful default floating size", function()
+		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
+		virtual_screens.configure_window(window, { mode = "fixed" })
+
+		virtual_screens.toggle_floating(window)
+		virtual_screens.reapply_window(window)
+
+		assert_unit(window.moved_to_unit, { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
+	end)
+
 	it("toggles between floating and fixed while preserving floating dimensions", function()
 		local window = make_window(screens[1], { x = 100, y = 100, w = 400, h = 400 })
 		frontmost_window = window
