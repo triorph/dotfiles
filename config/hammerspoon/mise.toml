@@ -1,0 +1,6 @@
+[tools]
+lua = { version = "5.4.8", luarocks = true }
+
+[tasks.test]
+description = "Run Lua specs with Busted"
+run = "busted spec"
