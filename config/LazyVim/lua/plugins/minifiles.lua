@@ -1,7 +1,7 @@
 return {
   "nvim-mini/mini.files",
   keys = {
-    { "<leader>fm", function() require("mini.files").open() end, desc = "Open mini.files" },
+    { "<leader>fm", function() require("mini.files").open(vim.api.nvim_buf_get_name(0)) end, desc = "Open mini.files" },
   },
   opts = {
     windows = {
