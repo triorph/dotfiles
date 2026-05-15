@@ -88,7 +88,7 @@ describe("midi", function()
 			[3] = { modifiers = nil, key = "r" },
 			[4] = { modifiers = nil, key = "space" },
 			[5] = { modifiers = nil, key = "right" },
-			[6] = { modifiers = nil, key = "delete" },
+			[6] = { modifiers = { "cmd" }, key = "x" },
 			[7] = { modifiers = { "cmd" }, key = "z" },
 			[8] = { modifiers = nil, key = "m" },
 		}
@@ -138,7 +138,11 @@ describe("midi", function()
 		now = 300 * 1000 * 1000
 		callback(nil, "FootCtrl", "programChange", nil, { channel = 0, programNumber = 1 })
 
-		garageband = { mainWindow = function() return nil end }
+		garageband = {
+			mainWindow = function()
+				return nil
+			end,
+		}
 		now = 600 * 1000 * 1000
 		callback(nil, "FootCtrl", "programChange", nil, { channel = 0, programNumber = 1 })
 
