@@ -1,0 +1,221 @@
+version: 1
+# Agent behavior and model settings
+agent:
+  # Additional system prompt to append to the agent's default system prompt
+  additionalSystemPrompt: null
+  # Enable streaming responses from the AI model
+  streaming: true
+  # Temperature setting for AI model responses (0.0-1.0)
+  temperature: 0.3
+  # Model ID to use for the agent. See /models command to list available models.
+  modelId: anthropic:claude-sonnet-4-6
+  # Optional model variant key selected from dynamic configuration.
+  modelVariant: null
+  # Per-model inference parameter overrides keyed by model ID.
+  inferenceConfig: null
+  # Enable the deep planning tool for complex task planning
+  enableDeepPlanTool: false
+  # Efficiency level controlling iteration limits. Options: low, medium
+  # (default), high, max.
+  efficiencyLevel: medium
+  # Enable/disable subagents for task delegation
+  enableSubagents: true
+  # Additional directories to search for skills, beyond the RovoDev-native paths
+  # (~/.rovodev/skills/, ~/.agents/skills/, project paths). The Agent Skills
+  # SKILL.md format is an open standard shared with Claude Code, OpenAI Codex
+  # CLI, and others; this lets users install a skill once and have it picked up
+  # across tools.   null  -> use defaults (~/.claude/skills, ~/.codex/skills).
+  # []    -> disable external skill discovery entirely.   list  -> replaces the
+  # defaults; supports ~ expansion.
+  externalSkillDirs: null
+  # Enable/disable experimental features
+  experimental:
+    # Disable the built-in Atlassian MCP server so user can configure a custom
+    # one
+    disableBuiltinAtlassianMcp: false
+# Session management settings
+sessions:
+  # Directory where session data is stored
+  persistenceDir: /Users/mwalsh2/.rovodev/sessions
+  # Enable session memory over prior sessions when enabled by dynamic
+  # configuration
+  enableSessionMemory: true
+  # Allow session memory to reference sessions from other workspace locations
+  enableCrossWorkspaceSessionMemory: false
+  # (Experimental) When enabled, Rovo Dev may warn and offer to switch your
+  # workspace git state (branch/commit) to match the session checkpoint when
+  # restoring or switching sessions.
+  enableWorkspaceStateSync: false
+# Atlassian product integration settings
+atlassianConnections:
+  # Global jira projects user is part of
+  jiraProjects:
+    - url: https://hello.atlassian.net/browse/KRATOS
+      key: KRATOS
+      id: ari:cloud:jira:a436116f-02ce-4520-8fbb-7301462a1674:project/32453
+  # Directory where any local overrides are stored
+  localOverridePath: .rovodev/atlassian_connections.json
+  # Whether atlassian integration is enabled
+  enabled: true
+# Console and UI behavior settings
+console:
+  # Output format for console display (markdown, simple, or raw)
+  outputFormat: markdown
+  # Show tool execution results in the console
+  showToolResults: true
+  # Per-tool configuration for whether to show tool execution results in the
+  # console
+  toolResultVisibility:
+    bash: true
+    powershell: true
+    open_files: true
+    create_file: true
+    delete_file: true
+    move_file: true
+    expand_code_chunks: true
+    find_and_replace_code: true
+    grep: true
+    expand_folder: true
+    update_allowed_external_paths: true
+  # Editing mode for the prompt session
+  editingMode: EMACS
+  # Enable or disable cursor blinking in the input area. Defaults to true
+  # (blinking).
+  cursorBlink: true
+  # Shell command to generate a command prompt that replaces the default '> '.
+  # For example, set 'STARSHIP_SHELL=rovo dev starship prompt' to use Starship.
+  customCommandPrompt: null
+  # Color theme for syntax highlighting, background color, etc.
+  theme: dark
+  # Maximum width of the console output in characters, or 'fill' to fill the
+  # terminal width
+  maxOutputWidth: 120
+  # Enable or disable animated startup loading screen
+  enableStartupAnimations: true
+  # Automatically copy selected text to clipboard when text is selected in the
+  # chat
+  copyOnSelect: true
+  # When enabled, Enter inserts a newline and double-Enter submits the message.
+  # When disabled (default), Enter submits and Shift+Enter inserts a newline.
+  multilineInput: false
+  # Compact older agent turns to reduce memory usage in long sessions. Only the
+  # last 5 turns stay fully expanded.
+  compactMode: true
+  # Terminal tab title settings
+  terminalTitle:
+    # Enable or disable automatic terminal tab title updates
+    isEnabled: true
+    # Terminal tab title format string. Supported template variables:   • {cwd}
+    # — workspace directory name   • {project} — full workspace path   •
+    # {branch}  — current git branch   • {session} — session title   • {model}
+    # — current model name
+    displayValue: Rovo Dev
+# Logging and prompt collection settings
+logging:
+  # Path to the log file
+  path: /Users/mwalsh2/.rovodev/rovodev.log
+  # Enable collection of prompts for debugging and analysis
+  enablePromptCollection: true
+# Model Context Protocol server configuration
+mcp:
+  # Path to the MCP (Model Context Protocol) configuration file
+  mcpConfigPath: /Users/mwalsh2/.rovodev/mcp.json
+  # List of allowed MCP server signatures
+  allowedMcpServers:
+    - stdio:npx:@atlassian/ops-sherpa
+    - stdio:atlas:kitt mcp --kubeconfig mcp.kubeconfig
+    - stdio:npx:-y kubernetes-mcp-server@latest --kubeconfig /Users/mwalsh2/.kube/kitt/mcp/contexts/mcp.kubeconfig --read-only
+  # List of globally disabled MCP server signatures
+  disabledMcpServers: []
+# Tool and command permission settings
+toolPermissions:
+  # Default permission for tools not explicitly listed
+  default: ask
+  # Permission settings for specific tools
+  tools:
+    create_file: ask
+    delete_file: ask
+    move_file: ask
+    find_and_replace_code: ask
+    open_files: allow
+    expand_code_chunks: allow
+    expand_folder: allow
+    grep: allow
+    grep_file_content: allow
+    grep_file_paths: allow
+    get_events: allow
+    channel_get_message: allow
+    get_recent_prs: allow
+    workspace_search_user_by_email: allow
+    get_project: allow
+    bitbucketPullRequest: allow
+  bash:
+    # Default permission for bash commands not explicitly listed
+    default: ask
+    # List of specific bash commands with their permission settings
+    commands:
+      - command: ls.*
+        permission: allow
+      - command: cat.*
+        permission: allow
+      - command: echo.*
+        permission: allow
+      - command: git status
+        permission: allow
+      - command: git diff.*
+        permission: allow
+      - command: git log.*
+        permission: allow
+      - command: pwd
+        permission: allow
+      - command: ./gradlew.*
+        permission: ask
+      - command: sed.*
+        permission: ask
+      - command: find(\s.*)?
+        permission: allow
+      - command: uuidgen
+        permission: allow
+      - command: TZ="Pacific/Auckland" date -d "(.*)" +%s 2>/dev/null
+        permission: allow
+      - command: TZ="Pacific/Auckland" date -d "(.*)" +%s 2>/dev/null
+        permission: allow
+      - command: mvn test -pl . -Dtest="(.*)" (.*) (2>&1)?
+        permission: allow
+    # Run bash commands in a sandboxed environment - currently available for
+    # MacOS and Linux only. Enabling this option for Windows will prevent the
+    # agent from running powershell commands.
+    runInSandbox: true
+    # Environment variables to set when running bash commands. Env vars are
+    # automatically inherited from the user's environment, except for sensitive
+    # variables such as API tokens and passwords. Use this config to set
+    # additional env vars, or to pass secrets. Env vars can be set to strings or
+    # can reference other env vars using the ${VAR_NAME} syntax.
+    env: {}
+  # List of file or directory paths that are allowed to be accessed outside the
+  # workspace
+  allowedExternalPaths: []
+announcementTracking:
+  announcementViewCounts: {}
+sessionFeedback:
+  permanentlyDisabled: false
+  # ISO timestamp of the last provided feedback
+  lastFeedbackAsked: "2026-04-29T03:18:05.236491+00:00"
+atlassianBillingSite:
+  siteUrl: https://hello.atlassian.net
+smartTasks:
+  # Enable Smart Tasks discovery
+  enabled: true
+  # List of task discovery sources
+  sources:
+    - filesystem
+# Event Hooks configuration. See /hooks command to list available events.
+eventHooks:
+  logFile: /Users/mwalsh2/.rovodev/event_hooks.log
+  events:
+    - name: on_tool_start
+      commands:
+        - command: /Users/mwalsh2/.rovodev/hooks/aloc-managed/post_to_aloc.sh
+    - name: on_tool_end
+      commands:
+        - command: /Users/mwalsh2/.rovodev/hooks/aloc-managed/post_to_aloc.sh
