@@ -1,5 +1,10 @@
 package homeassistant
 
+import homeassistant.decreaseLampBrightness
+import homeassistant.increaseLampBrightness
+import homeassistant.turnOffOfficeHeatpumpOnTimer
+import homeassistant.turnStairLightsOff
+
 private val colourCycle =
     yamlList(
         rgb(255, 137, 14),
@@ -20,540 +25,547 @@ private const val NEXT_COLOUR_RGB_TEMPLATE =
 private const val NEXT_COLOUR_INDEX_TEMPLATE =
     "{% set idx = states('input_number.downstairs_light_colour_index') | int + 1 %} {% set idx = idx % colour_cycle | length %} {{ idx }}\n"
 
-fun automations(): List<YamlObject> =
-    yamlObjects(
-        yamlObject(
-            "id" to "1780894997877",
-            "alias" to "Turn off office heatpump",
-            "description" to "",
-            "triggers" to yamlList(yamlObject("trigger" to "time", "at" to "17:00:00")),
-            "conditions" to
-                yamlList(
+fun turnOffOfficeHeatpumpOnTimer() =
+    automation(
+        id = "1780894997877",
+        alias = "Turn off office heatpump on timer",
+    ) {
+        triggers(yamlObject("trigger" to "time", "at" to "17:00:00"))
+        conditions(
+            yamlObject(
+                "condition" to "or",
+                "conditions" to
+                    yamlList(
+                        yamlObject(
+                            "condition" to "not",
+                            "conditions" to
+                                yamlList(
+                                    yamlObject(
+                                        "condition" to
+                                            "device",
+                                        "device_id" to
+                                            "568bf49c8bc0b3639c29221d9a96bae0",
+                                        "domain" to
+                                            "climate",
+                                        "entity_id" to
+                                            "4882560e0c73d5d1205927e49ea5f11e",
+                                        "type" to
+                                            "is_hvac_mode",
+                                        "hvac_mode" to
+                                            "off",
+                                    ),
+                                ),
+                        ),
+                    ),
+            ),
+        )
+        actions(
+            yamlObject(
+                "action" to "climate.turn_off",
+                "metadata" to yamlObject(),
+                "target" to
                     yamlObject(
-                        "condition" to "or",
-                        "conditions" to
-                            yamlList(
+                        "device_id" to
+                            "568bf49c8bc0b3639c29221d9a96bae0",
+                    ),
+                "data" to yamlObject(),
+            ),
+        )
+        mode("single")
+    }
+
+fun turnStairLightsOff() =
+    yamlObject(
+        "id" to "1780963707995",
+        "alias" to "Stair lights off",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
+                    "domain" to "zha",
+                    "type" to "remote_button_short_press",
+                    "subtype" to "button",
+                    "trigger" to "device",
+                ),
+                zhaButtonTrigger("toggle"),
+            ),
+        "conditions" to
+            yamlList(
+                yamlObject(
+                    "condition" to "device",
+                    "type" to "is_on",
+                    "device_id" to "2c0f04abd6148843b1756b944ea925d7",
+                    "entity_id" to "c76155248c42d7a29d57b0938dbd49de",
+                    "domain" to "light",
+                    "for" to
+                        yamlObject(
+                            "hours" to 0,
+                            "minutes" to 0,
+                            "seconds" to 1,
+                        ),
+                ),
+            ),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "action" to "light.turn_off",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                yamlList(
+                                    "light.stair_light_1",
+                                    "light.stair_light_2",
+                                    "light.dining_room_lamp",
+                                ),
+                        ),
+                    "data" to yamlObject(),
+                ),
+            ),
+        "mode" to "single",
+    )
+
+fun decreaseLampBrightness() =
+    yamlObject(
+        "id" to "1780963899292",
+        "alias" to "Decrease lamp brightness",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
+                    "domain" to "zha",
+                    "type" to "device_rotated",
+                    "subtype" to "left",
+                    "trigger" to "device",
+                ),
+            ),
+        "conditions" to yamlList(),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "action" to "light.turn_on",
+                    "metadata" to yamlObject(),
+                    "data" to yamlObject("brightness_step_pct" to -20),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                "light.dining_room_lamp",
+                        ),
+                ),
+            ),
+        "mode" to "single",
+    )
+
+fun increaseLampBrightness() =
+    yamlObject(
+        "id" to "1780964087146",
+        "alias" to "Increase lamp brightness",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
+                    "domain" to "zha",
+                    "type" to "device_rotated",
+                    "subtype" to "right",
+                    "trigger" to "device",
+                ),
+            ),
+        "conditions" to yamlList(),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "action" to "light.turn_on",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to "light.stair_light_1",
+                        ),
+                    "data" to yamlObject("brightness_step_pct" to 50),
+                    "continue_on_error" to true,
+                ),
+                yamlObject(
+                    "action" to "light.turn_on",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to "light.stair_light_2",
+                        ),
+                    "data" to yamlObject("brightness_step_pct" to 50),
+                    "continue_on_error" to true,
+                ),
+                yamlObject(
+                    "action" to "light.turn_on",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                "light.dining_room_lamp",
+                        ),
+                    "data" to yamlObject("brightness_step_pct" to 20),
+                ),
+            ),
+        "mode" to "single",
+    )
+
+fun toggleBedroomMikeLamplight() =
+    yamlObject(
+        "id" to "1780965369367",
+        "alias" to "Toggle mike lamplight",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "trigger" to "event",
+                    "event_type" to "zha_event",
+                    "event_data" to
+                        yamlObject(
+                            "device_ieee" to
+                                "a4:c1:38:ab:c9:62:1d:b1",
+                            "device_id" to
+                                "2fd11b2eac90c1daa1d41a596dd4a57a",
+                            "unique_id" to
+                                "a4:c1:38:ab:c9:62:1d:b1:1:0x0006",
+                            "endpoint_id" to 1,
+                            "cluster_id" to 6,
+                            "command" to "toggle",
+                            "args" to yamlList(),
+                            "params" to yamlObject(),
+                        ),
+                ),
+            ),
+        "conditions" to yamlList(),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "type" to "toggle",
+                    "device_id" to "9f60192a08622db8c597cea034d075b1",
+                    "entity_id" to "d3075c2bb97112a2bd9cdc4bd388ba7a",
+                    "domain" to "switch",
+                ),
+            ),
+        "mode" to "single",
+    )
+
+fun lightsFollowPowerOff() =
+    yamlObject(
+        "id" to "1780973542501",
+        "alias" to "Lights follow power off",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "device_id" to "2c0f04abd6148843b1756b944ea925d7",
+                    "domain" to "zha",
+                    "type" to "device_offline",
+                    "subtype" to "device_offline",
+                    "trigger" to "device",
+                ),
+            ),
+        "conditions" to yamlList(),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "action" to "light.turn_off",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                yamlList(
+                                    "light.smartlight_4",
+                                ),
+                        ),
+                    "data" to yamlObject(),
+                ),
+            ),
+        "mode" to "single",
+    )
+
+fun stairLightsOn() =
+    yamlObject(
+        "id" to "1780975857816",
+        "alias" to "Stairs lights on",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
+                    "domain" to "zha",
+                    "type" to "remote_button_short_press",
+                    "subtype" to "button",
+                    "trigger" to "device",
+                ),
+                zhaButtonTrigger("toggle"),
+            ),
+        "conditions" to
+            yamlList(
+                yamlObject(
+                    "condition" to "device",
+                    "type" to "is_off",
+                    "device_id" to "2c0f04abd6148843b1756b944ea925d7",
+                    "entity_id" to "c76155248c42d7a29d57b0938dbd49de",
+                    "domain" to "light",
+                    "for" to
+                        yamlObject(
+                            "hours" to 0,
+                            "minutes" to 0,
+                            "seconds" to 1,
+                        ),
+                ),
+            ),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "action" to "light.turn_on",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                yamlList(
+                                    "light.stair_light_1",
+                                    "light.stair_light_2",
+                                    "light.dining_room_lamp",
+                                ),
+                        ),
+                    "data" to yamlObject(),
+                ),
+            ),
+        "mode" to "single",
+    )
+
+fun toggleDownstairsLamp() =
+    yamlObject(
+        "id" to "toggle_downstairs_lamp",
+        "alias" to "Toggle downstairs lamp",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
+                    "domain" to "zha",
+                    "type" to "remote_button_double_press",
+                    "subtype" to "button_1",
+                    "trigger" to "device",
+                ),
+                zhaButtonTrigger("on"),
+            ),
+        "conditions" to yamlList(),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "action" to "light.toggle",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                "light.dining_room_lamp",
+                        ),
+                    "data" to yamlObject(),
+                ),
+            ),
+        "mode" to "single",
+    )
+
+fun setLightNewColour(light_name: String) =
+    yamlObject(
+        "id" to "${light_name}_lamp_colour",
+        "alias" to "Set $light_name to new colour",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                stateTrigger("input_number.downstairs_light_colour_index"),
+            ),
+        "variables" to colourVariables(includeDefaultColour = true),
+        "conditions" to yamlList(lightIsOn("light.${light_name}")),
+        "actions" to yamlList(turnOnCurrentColour("light.${light_name}")),
+        "mode" to "single",
+    )
+
+fun advancedCycleColours() =
+    yamlObject(
+        "id" to "1780986988887",
+        "alias" to "Cycle stair light colours",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
+                    "domain" to "zha",
+                    "type" to "remote_button_long_press",
+                    "subtype" to "button_1",
+                    "trigger" to "device",
+                ),
+                zhaButtonTrigger("off"),
+            ),
+        "variables" to colourVariables(),
+        "actions" to yamlList(advanceDownstairsColourIndex()),
+        "mode" to "single",
+    )
+
+fun setLightColourWhenOn(light_name: String) =
+    yamlObject(
+        "id" to "set_${light_name}_colour_when_on",
+        "alias" to "Set the ${light_name} colour when turned on",
+        "description" to "",
+        "triggers" to lightTurnedOnTrigger("light.${light_name}"),
+        "variables" to colourVariables(includeDefaultColour = true),
+        "actions" to yamlList(turnOnCurrentColour("light.${light_name}")),
+    )
+
+fun notifyHeatpumpCanBeTurnedOff() =
+    yamlObject(
+        "id" to "1781210376062",
+        "alias" to "Notify heat pump can be turned off",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "trigger" to "temperature.crossed_threshold",
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                "sensor.temperature_humidity_sensor_1_temperature",
+                        ),
+                    "options" to
+                        yamlObject(
+                            "behavior" to "each",
+                            "for" to
                                 yamlObject(
-                                    "condition" to "not",
-                                    "conditions" to
-                                        yamlList(
-                                            yamlObject(
-                                                "condition" to
-                                                    "device",
-                                                "device_id" to
-                                                    "568bf49c8bc0b3639c29221d9a96bae0",
-                                                "domain" to
-                                                    "climate",
-                                                "entity_id" to
-                                                    "4882560e0c73d5d1205927e49ea5f11e",
-                                                "type" to
-                                                    "is_hvac_mode",
-                                                "hvac_mode" to
-                                                    "off",
-                                            ),
+                                    "hours" to 0,
+                                    "minutes" to 10,
+                                    "seconds" to 0,
+                                ),
+                            "threshold" to
+                                yamlObject(
+                                    "type" to "above",
+                                    "value" to
+                                        yamlObject(
+                                            "active_choice" to
+                                                "number",
+                                            "number" to
+                                                18,
+                                            "unit_of_measurement" to
+                                                "°C",
                                         ),
                                 ),
-                            ),
-                    ),
+                        ),
                 ),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "climate.turn_off",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "device_id" to
-                                    "568bf49c8bc0b3639c29221d9a96bae0",
-                            ),
-                        "data" to yamlObject(),
-                    ),
+            ),
+        "conditions" to
+            yamlList(
+                yamlObject(
+                    "condition" to "time",
+                    "after" to "09:00:00",
+                    "before" to "17:00:00",
                 ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "1780963707995",
-            "alias" to "Stair lights off",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                        "domain" to "zha",
-                        "type" to "remote_button_short_press",
-                        "subtype" to "button",
-                        "trigger" to "device",
-                    ),
-                    zhaButtonTrigger("toggle"),
+            ),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "action" to "notify.send_message",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "device_id" to
+                                "449719a7d011795e08e37c0f114f4771",
+                        ),
+                    "data" to
+                        yamlObject(
+                            "message" to
+                                "Downstairs heat reached threshold ",
+                        ),
                 ),
-            "conditions" to
-                yamlList(
-                    yamlObject(
-                        "condition" to "device",
-                        "type" to "is_on",
-                        "device_id" to "2c0f04abd6148843b1756b944ea925d7",
-                        "entity_id" to "c76155248c42d7a29d57b0938dbd49de",
-                        "domain" to "light",
-                        "for" to
-                            yamlObject(
-                                "hours" to 0,
-                                "minutes" to 0,
-                                "seconds" to 1,
-                            ),
-                    ),
+            ),
+        "mode" to "single",
+    )
+
+fun turnOffOfficeHeatpumpAutomatically() =
+    yamlObject(
+        "id" to "1781216970827",
+        "alias" to "Disable heatpump after reaching threshold",
+        "description" to "",
+        "triggers" to
+            yamlList(
+                yamlObject(
+                    "trigger" to "temperature.crossed_threshold",
+                    "target" to
+                        yamlObject("area_id" to "mike_s_office"),
+                    "options" to
+                        yamlObject(
+                            "behavior" to "each",
+                            "threshold" to
+                                yamlObject(
+                                    "type" to "above",
+                                    "value" to
+                                        yamlObject(
+                                            "active_choice" to
+                                                "entity",
+                                            "entity" to
+                                                "input_number.mikes_office_target_heatpump_heat_temp",
+                                        ),
+                                ),
+                            "for" to
+                                yamlObject(
+                                    "hours" to 0,
+                                    "minutes" to 5,
+                                    "seconds" to 0,
+                                ),
+                        ),
                 ),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "light.turn_off",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    yamlList(
-                                        "light.stair_light_1",
-                                        "light.stair_light_2",
-                                        "light.dining_room_lamp",
-                                    ),
-                            ),
-                        "data" to yamlObject(),
-                    ),
+            ),
+        "conditions" to
+            yamlList(
+                yamlObject(
+                    "condition" to "climate.is_hvac_mode",
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater",
+                        ),
+                    "options" to
+                        yamlObject(
+                            "behavior" to "any",
+                            "hvac_mode" to yamlList("heat"),
+                        ),
                 ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "1780963899292",
-            "alias" to "Decrease lamp brightness",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                        "domain" to "zha",
-                        "type" to "device_rotated",
-                        "subtype" to "left",
-                        "trigger" to "device",
-                    ),
+            ),
+        "actions" to
+            yamlList(
+                yamlObject(
+                    "action" to "climate.turn_off",
+                    "metadata" to yamlObject(),
+                    "target" to
+                        yamlObject(
+                            "entity_id" to
+                                "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater",
+                        ),
+                    "data" to yamlObject(),
                 ),
-            "conditions" to yamlList(),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "light.turn_on",
-                        "metadata" to yamlObject(),
-                        "data" to yamlObject("brightness_step_pct" to -20),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    "light.dining_room_lamp",
-                            ),
-                    ),
-                ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "1780964087146",
-            "alias" to "Increase lamp brightness",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                        "domain" to "zha",
-                        "type" to "device_rotated",
-                        "subtype" to "right",
-                        "trigger" to "device",
-                    ),
-                ),
-            "conditions" to yamlList(),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "light.turn_on",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to "light.stair_light_1",
-                            ),
-                        "data" to yamlObject("brightness_step_pct" to 50),
-                        "continue_on_error" to true,
-                    ),
-                    yamlObject(
-                        "action" to "light.turn_on",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to "light.stair_light_2",
-                            ),
-                        "data" to yamlObject("brightness_step_pct" to 50),
-                        "continue_on_error" to true,
-                    ),
-                    yamlObject(
-                        "action" to "light.turn_on",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    "light.dining_room_lamp",
-                            ),
-                        "data" to yamlObject("brightness_step_pct" to 20),
-                    ),
-                ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "1780965369367",
-            "alias" to "Toggle mike lamplight",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "trigger" to "event",
-                        "event_type" to "zha_event",
-                        "event_data" to
-                            yamlObject(
-                                "device_ieee" to
-                                    "a4:c1:38:ab:c9:62:1d:b1",
-                                "device_id" to
-                                    "2fd11b2eac90c1daa1d41a596dd4a57a",
-                                "unique_id" to
-                                    "a4:c1:38:ab:c9:62:1d:b1:1:0x0006",
-                                "endpoint_id" to 1,
-                                "cluster_id" to 6,
-                                "command" to "toggle",
-                                "args" to yamlList(),
-                                "params" to yamlObject(),
-                            ),
-                    ),
-                ),
-            "conditions" to yamlList(),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "type" to "toggle",
-                        "device_id" to "9f60192a08622db8c597cea034d075b1",
-                        "entity_id" to "d3075c2bb97112a2bd9cdc4bd388ba7a",
-                        "domain" to "switch",
-                    ),
-                ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "1780973542501",
-            "alias" to "Lights follow power off",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "device_id" to "2c0f04abd6148843b1756b944ea925d7",
-                        "domain" to "zha",
-                        "type" to "device_offline",
-                        "subtype" to "device_offline",
-                        "trigger" to "device",
-                    ),
-                ),
-            "conditions" to yamlList(),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "light.turn_off",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    yamlList(
-                                        "light.smartlight_4",
-                                    ),
-                            ),
-                        "data" to yamlObject(),
-                    ),
-                ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "1780975857816",
-            "alias" to "Stairs lights on",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                        "domain" to "zha",
-                        "type" to "remote_button_short_press",
-                        "subtype" to "button",
-                        "trigger" to "device",
-                    ),
-                    zhaButtonTrigger("toggle"),
-                ),
-            "conditions" to
-                yamlList(
-                    yamlObject(
-                        "condition" to "device",
-                        "type" to "is_off",
-                        "device_id" to "2c0f04abd6148843b1756b944ea925d7",
-                        "entity_id" to "c76155248c42d7a29d57b0938dbd49de",
-                        "domain" to "light",
-                        "for" to
-                            yamlObject(
-                                "hours" to 0,
-                                "minutes" to 0,
-                                "seconds" to 1,
-                            ),
-                    ),
-                ),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "light.turn_on",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    yamlList(
-                                        "light.stair_light_1",
-                                        "light.stair_light_2",
-                                        "light.dining_room_lamp",
-                                    ),
-                            ),
-                        "data" to yamlObject(),
-                    ),
-                ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "toggle_downstairs_lamp",
-            "alias" to "Toggle downstairs lamp",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                        "domain" to "zha",
-                        "type" to "remote_button_double_press",
-                        "subtype" to "button_1",
-                        "trigger" to "device",
-                    ),
-                    zhaButtonTrigger("on"),
-                ),
-            "conditions" to yamlList(),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "light.toggle",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    "light.dining_room_lamp",
-                            ),
-                        "data" to yamlObject(),
-                    ),
-                ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "stair_light_1_lamp_colour",
-            "alias" to "Set stair light 1 to new colour",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    stateTrigger("input_number.downstairs_light_colour_index"),
-                ),
-            "variables" to colourVariables(includeDefaultColour = true),
-            "conditions" to yamlList(lightIsOn("light.stair_light_1")),
-            "actions" to yamlList(turnOnCurrentColour("light.stair_light_1")),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "stair_light_2_lamp_colour",
-            "alias" to "Set stair light 2 to new colour",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    stateTrigger("input_number.downstairs_light_colour_index"),
-                ),
-            "variables" to colourVariables(includeDefaultColour = true),
-            "conditions" to yamlList(lightIsOn("light.stair_light_2")),
-            "actions" to yamlList(turnOnCurrentColour("light.stair_light_2")),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "downstairs_lamp_colour",
-            "alias" to "Set downstairs light to new colour",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    stateTrigger("input_number.downstairs_light_colour_index"),
-                ),
-            "variables" to colourVariables(includeDefaultColour = true),
-            "conditions" to yamlList(lightIsOn("light.dining_room_lamp")),
-            "actions" to yamlList(turnOnCurrentColour("light.dining_room_lamp")),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "1780986988887",
-            "alias" to "Cycle stair light colours",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                        "domain" to "zha",
-                        "type" to "remote_button_long_press",
-                        "subtype" to "button_1",
-                        "trigger" to "device",
-                    ),
-                    zhaButtonTrigger("off"),
-                ),
-            "variables" to colourVariables(),
-            "actions" to yamlList(advanceDownstairsColourIndex()),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "set_stair_light_1_colour_when_on",
-            "alias" to "Set the stair light 1 colour when turned on",
-            "description" to "",
-            "triggers" to lightTurnedOnTrigger("light.stair_light_1"),
-            "variables" to colourVariables(includeDefaultColour = true),
-            "actions" to yamlList(turnOnCurrentColour("light.stair_light_1")),
-        ),
-        yamlObject(
-            "id" to "set_stair_light_2_colour_when_on",
-            "alias" to "Set the stair light 2 colour when turned on",
-            "description" to "",
-            "triggers" to lightTurnedOnTrigger("light.stair_light_2"),
-            "variables" to colourVariables(includeDefaultColour = true),
-            "actions" to yamlList(turnOnCurrentColour("light.stair_light_2")),
-        ),
-        yamlObject(
-            "id" to "1781210376062",
-            "alias" to "Notify heat pump can be turned off",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "trigger" to "temperature.crossed_threshold",
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    "sensor.temperature_humidity_sensor_1_temperature",
-                            ),
-                        "options" to
-                            yamlObject(
-                                "behavior" to "each",
-                                "for" to
-                                    yamlObject(
-                                        "hours" to 0,
-                                        "minutes" to 10,
-                                        "seconds" to 0,
-                                    ),
-                                "threshold" to
-                                    yamlObject(
-                                        "type" to "above",
-                                        "value" to
-                                            yamlObject(
-                                                "active_choice" to
-                                                    "number",
-                                                "number" to
-                                                    18,
-                                                "unit_of_measurement" to
-                                                    "°C",
-                                            ),
-                                    ),
-                            ),
-                    ),
-                ),
-            "conditions" to
-                yamlList(
-                    yamlObject(
-                        "condition" to "time",
-                        "after" to "09:00:00",
-                        "before" to "17:00:00",
-                    ),
-                ),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "notify.send_message",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "device_id" to
-                                    "449719a7d011795e08e37c0f114f4771",
-                            ),
-                        "data" to
-                            yamlObject(
-                                "message" to
-                                    "Downstairs heat reached threshold ",
-                            ),
-                    ),
-                ),
-            "mode" to "single",
-        ),
-        yamlObject(
-            "id" to "1781216970827",
-            "alias" to "Disable heatpump after reaching threshold",
-            "description" to "",
-            "triggers" to
-                yamlList(
-                    yamlObject(
-                        "trigger" to "temperature.crossed_threshold",
-                        "target" to
-                            yamlObject("area_id" to "mike_s_office"),
-                        "options" to
-                            yamlObject(
-                                "behavior" to "each",
-                                "threshold" to
-                                    yamlObject(
-                                        "type" to "above",
-                                        "value" to
-                                            yamlObject(
-                                                "active_choice" to
-                                                    "entity",
-                                                "entity" to
-                                                    "input_number.mikes_office_target_heatpump_heat_temp",
-                                            ),
-                                    ),
-                                "for" to
-                                    yamlObject(
-                                        "hours" to 0,
-                                        "minutes" to 5,
-                                        "seconds" to 0,
-                                    ),
-                            ),
-                    ),
-                ),
-            "conditions" to
-                yamlList(
-                    yamlObject(
-                        "condition" to "climate.is_hvac_mode",
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater",
-                            ),
-                        "options" to
-                            yamlObject(
-                                "behavior" to "any",
-                                "hvac_mode" to yamlList("heat"),
-                            ),
-                    ),
-                ),
-            "actions" to
-                yamlList(
-                    yamlObject(
-                        "action" to "climate.turn_off",
-                        "metadata" to yamlObject(),
-                        "target" to
-                            yamlObject(
-                                "entity_id" to
-                                    "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater",
-                            ),
-                        "data" to yamlObject(),
-                    ),
-                ),
-            "mode" to "single",
-        ),
+            ),
+        "mode" to "single",
+    )
+
+fun automations(): List<YamlObject> =
+    yamlObjects(
+        turnOffOfficeHeatpumpOnTimer(),
+        turnStairLightsOff(),
+        decreaseLampBrightness(),
+        increaseLampBrightness(),
+        toggleBedroomMikeLamplight(),
+        lightsFollowPowerOff(),
+        stairLightsOn(),
+        toggleDownstairsLamp(),
+        setLightNewColour("stair_light_1"),
+        setLightNewColour("stair_light_2"),
+        setLightNewColour("dining_room_lamp"),
+        advancedCycleColours(),
+        setLightColourWhenOn("stair_light_1"),
+        setLightColourWhenOn("stair_light_2"),
+        setLightColourWhenOn("dining_room_lamp"),
+        notifyHeatpumpCanBeTurnedOff(),
+        turnOffOfficeHeatpumpAutomatically(),
     )
 
 private fun rgb(

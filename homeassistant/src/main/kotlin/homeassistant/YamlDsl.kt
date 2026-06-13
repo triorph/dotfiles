@@ -13,7 +13,7 @@ fun automation(
     alias: String? = null,
     block: YamlObject.() -> Unit,
 ): YamlObject =
-    yamlObject("id" to id).apply {
+    yamlObject("id" to id, "description" to "").apply {
         if (alias != null) {
             this["alias"] = alias
         }
@@ -24,20 +24,25 @@ fun YamlObject.description(value: String) {
     this["description"] = value
 }
 
-fun YamlObject.triggers(value: Any?) {
-    this["triggers"] = value
+private fun YamlObject.assignListTo(
+    key: String,
+    vararg values: Any,
+) = values.toList().takeIf { it.isNotEmpty() }?.let { this[key] = it }
+
+fun YamlObject.triggers(vararg values: Any) {
+    this.assignListTo("triggers", values)
 }
 
-fun YamlObject.conditions(value: Any?) {
-    this["conditions"] = value
+fun YamlObject.conditions(vararg values: Any) {
+    this.assignListTo("conditions", values)
 }
 
-fun YamlObject.actions(value: Any?) {
-    this["actions"] = value
+fun YamlObject.actions(vararg values: Any) {
+    this.assignListTo("actions", values)
 }
 
-fun YamlObject.variables(value: Any?) {
-    this["variables"] = value
+fun YamlObject.variables(vararg values: Any) {
+    this.assignListTo("variables", values)
 }
 
 fun YamlObject.mode(value: String) {
