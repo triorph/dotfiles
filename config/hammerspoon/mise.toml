@@ -1,6 +1,11 @@
 [tools]
 lua = { version = "5.4.8", luarocks = true }
 
+[tasks."test:prepare"]
+description = "Install requirements for testing"
+run = "luarocks install busted"
+
 [tasks.test]
+depends = "test:prepare"
 description = "Run Lua specs with Busted"
 run = "busted spec"
