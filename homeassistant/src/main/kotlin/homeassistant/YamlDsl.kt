@@ -2,16 +2,17 @@ package homeassistant
 
 typealias YamlObject = LinkedHashMap<String, Any?>
 
-fun yamlObject(vararg entries: Pair<String, Any?>): YamlObject =
-    linkedMapOf(*entries)
+fun yamlObject(vararg entries: Pair<String, Any?>): YamlObject = linkedMapOf(*entries)
 
-fun yamlList(vararg values: Any?): List<Any?> =
-    values.toList()
+fun yamlList(vararg values: Any?): List<Any?> = values.toList()
 
-fun yamlObjects(vararg values: YamlObject): List<YamlObject> =
-    values.toList()
+fun yamlObjects(vararg values: YamlObject): List<YamlObject> = values.toList()
 
-fun automation(id: String, alias: String? = null, block: YamlObject.() -> Unit): YamlObject =
+fun automation(
+    id: String,
+    alias: String? = null,
+    block: YamlObject.() -> Unit,
+): YamlObject =
     yamlObject("id" to id).apply {
         if (alias != null) {
             this["alias"] = alias
