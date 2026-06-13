@@ -1,10 +1,5 @@
 package homeassistant
 
-import homeassistant.decreaseLampBrightness
-import homeassistant.increaseLampBrightness
-import homeassistant.turnOffOfficeHeatpumpOnTimer
-import homeassistant.turnStairLightsOff
-
 private val colourCycle =
     yamlList(
         rgb(255, 137, 14),
@@ -75,56 +70,53 @@ fun turnOffOfficeHeatpumpOnTimer() =
     }
 
 fun turnStairLightsOff() =
-    yamlObject(
-        "id" to "1780963707995",
-        "alias" to "Stair lights off",
-        "description" to "",
-        "triggers" to
-            yamlList(
-                yamlObject(
-                    "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                    "domain" to "zha",
-                    "type" to "remote_button_short_press",
-                    "subtype" to "button",
-                    "trigger" to "device",
-                ),
-                zhaButtonTrigger("toggle"),
+    automation(
+        id = "1780963707995",
+        alias = "Stair lights off",
+    ) {
+        triggers(
+            yamlObject(
+                "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
+                "domain" to "zha",
+                "type" to "remote_button_short_press",
+                "subtype" to "button",
+                "trigger" to "device",
             ),
-        "conditions" to
-            yamlList(
-                yamlObject(
-                    "condition" to "device",
-                    "type" to "is_on",
-                    "device_id" to "2c0f04abd6148843b1756b944ea925d7",
-                    "entity_id" to "c76155248c42d7a29d57b0938dbd49de",
-                    "domain" to "light",
-                    "for" to
-                        yamlObject(
-                            "hours" to 0,
-                            "minutes" to 0,
-                            "seconds" to 1,
-                        ),
-                ),
+            zhaButtonTrigger("toggle"),
+        )
+        conditions(
+            yamlObject(
+                "condition" to "device",
+                "type" to "is_on",
+                "device_id" to "2c0f04abd6148843b1756b944ea925d7",
+                "entity_id" to "c76155248c42d7a29d57b0938dbd49de",
+                "domain" to "light",
+                "for" to
+                    yamlObject(
+                        "hours" to 0,
+                        "minutes" to 0,
+                        "seconds" to 1,
+                    ),
             ),
-        "actions" to
-            yamlList(
-                yamlObject(
-                    "action" to "light.turn_off",
-                    "metadata" to yamlObject(),
-                    "target" to
-                        yamlObject(
-                            "entity_id" to
-                                yamlList(
-                                    "light.stair_light_1",
-                                    "light.stair_light_2",
-                                    "light.dining_room_lamp",
-                                ),
-                        ),
-                    "data" to yamlObject(),
-                ),
+        )
+        actions(
+            yamlObject(
+                "action" to "light.turn_off",
+                "metadata" to yamlObject(),
+                "target" to
+                    yamlObject(
+                        "entity_id" to
+                            yamlList(
+                                "light.stair_light_1",
+                                "light.stair_light_2",
+                                "light.dining_room_lamp",
+                            ),
+                    ),
+                "data" to yamlObject(),
             ),
-        "mode" to "single",
-    )
+        )
+        mode("single")
+    }
 
 fun decreaseLampBrightness() =
     yamlObject(

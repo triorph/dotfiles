@@ -23,44 +23,44 @@
       data: {}
   mode: "single"
 - id: "1780963707995"
-  alias: "Stair lights off"
   description: ""
+  alias: "Stair lights off"
   triggers:
-  - device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-    domain: "zha"
-    type: "remote_button_short_press"
-    subtype: "button"
-    trigger: "device"
-  - trigger: "event"
-    event_type: "zha_event"
-    event_data:
-      device_ieee: "a4:c1:38:7e:82:21:7d:37"
-      device_id: "628977d0676426888a7f7c217a0710f9"
-      unique_id: "a4:c1:38:7e:82:21:7d:37:1:0x0006"
-      endpoint_id: 1
-      cluster_id: 6
-      command: "toggle"
-      args: []
-      params: {}
+  - - device_id: "4a713f5c3c61ea99233c62a0c9928ece"
+      domain: "zha"
+      type: "remote_button_short_press"
+      subtype: "button"
+      trigger: "device"
+    - trigger: "event"
+      event_type: "zha_event"
+      event_data:
+        device_ieee: "a4:c1:38:7e:82:21:7d:37"
+        device_id: "628977d0676426888a7f7c217a0710f9"
+        unique_id: "a4:c1:38:7e:82:21:7d:37:1:0x0006"
+        endpoint_id: 1
+        cluster_id: 6
+        command: "toggle"
+        args: []
+        params: {}
   conditions:
-  - condition: "device"
-    type: "is_on"
-    device_id: "2c0f04abd6148843b1756b944ea925d7"
-    entity_id: "c76155248c42d7a29d57b0938dbd49de"
-    domain: "light"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 1
+  - - condition: "device"
+      type: "is_on"
+      device_id: "2c0f04abd6148843b1756b944ea925d7"
+      entity_id: "c76155248c42d7a29d57b0938dbd49de"
+      domain: "light"
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 1
   actions:
-  - action: "light.turn_off"
-    metadata: {}
-    target:
-      entity_id:
-      - "light.stair_light_1"
-      - "light.stair_light_2"
-      - "light.dining_room_lamp"
-    data: {}
+  - - action: "light.turn_off"
+      metadata: {}
+      target:
+        entity_id:
+        - "light.stair_light_1"
+        - "light.stair_light_2"
+        - "light.dining_room_lamp"
+      data: {}
   mode: "single"
 - id: "1780963899292"
   alias: "Decrease lamp brightness"

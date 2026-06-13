@@ -1,8 +1,8 @@
 package homeassistant
 
-typealias YamlObject = LinkedHashMap<String, Any?>
+typealias YamlObject = MutableMap<String, Any?>
 
-fun yamlObject(vararg entries: Pair<String, Any?>): YamlObject = linkedMapOf(*entries)
+fun yamlObject(vararg entries: Pair<String, Any?>): YamlObject = mutableMapOf(*entries)
 
 fun yamlList(vararg values: Any?): List<Any?> = values.toList()
 
