@@ -25,47 +25,9 @@ fun turnOffOfficeHeatpumpOnTimer() =
         id = "1780894997877",
         alias = "Turn off office heatpump on timer",
     ) {
-        triggers(yamlObject("trigger" to "time", "at" to "17:00:00"))
-        conditions(
-            yamlObject(
-                "condition" to "or",
-                "conditions" to
-                    yamlList(
-                        yamlObject(
-                            "condition" to "not",
-                            "conditions" to
-                                yamlList(
-                                    yamlObject(
-                                        "condition" to
-                                            "device",
-                                        "device_id" to
-                                            "568bf49c8bc0b3639c29221d9a96bae0",
-                                        "domain" to
-                                            "climate",
-                                        "entity_id" to
-                                            "4882560e0c73d5d1205927e49ea5f11e",
-                                        "type" to
-                                            "is_hvac_mode",
-                                        "hvac_mode" to
-                                            "off",
-                                    ),
-                                ),
-                        ),
-                    ),
-            ),
-        )
-        actions(
-            yamlObject(
-                "action" to "climate.turn_off",
-                "metadata" to yamlObject(),
-                "target" to
-                    yamlObject(
-                        "device_id" to
-                            "568bf49c8bc0b3639c29221d9a96bae0",
-                    ),
-                "data" to yamlObject(),
-            ),
-        )
+        triggers(timeTrigger("17:00:00"))
+        conditions(orCondition(officeHeatpumpIsNotOff()))
+        actions(turnOffOfficeHeatpumpDevice())
         mode("single")
     }
 
@@ -79,18 +41,10 @@ fun turnStairLightsOff() =
             downstairsButtonToggle(),
         )
         conditions(
-            yamlObject(
-                "condition" to "device",
-                "type" to "is_on",
-                "device_id" to "2c0f04abd6148843b1756b944ea925d7",
-                "entity_id" to "c76155248c42d7a29d57b0938dbd49de",
-                "domain" to "light",
-                "for" to
-                    yamlObject(
-                        "hours" to 0,
-                        "minutes" to 0,
-                        "seconds" to 1,
-                    ),
+            lightDeviceIsOn(
+                deviceId = "2c0f04abd6148843b1756b944ea925d7",
+                entityId = "c76155248c42d7a29d57b0938dbd49de",
+                duration = duration(seconds = 1),
             ),
         )
         actions(
@@ -142,11 +96,9 @@ fun toggleBedroomMikeLamplight() =
             bedroomMikeLamplightButtonToggle(),
         )
         actions(
-            yamlObject(
-                "type" to "toggle",
-                "device_id" to "9f60192a08622db8c597cea034d075b1",
-                "entity_id" to "d3075c2bb97112a2bd9cdc4bd388ba7a",
-                "domain" to "switch",
+            toggleSwitchDevice(
+                deviceId = "9f60192a08622db8c597cea034d075b1",
+                entityId = "d3075c2bb97112a2bd9cdc4bd388ba7a",
             ),
         )
         mode("single")
@@ -176,13 +128,10 @@ fun stairLightsOn() =
             downstairsButtonToggle(),
         )
         conditions(
-            yamlObject(
-                "condition" to "device",
-                "type" to "is_off",
-                "device_id" to "2c0f04abd6148843b1756b944ea925d7",
-                "entity_id" to "c76155248c42d7a29d57b0938dbd49de",
-                "domain" to "light",
-                "for" to yamlObject("hours" to 0, "minutes" to 0, "seconds" to 1),
+            lightDeviceIsOff(
+                deviceId = "2c0f04abd6148843b1756b944ea925d7",
+                entityId = "c76155248c42d7a29d57b0938dbd49de",
+                duration = duration(seconds = 1),
             ),
         )
         actions(
@@ -252,39 +201,17 @@ fun notifyHeatpumpCanBeTurnedOff() =
         alias = "Notify heat pump can be turned off",
     ) {
         triggers(
-            yamlObject(
-                "trigger" to "temperature.crossed_threshold",
-                "target" to yamlObject("entity_id" to "sensor.temperature_humidity_sensor_1_temperature"),
-                "options" to
-                    yamlObject(
-                        "behavior" to "each",
-                        "for" to yamlObject("hours" to 0, "minutes" to 10, "seconds" to 0),
-                        "threshold" to
-                            yamlObject(
-                                "type" to "above",
-                                "value" to
-                                    yamlObject(
-                                        "active_choice" to "number",
-                                        "number" to 18,
-                                        "unit_of_measurement" to "°C",
-                                    ),
-                            ),
-                    ),
+            temperatureCrossedThresholdTrigger(
+                target = entityTarget("sensor.temperature_humidity_sensor_1_temperature"),
+                threshold = aboveNumberThreshold(18, unitOfMeasurement = "°C"),
+                duration = duration(minutes = 10),
             ),
         )
-        conditions(
-            yamlObject(
-                "condition" to "time",
-                "after" to "09:00:00",
-                "before" to "17:00:00",
-            ),
-        )
+        conditions(timeCondition(after = "09:00:00", before = "17:00:00"))
         actions(
-            yamlObject(
-                "action" to "notify.send_message",
-                "metadata" to yamlObject(),
-                "target" to yamlObject("device_id" to "449719a7d011795e08e37c0f114f4771"),
-                "data" to yamlObject("message" to "Downstairs heat reached threshold "),
+            sendNotification(
+                deviceId = "449719a7d011795e08e37c0f114f4771",
+                message = "Downstairs heat reached threshold ",
             ),
         )
         mode("single")
@@ -296,46 +223,14 @@ fun turnOffOfficeHeatpumpAutomatically() =
         alias = "Disable heatpump after reaching threshold",
     ) {
         triggers(
-            yamlObject(
-                "trigger" to "temperature.crossed_threshold",
-                "target" to yamlObject("area_id" to "mike_s_office"),
-                "options" to
-                    yamlObject(
-                        "behavior" to "each",
-                        "threshold" to
-                            yamlObject(
-                                "type" to "above",
-                                "value" to
-                                    yamlObject(
-                                        "active_choice" to "entity",
-                                        "entity" to "input_number.mikes_office_target_heatpump_heat_temp",
-                                    ),
-                            ),
-                        "for" to yamlObject("hours" to 0, "minutes" to 5, "seconds" to 0),
-                    ),
+            temperatureCrossedThresholdTrigger(
+                target = areaTarget("mike_s_office"),
+                threshold = aboveEntityThreshold("input_number.mikes_office_target_heatpump_heat_temp"),
+                duration = duration(minutes = 5),
             ),
         )
-        conditions(
-            yamlObject(
-                "condition" to "climate.is_hvac_mode",
-                "target" to
-                    yamlObject(
-                        "entity_id" to "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater",
-                    ),
-                "options" to yamlObject("behavior" to "any", "hvac_mode" to yamlList("heat")),
-            ),
-        )
-        actions(
-            yamlObject(
-                "action" to "climate.turn_off",
-                "metadata" to yamlObject(),
-                "target" to
-                    yamlObject(
-                        "entity_id" to "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater",
-                    ),
-                "data" to yamlObject(),
-            ),
-        )
+        conditions(officeHeatpumpIsHeating())
+        actions(turnOffOfficeHeatpumpEntity())
         mode("single")
     }
 
@@ -377,14 +272,7 @@ private fun colourVariables(includeDefaultColour: Boolean = false): YamlObject =
     }
 
 private fun advanceDownstairsColourIndex(): YamlObject =
-    yamlObject(
-        "action" to "input_number.set_value",
-        "entity_id" to "input_number.downstairs_light_colour_index",
-        "data" to yamlObject("value" to NEXT_COLOUR_INDEX_TEMPLATE),
-    )
-
-private fun stateTrigger(entityId: String): YamlObject =
-    yamlObject(
-        "trigger" to "state",
-        "entity_id" to entityId,
+    setInputNumberValue(
+        entityId = "input_number.downstairs_light_colour_index",
+        value = NEXT_COLOUR_INDEX_TEMPLATE,
     )

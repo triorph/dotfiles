@@ -52,6 +52,48 @@ fun lightIsOn(entityId: String): YamlObject =
         "target" to entityTarget(entityId),
     )
 
+fun lightDeviceIsOn(
+    deviceId: String,
+    entityId: String,
+    duration: YamlObject? = null,
+): YamlObject =
+    lightDeviceStateCondition(
+        type = "is_on",
+        deviceId = deviceId,
+        entityId = entityId,
+        duration = duration,
+    )
+
+fun lightDeviceIsOff(
+    deviceId: String,
+    entityId: String,
+    duration: YamlObject? = null,
+): YamlObject =
+    lightDeviceStateCondition(
+        type = "is_off",
+        deviceId = deviceId,
+        entityId = entityId,
+        duration = duration,
+    )
+
+private fun lightDeviceStateCondition(
+    type: String,
+    deviceId: String,
+    entityId: String,
+    duration: YamlObject? = null,
+): YamlObject =
+    yamlObject(
+        "condition" to "device",
+        "type" to type,
+        "device_id" to deviceId,
+        "entity_id" to entityId,
+        "domain" to "light",
+    ).apply {
+        if (duration != null) {
+            this["for"] = duration
+        }
+    }
+
 private fun lightAction(
     action: String,
     target: YamlObject,
