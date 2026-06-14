@@ -77,6 +77,63 @@ class AutomationsGeneratorTest {
             }
     }
 
+    @Test
+    fun `button with dial 2 controls mikes office generic thermostat`() {
+        val automation = parseAutomations(generateAutomationsYaml()).singleById("turn_on_mikes_office_generic_thermostat")
+
+        assertEquals(
+            listOf(
+                mapOf(
+                    "device_id" to "16447bd2ede6b4941627e3bc14f58c13",
+                    "domain" to "zha",
+                    "type" to "remote_button_short_press",
+                    "subtype" to "button",
+                    "trigger" to "device",
+                ),
+            ),
+            automation["triggers"],
+        )
+        assertEquals(
+            listOf(
+                mapOf(
+                    "action" to "climate.turn_on",
+                    "metadata" to emptyMap<String, Any>(),
+                    "target" to mapOf("entity_id" to "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"),
+                    "data" to emptyMap<String, Any>(),
+                ),
+            ),
+            automation["actions"],
+        )
+        assertEquals("single", automation["mode"])
+
+        val offAutomation = parseAutomations(generateAutomationsYaml()).singleById("turn_off_mikes_office_generic_thermostat")
+
+        assertEquals(
+            listOf(
+                mapOf(
+                    "device_id" to "16447bd2ede6b4941627e3bc14f58c13",
+                    "domain" to "zha",
+                    "type" to "remote_button_double_press",
+                    "subtype" to "button_1",
+                    "trigger" to "device",
+                ),
+            ),
+            offAutomation["triggers"],
+        )
+        assertEquals(
+            listOf(
+                mapOf(
+                    "action" to "climate.turn_off",
+                    "metadata" to emptyMap<String, Any>(),
+                    "target" to mapOf("entity_id" to "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"),
+                    "data" to emptyMap<String, Any>(),
+                ),
+            ),
+            offAutomation["actions"],
+        )
+        assertEquals("single", offAutomation["mode"])
+    }
+
     private val expectedAutomationIds =
         listOf(
             "1780894997877",
@@ -96,6 +153,8 @@ class AutomationsGeneratorTest {
             "set_dining_room_lamp_colour_when_on",
             "1781210376062",
             "1781216970827",
+            "turn_on_mikes_office_generic_thermostat",
+            "turn_off_mikes_office_generic_thermostat",
         )
 
     private val expectedAliasesById =
@@ -117,6 +176,8 @@ class AutomationsGeneratorTest {
             "set_dining_room_lamp_colour_when_on" to "Set the dining_room_lamp colour when turned on",
             "1781210376062" to "Notify heat pump can be turned off",
             "1781216970827" to "Disable heatpump after reaching threshold",
+            "turn_on_mikes_office_generic_thermostat" to "Turn on Mike's office generic thermostat",
+            "turn_off_mikes_office_generic_thermostat" to "Turn off Mike's office generic thermostat",
         )
 
     private fun parseAutomations(yaml: String): List<Map<String, Any?>> =

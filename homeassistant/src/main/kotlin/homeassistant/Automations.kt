@@ -234,6 +234,26 @@ fun turnOffOfficeHeatpumpAutomatically() =
         mode("single")
     }
 
+fun turnOnMikesOfficeGenericThermostat() =
+    automation(
+        id = "turn_on_mikes_office_generic_thermostat",
+        alias = "Turn on Mike's office generic thermostat",
+    ) {
+        triggers(buttonWithDial2SingleClick())
+        actions(turnOnOfficeHeatpumpEntity())
+        mode("single")
+    }
+
+fun turnOffMikesOfficeGenericThermostat() =
+    automation(
+        id = "turn_off_mikes_office_generic_thermostat",
+        alias = "Turn off Mike's office generic thermostat",
+    ) {
+        triggers(buttonWithDial2DoubleClick())
+        actions(turnOffOfficeHeatpumpEntity())
+        mode("single")
+    }
+
 fun automations(): List<Automation> =
     listOf(
         turnOffOfficeHeatpumpOnTimer(),
@@ -253,6 +273,8 @@ fun automations(): List<Automation> =
         setLightColourWhenOn("dining_room_lamp"),
         notifyHeatpumpCanBeTurnedOff(),
         turnOffOfficeHeatpumpAutomatically(),
+        turnOnMikesOfficeGenericThermostat(),
+        turnOffMikesOfficeGenericThermostat(),
     )
 
 private fun rgb(

@@ -30,3 +30,9 @@ fun turnOffOfficeHeatpumpEntity(): Action =
         action = "climate.turn_off",
         target = EntityTarget(OFFICE_HEATPUMP_ENTITY_ID),
     )
+
+fun turnOnOfficeHeatpumpEntity(): Action =
+    ServiceAction(
+        action = "climate.turn_on",
+        target = EntityTarget(OFFICE_HEATPUMP_ENTITY_ID),
+    )

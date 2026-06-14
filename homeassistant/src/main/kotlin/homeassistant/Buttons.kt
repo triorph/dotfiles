@@ -17,6 +17,8 @@ private val ikeaShortcutButton = DeviceButton(deviceId = "4a713f5c3c61ea99233c62
 
 private val downstairsPowerSensor = DeviceButton(deviceId = "2c0f04abd6148843b1756b944ea925d7")
 
+private val buttonWithDial2 = DeviceButton(deviceId = "16447bd2ede6b4941627e3bc14f58c13")
+
 private val bedroomMikeLamplightButton =
     ZhaEventButton(
         deviceIeee = "a4:c1:38:ab:c9:62:1d:b1",
@@ -46,6 +48,10 @@ fun ikeaShortcutButtonRotatedRight(): Trigger = deviceButtonTrigger(ikeaShortcut
 
 fun downstairsPowerSensorOffline(): Trigger =
     deviceButtonTrigger(downstairsPowerSensor, type = "device_offline", subtype = "device_offline")
+
+fun buttonWithDial2SingleClick(): Trigger = deviceButtonTrigger(buttonWithDial2, type = "remote_button_short_press", subtype = "button")
+
+fun buttonWithDial2DoubleClick(): Trigger = deviceButtonTrigger(buttonWithDial2, type = "remote_button_double_press", subtype = "button_1")
 
 fun bedroomMikeLamplightButtonToggle(): Trigger = zhaEventButtonTrigger(bedroomMikeLamplightButton, command = "toggle")
 

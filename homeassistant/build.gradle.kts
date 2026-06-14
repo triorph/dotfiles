@@ -23,14 +23,14 @@ tasks.test {
     useJUnitPlatform()
 }
 
-val generatedAutomationsFile = layout.buildDirectory.file("generated/automations.yaml")
+val generatedAutomationsFile = layout.projectDirectory.file("generated-automations.yaml")
 
 tasks.register<JavaExec>("generateAutomations") {
     group = "homeassistant"
-    description = "Generates Home Assistant automations YAML into build/generated/automations.yaml."
+    description = "Generates Home Assistant automations YAML into generated-automations.yaml."
 
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("homeassistant.AutomationsGeneratorKt")
-    args(generatedAutomationsFile.get().asFile.absolutePath)
+    args(generatedAutomationsFile.asFile.absolutePath)
     outputs.file(generatedAutomationsFile)
 }
