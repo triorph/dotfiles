@@ -42,7 +42,9 @@ fun YamlObject.actions(vararg values: Any) {
 }
 
 fun YamlObject.variables(vararg values: Any) {
-    this.assignListTo("variables", values)
+    values.toList().takeIf { it.isNotEmpty() }?.let {
+        this["variables"] = if (it.size == 1 && it.single() is Map<*, *>) it.single() else it
+    }
 }
 
 fun YamlObject.mode(value: String) {
