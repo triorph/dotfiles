@@ -6,35 +6,27 @@ private const val OFFICE_HEATPUMP_ENTITY_ID = "climate.mike_s_office_heatpump_mi
 
 fun officeHeatpumpIsNotOff(): Condition =
     notCondition(
-        GenericCondition(
-            yamlObject(
-                "condition" to "device",
-                "device_id" to OFFICE_HEATPUMP_DEVICE_ID,
-                "domain" to "climate",
-                "entity_id" to OFFICE_HEATPUMP_HVAC_MODE_ENTITY_ID,
-                "type" to "is_hvac_mode",
-                "hvac_mode" to "off",
-            ),
+        ClimateDeviceHvacModeCondition(
+            deviceId = OFFICE_HEATPUMP_DEVICE_ID,
+            entityId = OFFICE_HEATPUMP_HVAC_MODE_ENTITY_ID,
+            hvacMode = "off",
         ),
     )
 
 fun turnOffOfficeHeatpumpDevice(): Action =
     ServiceAction(
         action = "climate.turn_off",
-        target = deviceTarget(OFFICE_HEATPUMP_DEVICE_ID),
+        target = DeviceTarget(OFFICE_HEATPUMP_DEVICE_ID),
     )
 
 fun officeHeatpumpIsHeating(): Condition =
-    GenericCondition(
-        yamlObject(
-            "condition" to "climate.is_hvac_mode",
-            "target" to entityTarget(OFFICE_HEATPUMP_ENTITY_ID),
-            "options" to yamlObject("behavior" to "any", "hvac_mode" to yamlList("heat")),
-        ),
+    ClimateHvacModeCondition(
+        target = EntityTarget(OFFICE_HEATPUMP_ENTITY_ID),
+        options = yamlObject("behavior" to "any", "hvac_mode" to yamlList("heat")),
     )
 
 fun turnOffOfficeHeatpumpEntity(): Action =
     ServiceAction(
         action = "climate.turn_off",
-        target = entityTarget(OFFICE_HEATPUMP_ENTITY_ID),
+        target = EntityTarget(OFFICE_HEATPUMP_ENTITY_ID),
     )

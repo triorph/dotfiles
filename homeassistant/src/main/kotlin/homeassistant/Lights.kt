@@ -15,7 +15,7 @@ fun turnOnLights(vararg entityIds: String): Action =
 fun toggleLight(entityId: String): Action =
     lightAction(
         action = "light.toggle",
-        target = lightEntityTarget(entityId),
+        target = EntityTarget(entityId),
     )
 
 fun adjustLightBrightness(
@@ -25,7 +25,7 @@ fun adjustLightBrightness(
 ): Action =
     lightAction(
         action = "light.turn_on",
-        target = lightEntityTarget(entityId),
+        target = EntityTarget(entityId),
         data = yamlObject("brightness_step_pct" to brightnessStepPct),
         continueOnError = continueOnError,
     )
@@ -36,18 +36,18 @@ fun turnOnLightWithRgbColour(
 ): Action =
     lightAction(
         action = "light.turn_on",
-        target = lightEntityTarget(entityId),
+        target = EntityTarget(entityId),
         data = yamlObject("rgb_color" to rgbColour),
     )
 
-fun lightTurnedOnTrigger(entityId: String): Trigger = LightTurnedOnTrigger(target = lightEntityTarget(entityId))
+fun lightTurnedOnTrigger(entityId: String): Trigger = LightTurnedOnTrigger(target = EntityTarget(entityId))
 
-fun lightIsOn(entityId: String): Condition = LightIsOnCondition(target = lightEntityTarget(entityId))
+fun lightIsOn(entityId: String): Condition = LightIsOnCondition(target = EntityTarget(entityId))
 
 fun lightDeviceIsOn(
     deviceId: String,
     entityId: String,
-    duration: YamlObject? = null,
+    duration: Duration? = null,
 ): Condition =
     lightDeviceStateCondition(
         type = "is_on",
@@ -59,7 +59,7 @@ fun lightDeviceIsOn(
 fun lightDeviceIsOff(
     deviceId: String,
     entityId: String,
-    duration: YamlObject? = null,
+    duration: Duration? = null,
 ): Condition =
     lightDeviceStateCondition(
         type = "is_off",
@@ -72,25 +72,19 @@ private fun lightDeviceStateCondition(
     type: String,
     deviceId: String,
     entityId: String,
-    duration: YamlObject? = null,
+    duration: Duration? = null,
 ): Condition =
-    GenericCondition(
-        yamlObject(
-            "condition" to "device",
-            "type" to type,
-            "device_id" to deviceId,
-            "entity_id" to entityId,
-            "domain" to "light",
-        ).apply {
-            if (duration != null) {
-                this["for"] = duration
-            }
-        },
+    DeviceCondition(
+        type = type,
+        deviceId = deviceId,
+        entityId = entityId,
+        domain = "light",
+        duration = duration,
     )
 
 private fun lightAction(
     action: String,
-    target: YamlObject,
+    target: Target,
     data: YamlObject = yamlObject(),
     continueOnError: Boolean = false,
 ): Action =
@@ -101,12 +95,9 @@ private fun lightAction(
         continueOnError = continueOnError.takeIf { it },
     )
 
-private fun lightEntityTarget(vararg entityIds: String): YamlObject =
-    yamlObject(
-        "entity_id" to
-            if (entityIds.size == 1) {
-                entityIds.single()
-            } else {
-                yamlList(*entityIds)
-            },
-    )
+private fun lightEntityTarget(vararg entityIds: String): Target =
+    if (entityIds.size == 1) {
+        EntityTarget(entityIds.single())
+    } else {
+        GenericTarget(yamlObject("entity_id" to yamlList(*entityIds)))
+    }

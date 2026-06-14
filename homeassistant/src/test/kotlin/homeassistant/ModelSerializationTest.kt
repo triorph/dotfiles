@@ -59,7 +59,7 @@ class ModelSerializationTest {
                             listOf(
                                 LightAction(
                                     action = "light.turn_on",
-                                    target = mapOf("entity_id" to "light.example"),
+                                    target = EntityTarget("light.example"),
                                     data = mapOf("brightness_step_pct" to 50),
                                     continueOnError = true,
                                 ),

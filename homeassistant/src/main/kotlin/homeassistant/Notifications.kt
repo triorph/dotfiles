@@ -6,6 +6,6 @@ fun sendNotification(
 ): Action =
     ServiceAction(
         action = "notify.send_message",
-        target = deviceTarget(deviceId),
+        target = DeviceTarget(deviceId),
         data = yamlObject("message" to message),
     )

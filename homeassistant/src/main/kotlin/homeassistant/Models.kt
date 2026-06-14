@@ -91,7 +91,7 @@ data class StateTrigger(
 
 @JsonPropertyOrder("trigger", "target")
 data class LightTurnedOnTrigger(
-    val target: Map<String, Any?>,
+    val target: Target,
 ) : Trigger {
     val trigger: String = "light.turned_on"
 }
@@ -112,7 +112,7 @@ data class TimeCondition(
 
 @JsonPropertyOrder("condition", "target")
 data class LightIsOnCondition(
-    val target: Map<String, Any?>,
+    val target: Target,
 ) : Condition {
     val condition: String = "light.is_on"
 }
@@ -123,7 +123,7 @@ data class LightAction(
     val action: String,
     @get:JsonInclude(JsonInclude.Include.ALWAYS)
     val metadata: Map<String, Any?> = emptyMap(),
-    val target: Map<String, Any?>,
+    val target: Target,
     @get:JsonInclude(JsonInclude.Include.ALWAYS)
     val data: Map<String, Any?> = emptyMap(),
     override val continueOnError: Boolean? = null,
@@ -135,8 +135,120 @@ data class ServiceAction(
     val action: String,
     @get:JsonInclude(JsonInclude.Include.ALWAYS)
     val metadata: Map<String, Any?> = emptyMap(),
-    val target: Map<String, Any?> = emptyMap(),
+    val target: Target? = null,
     @get:JsonInclude(JsonInclude.Include.ALWAYS)
     val data: Map<String, Any?> = emptyMap(),
     override val continueOnError: Boolean? = null,
 ) : BaseAction(continueOnError)
+
+interface Target
+
+data class EntityTarget(
+    val entityId: String,
+) : Target
+
+data class AreaTarget(
+    val areaId: String,
+) : Target
+
+data class DeviceTarget(
+    val deviceId: String,
+) : Target
+
+data class GenericTarget(
+    @get:JsonIgnore
+    val values: Map<String, Any?>,
+) : Target {
+    @JsonAnyGetter
+    fun properties(): Map<String, Any?> = values
+}
+
+data class Duration(
+    val hours: Int = 0,
+    val minutes: Int = 0,
+    val seconds: Int = 0,
+)
+
+data class AboveThreshold(
+    val value: Any,
+) {
+    val type: String = "above"
+}
+
+data class NumberThresholdValue(
+    val activeChoice: String = "number",
+    val number: Int,
+    val unitOfMeasurement: String? = null,
+)
+
+data class EntityThresholdValue(
+    val activeChoice: String = "entity",
+    val entity: String,
+)
+
+@JsonPropertyOrder("behavior", "threshold", "for")
+data class TemperatureThresholdOptions(
+    val behavior: String = "each",
+    val threshold: AboveThreshold,
+    @get:com.fasterxml.jackson.annotation.JsonProperty("for")
+    @get:JsonInclude(JsonInclude.Include.NON_NULL)
+    val duration: Duration? = null,
+)
+
+@JsonPropertyOrder("trigger", "target", "options")
+data class TemperatureCrossedThresholdTrigger(
+    val target: Target,
+    val options: TemperatureThresholdOptions,
+) : Trigger {
+    val trigger: String = "temperature.crossed_threshold"
+}
+
+@JsonPropertyOrder("condition", "type", "device_id", "entity_id", "domain", "for")
+data class DeviceCondition(
+    val type: String,
+    val deviceId: String,
+    val entityId: String,
+    val domain: String,
+    @get:com.fasterxml.jackson.annotation.JsonProperty("for")
+    @get:JsonInclude(JsonInclude.Include.NON_NULL)
+    val duration: Duration? = null,
+) : Condition {
+    val condition: String = "device"
+}
+
+@JsonPropertyOrder("condition", "device_id", "domain", "entity_id", "type", "hvac_mode")
+data class ClimateDeviceHvacModeCondition(
+    val deviceId: String,
+    val domain: String = "climate",
+    val entityId: String,
+    val type: String = "is_hvac_mode",
+    val hvacMode: String,
+) : Condition {
+    val condition: String = "device"
+}
+
+@JsonPropertyOrder("condition", "target", "options")
+data class ClimateHvacModeCondition(
+    val target: Target,
+    val options: Map<String, Any?>,
+) : Condition {
+    val condition: String = "climate.is_hvac_mode"
+}
+
+@JsonPropertyOrder("action", "entity_id", "data", "continue_on_error")
+data class InputNumberSetValueAction(
+    val entityId: String,
+    val data: Map<String, Any?>,
+    override val continueOnError: Boolean? = null,
+) : BaseAction(continueOnError) {
+    val action: String = "input_number.set_value"
+}
+
+@JsonPropertyOrder("type", "device_id", "entity_id", "domain")
+data class SwitchDeviceAction(
+    val type: String,
+    val deviceId: String,
+    val entityId: String,
+) : Action {
+    val domain: String = "switch"
+}
