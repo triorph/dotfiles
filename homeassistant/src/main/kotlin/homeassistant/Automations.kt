@@ -75,14 +75,8 @@ fun turnStairLightsOff() =
         alias = "Stair lights off",
     ) {
         triggers(
-            yamlObject(
-                "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                "domain" to "zha",
-                "type" to "remote_button_short_press",
-                "subtype" to "button",
-                "trigger" to "device",
-            ),
-            zhaButtonTrigger("toggle"),
+            ikeaShortcutButtonShortPress(),
+            downstairsButtonToggle(),
         )
         conditions(
             yamlObject(
@@ -100,19 +94,10 @@ fun turnStairLightsOff() =
             ),
         )
         actions(
-            yamlObject(
-                "action" to "light.turn_off",
-                "metadata" to yamlObject(),
-                "target" to
-                    yamlObject(
-                        "entity_id" to
-                            yamlList(
-                                "light.stair_light_1",
-                                "light.stair_light_2",
-                                "light.dining_room_lamp",
-                            ),
-                    ),
-                "data" to yamlObject(),
+            turnOffLights(
+                "light.stair_light_1",
+                "light.stair_light_2",
+                "light.dining_room_lamp",
             ),
         )
         mode("single")
@@ -124,21 +109,10 @@ fun decreaseLampBrightness() =
         alias = "Decrease lamp brightness",
     ) {
         triggers(
-            yamlObject(
-                "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                "domain" to "zha",
-                "type" to "device_rotated",
-                "subtype" to "left",
-                "trigger" to "device",
-            ),
+            ikeaShortcutButtonRotatedLeft(),
         )
         actions(
-            yamlObject(
-                "action" to "light.turn_on",
-                "metadata" to yamlObject(),
-                "data" to yamlObject("brightness_step_pct" to -20),
-                "target" to yamlObject("entity_id" to "light.dining_room_lamp"),
-            ),
+            adjustLightBrightness("light.dining_room_lamp", brightnessStepPct = -20),
         )
         mode("single")
     }
@@ -149,35 +123,12 @@ fun increaseLampBrightness() =
         alias = "Increase lamp brightness",
     ) {
         triggers(
-            yamlObject(
-                "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                "domain" to "zha",
-                "type" to "device_rotated",
-                "subtype" to "right",
-                "trigger" to "device",
-            ),
+            ikeaShortcutButtonRotatedRight(),
         )
         actions(
-            yamlObject(
-                "action" to "light.turn_on",
-                "metadata" to yamlObject(),
-                "target" to yamlObject("entity_id" to "light.stair_light_1"),
-                "data" to yamlObject("brightness_step_pct" to 50),
-                "continue_on_error" to true,
-            ),
-            yamlObject(
-                "action" to "light.turn_on",
-                "metadata" to yamlObject(),
-                "target" to yamlObject("entity_id" to "light.stair_light_2"),
-                "data" to yamlObject("brightness_step_pct" to 50),
-                "continue_on_error" to true,
-            ),
-            yamlObject(
-                "action" to "light.turn_on",
-                "metadata" to yamlObject(),
-                "target" to yamlObject("entity_id" to "light.dining_room_lamp"),
-                "data" to yamlObject("brightness_step_pct" to 20),
-            ),
+            adjustLightBrightness("light.stair_light_1", brightnessStepPct = 50, continueOnError = true),
+            adjustLightBrightness("light.stair_light_2", brightnessStepPct = 50, continueOnError = true),
+            adjustLightBrightness("light.dining_room_lamp", brightnessStepPct = 20),
         )
         mode("single")
     }
@@ -188,21 +139,7 @@ fun toggleBedroomMikeLamplight() =
         alias = "Toggle mike lamplight",
     ) {
         triggers(
-            yamlObject(
-                "trigger" to "event",
-                "event_type" to "zha_event",
-                "event_data" to
-                    yamlObject(
-                        "device_ieee" to "a4:c1:38:ab:c9:62:1d:b1",
-                        "device_id" to "2fd11b2eac90c1daa1d41a596dd4a57a",
-                        "unique_id" to "a4:c1:38:ab:c9:62:1d:b1:1:0x0006",
-                        "endpoint_id" to 1,
-                        "cluster_id" to 6,
-                        "command" to "toggle",
-                        "args" to yamlList(),
-                        "params" to yamlObject(),
-                    ),
-            ),
+            bedroomMikeLamplightButtonToggle(),
         )
         actions(
             yamlObject(
@@ -221,21 +158,10 @@ fun lightsFollowPowerOff() =
         alias = "Lights follow power off",
     ) {
         triggers(
-            yamlObject(
-                "device_id" to "2c0f04abd6148843b1756b944ea925d7",
-                "domain" to "zha",
-                "type" to "device_offline",
-                "subtype" to "device_offline",
-                "trigger" to "device",
-            ),
+            downstairsPowerSensorOffline(),
         )
         actions(
-            yamlObject(
-                "action" to "light.turn_off",
-                "metadata" to yamlObject(),
-                "target" to yamlObject("entity_id" to yamlList("light.smartlight_4")),
-                "data" to yamlObject(),
-            ),
+            turnOffLights("light.smartlight_4"),
         )
         mode("single")
     }
@@ -246,14 +172,8 @@ fun stairLightsOn() =
         alias = "Stairs lights on",
     ) {
         triggers(
-            yamlObject(
-                "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                "domain" to "zha",
-                "type" to "remote_button_short_press",
-                "subtype" to "button",
-                "trigger" to "device",
-            ),
-            zhaButtonTrigger("toggle"),
+            ikeaShortcutButtonShortPress(),
+            downstairsButtonToggle(),
         )
         conditions(
             yamlObject(
@@ -266,19 +186,10 @@ fun stairLightsOn() =
             ),
         )
         actions(
-            yamlObject(
-                "action" to "light.turn_on",
-                "metadata" to yamlObject(),
-                "target" to
-                    yamlObject(
-                        "entity_id" to
-                            yamlList(
-                                "light.stair_light_1",
-                                "light.stair_light_2",
-                                "light.dining_room_lamp",
-                            ),
-                    ),
-                "data" to yamlObject(),
+            turnOnLights(
+                "light.stair_light_1",
+                "light.stair_light_2",
+                "light.dining_room_lamp",
             ),
         )
         mode("single")
@@ -290,22 +201,11 @@ fun toggleDownstairsLamp() =
         alias = "Toggle downstairs lamp",
     ) {
         triggers(
-            yamlObject(
-                "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                "domain" to "zha",
-                "type" to "remote_button_double_press",
-                "subtype" to "button_1",
-                "trigger" to "device",
-            ),
-            zhaButtonTrigger("on"),
+            ikeaShortcutButtonDoublePress(),
+            downstairsButtonOn(),
         )
         actions(
-            yamlObject(
-                "action" to "light.toggle",
-                "metadata" to yamlObject(),
-                "target" to yamlObject("entity_id" to "light.dining_room_lamp"),
-                "data" to yamlObject(),
-            ),
+            toggleLight("light.dining_room_lamp"),
         )
         mode("single")
     }
@@ -318,7 +218,7 @@ fun setLightNewColour(lightName: String) =
         triggers(stateTrigger("input_number.downstairs_light_colour_index"))
         variables(colourVariables(includeDefaultColour = true))
         conditions(lightIsOn("light.$lightName"))
-        actions(turnOnCurrentColour("light.$lightName"))
+        actions(turnOnLightWithRgbColour("light.$lightName", NEXT_COLOUR_RGB_TEMPLATE))
         mode("single")
     }
 
@@ -328,14 +228,8 @@ fun advancedCycleColours() =
         alias = "Cycle stair light colours",
     ) {
         triggers(
-            yamlObject(
-                "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
-                "domain" to "zha",
-                "type" to "remote_button_long_press",
-                "subtype" to "button_1",
-                "trigger" to "device",
-            ),
-            zhaButtonTrigger("off"),
+            ikeaShortcutButtonLongPress(),
+            downstairsButtonOff(),
         )
         variables(colourVariables())
         actions(advanceDownstairsColourIndex())
@@ -349,7 +243,7 @@ fun setLightColourWhenOn(lightName: String) =
     ) {
         triggers(lightTurnedOnTrigger("light.$lightName"))
         variables(colourVariables(includeDefaultColour = true))
-        actions(turnOnCurrentColour("light.$lightName"))
+        actions(turnOnLightWithRgbColour("light.$lightName", NEXT_COLOUR_RGB_TEMPLATE))
     }
 
 fun notifyHeatpumpCanBeTurnedOff() =
@@ -482,17 +376,6 @@ private fun colourVariables(includeDefaultColour: Boolean = false): YamlObject =
         yamlObject("colour_cycle" to colourCycle)
     }
 
-private fun turnOnCurrentColour(entityId: String? = null): YamlObject =
-    yamlObject(
-        "action" to "light.turn_on",
-        "metadata" to yamlObject(),
-        "data" to yamlObject("rgb_color" to NEXT_COLOUR_RGB_TEMPLATE),
-    ).apply {
-        if (entityId != null) {
-            this["target"] = yamlObject("entity_id" to entityId)
-        }
-    }
-
 private fun advanceDownstairsColourIndex(): YamlObject =
     yamlObject(
         "action" to "input_number.set_value",
@@ -500,37 +383,8 @@ private fun advanceDownstairsColourIndex(): YamlObject =
         "data" to yamlObject("value" to NEXT_COLOUR_INDEX_TEMPLATE),
     )
 
-private fun zhaButtonTrigger(command: String): YamlObject =
-    yamlObject(
-        "trigger" to "event",
-        "event_type" to "zha_event",
-        "event_data" to
-            yamlObject(
-                "device_ieee" to "a4:c1:38:7e:82:21:7d:37",
-                "device_id" to "628977d0676426888a7f7c217a0710f9",
-                "unique_id" to "a4:c1:38:7e:82:21:7d:37:1:0x0006",
-                "endpoint_id" to 1,
-                "cluster_id" to 6,
-                "command" to command,
-                "args" to yamlList(),
-                "params" to yamlObject(),
-            ),
-    )
-
 private fun stateTrigger(entityId: String): YamlObject =
     yamlObject(
         "trigger" to "state",
         "entity_id" to entityId,
-    )
-
-private fun lightTurnedOnTrigger(entityId: String): YamlObject =
-    yamlObject(
-        "trigger" to "light.turned_on",
-        "target" to yamlObject("entity_id" to entityId),
-    )
-
-private fun lightIsOn(entityId: String): YamlObject =
-    yamlObject(
-        "condition" to "light.is_on",
-        "target" to yamlObject("entity_id" to entityId),
     )
