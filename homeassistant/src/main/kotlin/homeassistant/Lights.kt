@@ -1,31 +1,31 @@
 package homeassistant
 
-fun turnOffLights(vararg entityIds: String): YamlObject =
+fun turnOffLights(vararg entityIds: String): Action =
     lightAction(
         action = "light.turn_off",
-        target = entityTarget(*entityIds),
+        target = lightEntityTarget(*entityIds),
     )
 
-fun turnOnLights(vararg entityIds: String): YamlObject =
+fun turnOnLights(vararg entityIds: String): Action =
     lightAction(
         action = "light.turn_on",
-        target = entityTarget(*entityIds),
+        target = lightEntityTarget(*entityIds),
     )
 
-fun toggleLight(entityId: String): YamlObject =
+fun toggleLight(entityId: String): Action =
     lightAction(
         action = "light.toggle",
-        target = entityTarget(entityId),
+        target = lightEntityTarget(entityId),
     )
 
 fun adjustLightBrightness(
     entityId: String,
     brightnessStepPct: Int,
     continueOnError: Boolean = false,
-): YamlObject =
+): Action =
     lightAction(
         action = "light.turn_on",
-        target = entityTarget(entityId),
+        target = lightEntityTarget(entityId),
         data = yamlObject("brightness_step_pct" to brightnessStepPct),
         continueOnError = continueOnError,
     )
@@ -33,30 +33,22 @@ fun adjustLightBrightness(
 fun turnOnLightWithRgbColour(
     entityId: String,
     rgbColour: String,
-): YamlObject =
+): Action =
     lightAction(
         action = "light.turn_on",
-        target = entityTarget(entityId),
+        target = lightEntityTarget(entityId),
         data = yamlObject("rgb_color" to rgbColour),
     )
 
-fun lightTurnedOnTrigger(entityId: String): YamlObject =
-    yamlObject(
-        "trigger" to "light.turned_on",
-        "target" to entityTarget(entityId),
-    )
+fun lightTurnedOnTrigger(entityId: String): Trigger = LightTurnedOnTrigger(target = lightEntityTarget(entityId))
 
-fun lightIsOn(entityId: String): YamlObject =
-    yamlObject(
-        "condition" to "light.is_on",
-        "target" to entityTarget(entityId),
-    )
+fun lightIsOn(entityId: String): Condition = LightIsOnCondition(target = lightEntityTarget(entityId))
 
 fun lightDeviceIsOn(
     deviceId: String,
     entityId: String,
     duration: YamlObject? = null,
-): YamlObject =
+): Condition =
     lightDeviceStateCondition(
         type = "is_on",
         deviceId = deviceId,
@@ -68,7 +60,7 @@ fun lightDeviceIsOff(
     deviceId: String,
     entityId: String,
     duration: YamlObject? = null,
-): YamlObject =
+): Condition =
     lightDeviceStateCondition(
         type = "is_off",
         deviceId = deviceId,
@@ -81,37 +73,35 @@ private fun lightDeviceStateCondition(
     deviceId: String,
     entityId: String,
     duration: YamlObject? = null,
-): YamlObject =
-    yamlObject(
-        "condition" to "device",
-        "type" to type,
-        "device_id" to deviceId,
-        "entity_id" to entityId,
-        "domain" to "light",
-    ).apply {
-        if (duration != null) {
-            this["for"] = duration
-        }
-    }
+): Condition =
+    GenericCondition(
+        yamlObject(
+            "condition" to "device",
+            "type" to type,
+            "device_id" to deviceId,
+            "entity_id" to entityId,
+            "domain" to "light",
+        ).apply {
+            if (duration != null) {
+                this["for"] = duration
+            }
+        },
+    )
 
 private fun lightAction(
     action: String,
     target: YamlObject,
     data: YamlObject = yamlObject(),
     continueOnError: Boolean = false,
-): YamlObject =
-    yamlObject(
-        "action" to action,
-        "metadata" to yamlObject(),
-        "target" to target,
-        "data" to data,
-    ).apply {
-        if (continueOnError) {
-            this["continue_on_error"] = true
-        }
-    }
+): Action =
+    LightAction(
+        action = action,
+        target = target,
+        data = data,
+        continueOnError = continueOnError.takeIf { it },
+    )
 
-private fun entityTarget(vararg entityIds: String): YamlObject =
+private fun lightEntityTarget(vararg entityIds: String): YamlObject =
     yamlObject(
         "entity_id" to
             if (entityIds.size == 1) {

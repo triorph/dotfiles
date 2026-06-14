@@ -75,6 +75,48 @@ data class EventTrigger(
     val trigger: String = "event"
 }
 
+@JsonPropertyOrder("trigger", "at")
+data class TimeTrigger(
+    val at: String,
+) : Trigger {
+    val trigger: String = "time"
+}
+
+@JsonPropertyOrder("trigger", "entity_id")
+data class StateTrigger(
+    val entityId: String,
+) : Trigger {
+    val trigger: String = "state"
+}
+
+@JsonPropertyOrder("trigger", "target")
+data class LightTurnedOnTrigger(
+    val target: Map<String, Any?>,
+) : Trigger {
+    val trigger: String = "light.turned_on"
+}
+
+@JsonPropertyOrder("condition", "conditions")
+data class LogicalCondition(
+    val condition: String,
+    val conditions: List<Condition>,
+) : Condition
+
+@JsonPropertyOrder("condition", "after", "before")
+data class TimeCondition(
+    val after: String,
+    val before: String,
+) : Condition {
+    val condition: String = "time"
+}
+
+@JsonPropertyOrder("condition", "target")
+data class LightIsOnCondition(
+    val target: Map<String, Any?>,
+) : Condition {
+    val condition: String = "light.is_on"
+}
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder("action", "metadata", "target", "data", "continue_on_error")
 data class LightAction(
@@ -82,6 +124,18 @@ data class LightAction(
     @get:JsonInclude(JsonInclude.Include.ALWAYS)
     val metadata: Map<String, Any?> = emptyMap(),
     val target: Map<String, Any?>,
+    @get:JsonInclude(JsonInclude.Include.ALWAYS)
+    val data: Map<String, Any?> = emptyMap(),
+    override val continueOnError: Boolean? = null,
+) : BaseAction(continueOnError)
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonPropertyOrder("action", "metadata", "target", "data", "continue_on_error")
+data class ServiceAction(
+    val action: String,
+    @get:JsonInclude(JsonInclude.Include.ALWAYS)
+    val metadata: Map<String, Any?> = emptyMap(),
+    val target: Map<String, Any?> = emptyMap(),
     @get:JsonInclude(JsonInclude.Include.ALWAYS)
     val data: Map<String, Any?> = emptyMap(),
     override val continueOnError: Boolean? = null,

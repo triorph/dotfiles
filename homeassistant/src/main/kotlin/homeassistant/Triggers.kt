@@ -1,35 +1,29 @@
 package homeassistant
 
-fun timeTrigger(at: String): YamlObject =
-    yamlObject(
-        "trigger" to "time",
-        "at" to at,
-    )
+fun timeTrigger(at: String): Trigger = TimeTrigger(at = at)
 
-fun stateTrigger(entityId: String): YamlObject =
-    yamlObject(
-        "trigger" to "state",
-        "entity_id" to entityId,
-    )
+fun stateTrigger(entityId: String): Trigger = StateTrigger(entityId = entityId)
 
 fun temperatureCrossedThresholdTrigger(
     target: YamlObject,
     threshold: YamlObject,
     duration: YamlObject? = null,
     behavior: String = "each",
-): YamlObject =
-    yamlObject(
-        "trigger" to "temperature.crossed_threshold",
-        "target" to target,
-        "options" to
-            yamlObject(
-                "behavior" to behavior,
-                "threshold" to threshold,
-            ).apply {
-                if (duration != null) {
-                    this["for"] = duration
-                }
-            },
+): Trigger =
+    GenericTrigger(
+        yamlObject(
+            "trigger" to "temperature.crossed_threshold",
+            "target" to target,
+            "options" to
+                yamlObject(
+                    "behavior" to behavior,
+                    "threshold" to threshold,
+                ).apply {
+                    if (duration != null) {
+                        this["for"] = duration
+                    }
+                },
+        ),
     )
 
 fun duration(

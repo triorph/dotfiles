@@ -1,23 +1,18 @@
 package homeassistant
 
-fun orCondition(vararg conditions: YamlObject): YamlObject =
-    yamlObject(
-        "condition" to "or",
-        "conditions" to yamlList(*conditions),
+fun orCondition(vararg conditions: Condition): Condition =
+    LogicalCondition(
+        condition = "or",
+        conditions = conditions.toList(),
     )
 
-fun notCondition(vararg conditions: YamlObject): YamlObject =
-    yamlObject(
-        "condition" to "not",
-        "conditions" to yamlList(*conditions),
+fun notCondition(vararg conditions: Condition): Condition =
+    LogicalCondition(
+        condition = "not",
+        conditions = conditions.toList(),
     )
 
 fun timeCondition(
     after: String,
     before: String,
-): YamlObject =
-    yamlObject(
-        "condition" to "time",
-        "after" to after,
-        "before" to before,
-    )
+): Condition = TimeCondition(after = after, before = before)

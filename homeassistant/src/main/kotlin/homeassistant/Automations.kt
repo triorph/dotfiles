@@ -234,8 +234,8 @@ fun turnOffOfficeHeatpumpAutomatically() =
         mode("single")
     }
 
-fun automations(): List<YamlObject> =
-    yamlObjects(
+fun automations(): List<Automation> =
+    listOf(
         turnOffOfficeHeatpumpOnTimer(),
         turnStairLightsOff(),
         decreaseLampBrightness(),
@@ -261,7 +261,7 @@ private fun rgb(
     blue: Int,
 ): List<Int> = listOf(red, green, blue)
 
-private fun colourVariables(includeDefaultColour: Boolean = false): YamlObject =
+private fun colourVariables(includeDefaultColour: Boolean = false): Map<String, Any?> =
     if (includeDefaultColour) {
         yamlObject(
             "colour" to defaultColour,
@@ -271,7 +271,7 @@ private fun colourVariables(includeDefaultColour: Boolean = false): YamlObject =
         yamlObject("colour_cycle" to colourCycle)
     }
 
-private fun advanceDownstairsColourIndex(): YamlObject =
+private fun advanceDownstairsColourIndex(): Action =
     setInputNumberValue(
         entityId = "input_number.downstairs_light_colour_index",
         value = NEXT_COLOUR_INDEX_TEMPLATE,

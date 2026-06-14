@@ -6,47 +6,59 @@ fun yamlObject(vararg entries: Pair<String, Any?>): YamlObject = mutableMapOf(*e
 
 fun yamlList(vararg values: Any?): List<Any?> = values.toList()
 
-fun yamlObjects(vararg values: YamlObject): List<YamlObject> = values.toList()
-
 fun automation(
     id: String,
     alias: String? = null,
-    block: YamlObject.() -> Unit,
-): YamlObject =
-    yamlObject("id" to id, "description" to "").apply {
-        if (alias != null) {
-            this["alias"] = alias
-        }
-        block()
+    block: AutomationBuilder.() -> Unit,
+): Automation =
+    AutomationBuilder(id = id, alias = alias)
+        .apply(block)
+        .build()
+
+class AutomationBuilder(
+    private val id: String,
+    private val alias: String?,
+) {
+    private var description: String = ""
+    private val triggers = mutableListOf<Trigger>()
+    private val conditions = mutableListOf<Condition>()
+    private var variables: Map<String, Any?> = emptyMap()
+    private val actions = mutableListOf<Action>()
+    private var mode: String? = null
+
+    fun description(value: String) {
+        description = value
     }
 
-fun YamlObject.description(value: String) {
-    this["description"] = value
-}
-
-private fun YamlObject.assignListTo(
-    key: String,
-    vararg values: Any,
-) = values.toList().takeIf { it.isNotEmpty() }?.let { this[key] = it }
-
-fun YamlObject.triggers(vararg values: Any) {
-    this.assignListTo("triggers", values)
-}
-
-fun YamlObject.conditions(vararg values: Any) {
-    this.assignListTo("conditions", values)
-}
-
-fun YamlObject.actions(vararg values: Any) {
-    this.assignListTo("actions", values)
-}
-
-fun YamlObject.variables(vararg values: Any) {
-    values.toList().takeIf { it.isNotEmpty() }?.let {
-        this["variables"] = if (it.size == 1 && it.single() is Map<*, *>) it.single() else it
+    fun triggers(vararg values: Trigger) {
+        triggers += values
     }
-}
 
-fun YamlObject.mode(value: String) {
-    this["mode"] = value
+    fun conditions(vararg values: Condition) {
+        conditions += values
+    }
+
+    fun actions(vararg values: Action) {
+        actions += values
+    }
+
+    fun variables(value: Map<String, Any?>) {
+        variables = value
+    }
+
+    fun mode(value: String) {
+        mode = value
+    }
+
+    fun build(): Automation =
+        Automation(
+            id = id,
+            alias = alias,
+            description = description,
+            triggers = triggers,
+            conditions = conditions,
+            variables = variables,
+            actions = actions,
+            mode = mode,
+        )
 }
