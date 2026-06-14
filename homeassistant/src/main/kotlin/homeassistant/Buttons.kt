@@ -13,11 +13,21 @@ private data class ZhaEventButton(
     val clusterId: Int = 6,
 )
 
-private val ikeaShortcutButton = DeviceButton(deviceId = "4a713f5c3c61ea99233c62a0c9928ece")
+private val ikeaShortcutButton =
+    ZhaEventButton(
+        deviceIeee = "a4:c1:38:e3:14:42:b8:7a",
+        deviceId = "4a713f5c3c61ea99233c62a0c9928ece",
+        uniqueId = "a4:c1:38:e3:14:42:b8:7a:1:0x0006",
+    )
 
 private val downstairsPowerSensor = DeviceButton(deviceId = "2c0f04abd6148843b1756b944ea925d7")
 
-private val buttonWithDial2 = DeviceButton(deviceId = "16447bd2ede6b4941627e3bc14f58c13")
+private val buttonWithDial2 =
+    ZhaEventButton(
+        deviceIeee = "a4:c1:38:a6:32:e2:44:b5",
+        deviceId = "16447bd2ede6b4941627e3bc14f58c13",
+        uniqueId = "a4:c1:38:a6:32:e2:44:b5:1:0x0006",
+    )
 
 private val bedroomMikeLamplightButton =
     ZhaEventButton(
@@ -33,25 +43,22 @@ private val downstairsButton =
         uniqueId = "a4:c1:38:7e:82:21:7d:37:1:0x0006",
     )
 
-fun ikeaShortcutButtonShortPress(): Trigger =
-    deviceButtonTrigger(ikeaShortcutButton, type = "remote_button_short_press", subtype = "button")
+fun ikeaShortcutButtonShortPress(): Trigger = zhaEventButtonTrigger(ikeaShortcutButton, command = "remote_button_short_press")
 
-fun ikeaShortcutButtonDoublePress(): Trigger =
-    deviceButtonTrigger(ikeaShortcutButton, type = "remote_button_double_press", subtype = "button_1")
+fun ikeaShortcutButtonDoublePress(): Trigger = zhaEventButtonTrigger(ikeaShortcutButton, command = "remote_button_double_press")
 
-fun ikeaShortcutButtonLongPress(): Trigger =
-    deviceButtonTrigger(ikeaShortcutButton, type = "remote_button_long_press", subtype = "button_1")
+fun ikeaShortcutButtonLongPress(): Trigger = zhaEventButtonTrigger(ikeaShortcutButton, command = "remote_button_long_press")
 
-fun ikeaShortcutButtonRotatedLeft(): Trigger = deviceButtonTrigger(ikeaShortcutButton, type = "device_rotated", subtype = "left")
+fun ikeaShortcutButtonRotatedLeft(): Trigger = zhaEventButtonTrigger(ikeaShortcutButton, command = "left")
 
-fun ikeaShortcutButtonRotatedRight(): Trigger = deviceButtonTrigger(ikeaShortcutButton, type = "device_rotated", subtype = "right")
+fun ikeaShortcutButtonRotatedRight(): Trigger = zhaEventButtonTrigger(ikeaShortcutButton, command = "right")
 
 fun downstairsPowerSensorOffline(): Trigger =
     deviceButtonTrigger(downstairsPowerSensor, type = "device_offline", subtype = "device_offline")
 
-fun buttonWithDial2SingleClick(): Trigger = deviceButtonTrigger(buttonWithDial2, type = "remote_button_short_press", subtype = "button")
+fun buttonWithDial2SingleClick(): Trigger = zhaEventButtonTrigger(buttonWithDial2, command = "remote_button_short_press")
 
-fun buttonWithDial2DoubleClick(): Trigger = deviceButtonTrigger(buttonWithDial2, type = "remote_button_double_press", subtype = "button_1")
+fun buttonWithDial2DoubleClick(): Trigger = zhaEventButtonTrigger(buttonWithDial2, command = "remote_button_double_press")
 
 fun bedroomMikeLamplightButtonToggle(): Trigger = zhaEventButtonTrigger(bedroomMikeLamplightButton, command = "toggle")
 

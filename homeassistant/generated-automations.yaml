@@ -26,11 +26,17 @@
   alias: "Stair lights off"
   description: ""
   triggers:
-  - device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-    domain: "zha"
-    type: "remote_button_short_press"
-    subtype: "button"
-    trigger: "device"
+  - trigger: "event"
+    event_type: "zha_event"
+    event_data:
+      device_ieee: "a4:c1:38:e3:14:42:b8:7a"
+      device_id: "4a713f5c3c61ea99233c62a0c9928ece"
+      unique_id: "a4:c1:38:e3:14:42:b8:7a:1:0x0006"
+      endpoint_id: 1
+      cluster_id: 6
+      command: "remote_button_short_press"
+      args: []
+      params: {}
   - trigger: "event"
     event_type: "zha_event"
     event_data:
@@ -66,11 +72,17 @@
   alias: "Decrease lamp brightness"
   description: ""
   triggers:
-  - device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-    domain: "zha"
-    type: "device_rotated"
-    subtype: "left"
-    trigger: "device"
+  - trigger: "event"
+    event_type: "zha_event"
+    event_data:
+      device_ieee: "a4:c1:38:e3:14:42:b8:7a"
+      device_id: "4a713f5c3c61ea99233c62a0c9928ece"
+      unique_id: "a4:c1:38:e3:14:42:b8:7a:1:0x0006"
+      endpoint_id: 1
+      cluster_id: 6
+      command: "left"
+      args: []
+      params: {}
   actions:
   - action: "light.turn_on"
     metadata: {}
@@ -83,11 +95,17 @@
   alias: "Increase lamp brightness"
   description: ""
   triggers:
-  - device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-    domain: "zha"
-    type: "device_rotated"
-    subtype: "right"
-    trigger: "device"
+  - trigger: "event"
+    event_type: "zha_event"
+    event_data:
+      device_ieee: "a4:c1:38:e3:14:42:b8:7a"
+      device_id: "4a713f5c3c61ea99233c62a0c9928ece"
+      unique_id: "a4:c1:38:e3:14:42:b8:7a:1:0x0006"
+      endpoint_id: 1
+      cluster_id: 6
+      command: "right"
+      args: []
+      params: {}
   actions:
   - action: "light.turn_on"
     metadata: {}
@@ -151,11 +169,17 @@
   alias: "Stairs lights on"
   description: ""
   triggers:
-  - device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-    domain: "zha"
-    type: "remote_button_short_press"
-    subtype: "button"
-    trigger: "device"
+  - trigger: "event"
+    event_type: "zha_event"
+    event_data:
+      device_ieee: "a4:c1:38:e3:14:42:b8:7a"
+      device_id: "4a713f5c3c61ea99233c62a0c9928ece"
+      unique_id: "a4:c1:38:e3:14:42:b8:7a:1:0x0006"
+      endpoint_id: 1
+      cluster_id: 6
+      command: "remote_button_short_press"
+      args: []
+      params: {}
   - trigger: "event"
     event_type: "zha_event"
     event_data:
@@ -191,11 +215,17 @@
   alias: "Toggle downstairs lamp"
   description: ""
   triggers:
-  - device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-    domain: "zha"
-    type: "remote_button_double_press"
-    subtype: "button_1"
-    trigger: "device"
+  - trigger: "event"
+    event_type: "zha_event"
+    event_data:
+      device_ieee: "a4:c1:38:e3:14:42:b8:7a"
+      device_id: "4a713f5c3c61ea99233c62a0c9928ece"
+      unique_id: "a4:c1:38:e3:14:42:b8:7a:1:0x0006"
+      endpoint_id: 1
+      cluster_id: 6
+      command: "remote_button_double_press"
+      args: []
+      params: {}
   - trigger: "event"
     event_type: "zha_event"
     event_data:
@@ -377,11 +407,17 @@
   alias: "Cycle stair light colours"
   description: ""
   triggers:
-  - device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-    domain: "zha"
-    type: "remote_button_long_press"
-    subtype: "button_1"
-    trigger: "device"
+  - trigger: "event"
+    event_type: "zha_event"
+    event_data:
+      device_ieee: "a4:c1:38:e3:14:42:b8:7a"
+      device_id: "4a713f5c3c61ea99233c62a0c9928ece"
+      unique_id: "a4:c1:38:e3:14:42:b8:7a:1:0x0006"
+      endpoint_id: 1
+      cluster_id: 6
+      command: "remote_button_long_press"
+      args: []
+      params: {}
   - trigger: "event"
     event_type: "zha_event"
     event_data:
@@ -644,11 +680,17 @@
   alias: "Turn on Mike's office generic thermostat"
   description: ""
   triggers:
-  - device_id: "16447bd2ede6b4941627e3bc14f58c13"
-    domain: "zha"
-    type: "remote_button_short_press"
-    subtype: "button"
-    trigger: "device"
+  - trigger: "event"
+    event_type: "zha_event"
+    event_data:
+      device_ieee: "a4:c1:38:a6:32:e2:44:b5"
+      device_id: "16447bd2ede6b4941627e3bc14f58c13"
+      unique_id: "a4:c1:38:a6:32:e2:44:b5:1:0x0006"
+      endpoint_id: 1
+      cluster_id: 6
+      command: "remote_button_short_press"
+      args: []
+      params: {}
   actions:
   - action: "climate.turn_on"
     metadata: {}
@@ -660,11 +702,17 @@
   alias: "Turn off Mike's office generic thermostat"
   description: ""
   triggers:
-  - device_id: "16447bd2ede6b4941627e3bc14f58c13"
-    domain: "zha"
-    type: "remote_button_double_press"
-    subtype: "button_1"
-    trigger: "device"
+  - trigger: "event"
+    event_type: "zha_event"
+    event_data:
+      device_ieee: "a4:c1:38:a6:32:e2:44:b5"
+      device_id: "16447bd2ede6b4941627e3bc14f58c13"
+      unique_id: "a4:c1:38:a6:32:e2:44:b5:1:0x0006"
+      endpoint_id: 1
+      cluster_id: 6
+      command: "remote_button_double_press"
+      args: []
+      params: {}
   actions:
   - action: "climate.turn_off"
     metadata: {}

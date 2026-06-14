@@ -78,19 +78,41 @@ class AutomationsGeneratorTest {
     }
 
     @Test
+    fun `first button with dial uses zha event triggers`() {
+        val automations = parseAutomations(generateAutomationsYaml())
+
+        assertEquals(
+            firstButtonWithDialZhaEventTrigger(command = "remote_button_short_press"),
+            (automations.singleById("1780963707995")["triggers"] as List<*>).first(),
+        )
+        assertEquals(
+            firstButtonWithDialZhaEventTrigger(command = "left"),
+            (automations.singleById("1780963899292")["triggers"] as List<*>).single(),
+        )
+        assertEquals(
+            firstButtonWithDialZhaEventTrigger(command = "right"),
+            (automations.singleById("1780964087146")["triggers"] as List<*>).single(),
+        )
+        assertEquals(
+            firstButtonWithDialZhaEventTrigger(command = "remote_button_short_press"),
+            (automations.singleById("1780975857816")["triggers"] as List<*>).first(),
+        )
+        assertEquals(
+            firstButtonWithDialZhaEventTrigger(command = "remote_button_double_press"),
+            (automations.singleById("toggle_downstairs_lamp")["triggers"] as List<*>).first(),
+        )
+        assertEquals(
+            firstButtonWithDialZhaEventTrigger(command = "remote_button_long_press"),
+            (automations.singleById("1780986988887")["triggers"] as List<*>).first(),
+        )
+    }
+
+    @Test
     fun `button with dial 2 controls mikes office generic thermostat`() {
         val automation = parseAutomations(generateAutomationsYaml()).singleById("turn_on_mikes_office_generic_thermostat")
 
         assertEquals(
-            listOf(
-                mapOf(
-                    "device_id" to "16447bd2ede6b4941627e3bc14f58c13",
-                    "domain" to "zha",
-                    "type" to "remote_button_short_press",
-                    "subtype" to "button",
-                    "trigger" to "device",
-                ),
-            ),
+            listOf(buttonWithDial2ZhaEventTrigger(command = "remote_button_short_press")),
             automation["triggers"],
         )
         assertEquals(
@@ -109,15 +131,7 @@ class AutomationsGeneratorTest {
         val offAutomation = parseAutomations(generateAutomationsYaml()).singleById("turn_off_mikes_office_generic_thermostat")
 
         assertEquals(
-            listOf(
-                mapOf(
-                    "device_id" to "16447bd2ede6b4941627e3bc14f58c13",
-                    "domain" to "zha",
-                    "type" to "remote_button_double_press",
-                    "subtype" to "button_1",
-                    "trigger" to "device",
-                ),
-            ),
+            listOf(buttonWithDial2ZhaEventTrigger(command = "remote_button_double_press")),
             offAutomation["triggers"],
         )
         assertEquals(
@@ -133,6 +147,40 @@ class AutomationsGeneratorTest {
         )
         assertEquals("single", offAutomation["mode"])
     }
+
+    private fun firstButtonWithDialZhaEventTrigger(command: String): Map<String, Any?> =
+        mapOf(
+            "trigger" to "event",
+            "event_type" to "zha_event",
+            "event_data" to
+                mapOf(
+                    "device_ieee" to "a4:c1:38:e3:14:42:b8:7a",
+                    "device_id" to "4a713f5c3c61ea99233c62a0c9928ece",
+                    "unique_id" to "a4:c1:38:e3:14:42:b8:7a:1:0x0006",
+                    "endpoint_id" to 1,
+                    "cluster_id" to 6,
+                    "command" to command,
+                    "args" to emptyList<Any>(),
+                    "params" to emptyMap<String, Any>(),
+                ),
+        )
+
+    private fun buttonWithDial2ZhaEventTrigger(command: String): Map<String, Any?> =
+        mapOf(
+            "trigger" to "event",
+            "event_type" to "zha_event",
+            "event_data" to
+                mapOf(
+                    "device_ieee" to "a4:c1:38:a6:32:e2:44:b5",
+                    "device_id" to "16447bd2ede6b4941627e3bc14f58c13",
+                    "unique_id" to "a4:c1:38:a6:32:e2:44:b5:1:0x0006",
+                    "endpoint_id" to 1,
+                    "cluster_id" to 6,
+                    "command" to command,
+                    "args" to emptyList<Any>(),
+                    "params" to emptyMap<String, Any>(),
+                ),
+        )
 
     private val expectedAutomationIds =
         listOf(
