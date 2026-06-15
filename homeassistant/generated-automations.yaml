@@ -720,3 +720,73 @@
       entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
     data: {}
   mode: "single"
+- id: "bring_in_washing"
+  alias: "Bring in the washing"
+  description: ""
+  triggers:
+  - trigger: "sun"
+    event: "sunset"
+    offset: 0
+  conditions:
+  - condition: "switch.is_on"
+    target:
+      entity_id: "input_boolean.washing_machine_ran_today"
+    options:
+      behavior: "any"
+      for:
+        hours: 0
+        minutes: 10
+        seconds: 0
+  actions:
+  - action: "input_boolean.turn_off"
+    target:
+      entity_id: "input_boolean.washing_machine_ran_today"
+  - action: "notify.send_message"
+    metadata: {}
+    target:
+      device_id: "449719a7d011795e08e37c0f114f4771"
+    data:
+      message: "Bring in the washing"
+- id: "hang_up_washing"
+  alias: "Hang up the washing"
+  description: ""
+  triggers:
+  - trigger: "numeric_state"
+    entity_id: "sensor.tz3210_cehuw1lw_ts011f_current"
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    below: 1
+  conditions:
+  - condition: "switch.is_on"
+    target:
+      entity_id: "input_boolean.washing_machine_ran_today"
+    options:
+      behavior: "any"
+      for:
+        hours: 0
+        minutes: 10
+        seconds: 0
+  actions:
+  - action: "notify.send_message"
+    metadata: {}
+    target:
+      device_id: "449719a7d011795e08e37c0f114f4771"
+    data:
+      message: "The washing machine has finished. Hang up the washing."
+- id: "washing_machine_ran"
+  alias: "Washing machine ran today"
+  description: ""
+  triggers:
+  - trigger: "numeric_state"
+    entity_id: "sensor.tz3210_cehuw1lw_ts011f_current"
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+    above: 1
+  actions:
+  - action: "input_boolean.turn_on"
+    target:
+      entity_id: "input_boolean.washing_machine_ran_today"

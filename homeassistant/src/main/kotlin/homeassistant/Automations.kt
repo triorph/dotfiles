@@ -209,8 +209,7 @@ fun notifyHeatpumpCanBeTurnedOff() =
         )
         conditions(timeCondition(after = "09:00:00", before = "17:00:00"))
         actions(
-            sendNotification(
-                deviceId = "449719a7d011795e08e37c0f114f4771",
+            notifyMikesPhone(
                 message = "Downstairs heat reached threshold ",
             ),
         )
@@ -254,6 +253,39 @@ fun turnOffMikesOfficeGenericThermostat() =
         mode("single")
     }
 
+fun washingMachineRan() = automation("washing_machine_ran", "Washing machine ran today") {
+    triggers(washingMachineCurrentAboveThresholdTrigger())
+    actions(
+        GenericAction(
+            mapOf(
+                "action" to "input_boolean.turn_on",
+                "target" to entityTarget("input_boolean.washing_machine_ran_today")
+            )
+        )
+    )
+}
+
+fun hangUpWashing() = automation("hang_up_washing", "Hang up the washing") {
+    triggers(washingMachineCurrentBelowThresholdTrigger())
+    conditions(washingMachineRanCondition())
+    actions(notifyMikesPhone("The washing machine has finished. Hang up the washing."))
+}
+
+fun bringInWashing() = automation("bring_in_washing", "Bring in the washing") {
+    triggers(sunsetTrigger())
+    conditions(washingMachineRanCondition())
+    actions(
+        GenericAction(
+            mapOf(
+                "action" to "input_boolean.turn_off",
+                "target" to entityTarget("input_boolean.washing_machine_ran_today")
+            )
+        ),
+        notifyMikesPhone("Bring in the washing")
+    )
+}
+
+
 fun automations(): List<Automation> =
     listOf(
         turnOffOfficeHeatpumpOnTimer(),
@@ -275,6 +307,9 @@ fun automations(): List<Automation> =
         turnOffOfficeHeatpumpAutomatically(),
         turnOnMikesOfficeGenericThermostat(),
         turnOffMikesOfficeGenericThermostat(),
+        bringInWashing(),
+        hangUpWashing(),
+        washingMachineRan()
     )
 
 private fun rgb(

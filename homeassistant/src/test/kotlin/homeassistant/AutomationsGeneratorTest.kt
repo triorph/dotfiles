@@ -203,6 +203,9 @@ class AutomationsGeneratorTest {
             "1781216970827",
             "turn_on_mikes_office_generic_thermostat",
             "turn_off_mikes_office_generic_thermostat",
+            "bring_in_washing",
+            "hang_up_washing",
+            "washing_machine_ran",
         )
 
     private val expectedAliasesById =
@@ -226,6 +229,9 @@ class AutomationsGeneratorTest {
             "1781216970827" to "Disable heatpump after reaching threshold",
             "turn_on_mikes_office_generic_thermostat" to "Turn on Mike's office generic thermostat",
             "turn_off_mikes_office_generic_thermostat" to "Turn off Mike's office generic thermostat",
+            "bring_in_washing" to "Bring in the washing",
+            "hang_up_washing" to "Hang up the washing",
+            "washing_machine_ran" to "Washing machine ran today",
         )
 
     private fun parseAutomations(yaml: String): List<Map<String, Any?>> =
