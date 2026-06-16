@@ -1,9 +1,10 @@
 package homeassistant
 
-fun toggleMikeLamp(): Action = toggleSwitchDevice(
-    deviceId = "9f60192a08622db8c597cea034d075b1",
-    entityId = "d3075c2bb97112a2bd9cdc4bd388ba7a",
-)
+fun toggleMikeLamp(): Action =
+    toggleSwitchDevice(
+        deviceId = "9f60192a08622db8c597cea034d075b1",
+        entityId = "d3075c2bb97112a2bd9cdc4bd388ba7a",
+    )
 
 fun turnOffLights(vararg entityIds: String): Action =
     lightAction(
@@ -35,9 +36,7 @@ fun adjustLightBrightness(
         continueOnError = continueOnError,
     )
 
-fun turnOnLightWithRgbColour(
-    entityId: String,
-): Action =
+fun turnOnLightWithRgbColour(entityId: String): Action =
     lightAction(
         action = "light.turn_on",
         target = EntityTarget(entityId),
@@ -141,7 +140,6 @@ private const val NEXT_COLOUR_RGB_TEMPLATE =
     "{% set idx = states('input_number.downstairs_light_colour_index') | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour = colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
 private const val NEXT_COLOUR_INDEX_TEMPLATE =
     "{% set idx = states('input_number.downstairs_light_colour_index') | int + 1 %} {% set idx = idx % colour_cycle | length %} {{ idx }}\n"
-
 
 fun advanceDownstairsColourIndex(): Action =
     setInputNumberValue(

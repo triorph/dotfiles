@@ -26,6 +26,7 @@ tasks.test {
 val generatedAutomationsFile = layout.projectDirectory.file("generated-automations.yaml")
 
 tasks.register<JavaExec>("generateAutomations") {
+    dependsOn("ktlintFormat")
     group = "homeassistant"
     description = "Generates Home Assistant automations YAML into generated-automations.yaml."
 

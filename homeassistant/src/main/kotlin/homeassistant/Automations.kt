@@ -1,6 +1,5 @@
 package homeassistant
 
-
 fun turnOffOfficeHeatpumpOnTimer() =
     automation(
         id = "timer_office_heatpump_off",
@@ -10,7 +9,6 @@ fun turnOffOfficeHeatpumpOnTimer() =
         conditions(officeHeatpumpIsOn())
         actions(turnOffOfficeHeatpumpEntity())
     }
-
 
 fun decreaseLampBrightness() =
     automation(
@@ -41,11 +39,10 @@ fun toggleBedroomMikeLamplight() =
     ) {
         triggers(
             bedroomButtonClick(),
-            upstairsButtonClick()
+            upstairsButtonClick(),
         )
         actions(toggleMikeLamp())
     }
-
 
 fun toggleDownstairsLamp() =
     automation(
@@ -115,11 +112,10 @@ fun notifyHeatpumpCanBeTurnedOff() =
         )
     }
 
-
 fun turnOnMikesOfficeGenericThermostat() =
     automation(
         id = "turn_on_mikes_office_generic_thermostat",
-        alias = "Mike's office thermostat - Turn on when clicking office dial"
+        alias = "Mike's office thermostat - Turn on when clicking office dial",
     ) {
         triggers(officeDialClick())
         actions(turnOnOfficeHeatpumpEntity())
@@ -185,5 +181,3 @@ fun automations(): List<Automation> =
         hangUpWashing(),
         washingMachineRan(),
     )
-
-

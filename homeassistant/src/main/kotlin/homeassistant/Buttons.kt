@@ -43,14 +43,11 @@ private val upstairsButton =
         uniqueId = "a4:c1:38:7e:82:21:7d:37:1:0x0006",
     )
 
-fun downstairsDialClick(): Trigger =
-    zhaEventButtonTrigger(downstairsDial, command = "remote_button_short_press")
+fun downstairsDialClick(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "remote_button_short_press")
 
-fun downstairsDialDoubleClick(): Trigger =
-    zhaEventButtonTrigger(downstairsDial, command = "remote_button_double_press")
+fun downstairsDialDoubleClick(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "remote_button_double_press")
 
-fun downstairsDialHold(): Trigger =
-    zhaEventButtonTrigger(downstairsDial, command = "remote_button_long_press")
+fun downstairsDialHold(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "remote_button_long_press")
 
 fun downstairsDialTurnLeft(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "left")
 
@@ -59,17 +56,18 @@ fun downstairsDialTurnRight(): Trigger = zhaEventButtonTrigger(downstairsDial, c
 fun downstairsPowerSensorOffline(): Trigger =
     deviceButtonTrigger(downstairsPowerSensor, type = "device_offline", subtype = "device_offline")
 
-fun officeDialClick(): Trigger =
-    zhaEventButtonTrigger(officeDial, command = "remote_button_short_press")
+fun officeDialClick(): Trigger = zhaEventButtonTrigger(officeDial, command = "remote_button_short_press")
 
-fun officeDialDoubleClick(): Trigger =
-    zhaEventButtonTrigger(officeDial, command = "remote_button_double_press")
+fun officeDialDoubleClick(): Trigger = zhaEventButtonTrigger(officeDial, command = "remote_button_double_press")
 
 fun bedroomButtonClick(): Trigger = zhaEventButtonTrigger(bedroomMikeLamplightButton, command = "toggle")
+
 fun bedroomButtonDoubleClick(): Trigger = zhaEventButtonTrigger(bedroomMikeLamplightButton, command = "on")
 
 fun upstairsButtonClick(): Trigger = zhaEventButtonTrigger(upstairsButton, command = "toggle")
+
 fun upstairsButtonDoubleClick(): Trigger = zhaEventButtonTrigger(upstairsButton, command = "on")
+
 fun upstairsButtonHold(): Trigger = zhaEventButtonTrigger(upstairsButton, command = "off")
 
 private fun deviceButtonTrigger(

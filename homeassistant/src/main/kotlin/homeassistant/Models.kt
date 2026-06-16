@@ -3,8 +3,8 @@ package homeassistant
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonPropertyOrder
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder("id", "alias", "description", "triggers", "conditions", "variables", "actions", "mode")
@@ -48,7 +48,6 @@ data class GenericCondition(
     @JsonAnyGetter
     fun properties(): Map<String, Any?> = values
 }
-
 
 data class GenericAction(
     @get:JsonIgnore
@@ -94,7 +93,7 @@ data class StateTrigger(
 @JsonPropertyOrder("condition", "target", "options")
 data class SwitchIsOnCondition(
     val target: EntityTarget,
-    val options: ConditionOptions = ConditionOptions()
+    val options: ConditionOptions = ConditionOptions(),
 ) : Condition {
     val condition = "switch.is_on"
 }
@@ -102,7 +101,7 @@ data class SwitchIsOnCondition(
 @JsonPropertyOrder("condition", "target", "options")
 data class ClimateIsOnCondition(
     val target: EntityTarget,
-    val options: ConditionOptions = ConditionOptions()
+    val options: ConditionOptions = ConditionOptions(),
 ) : Condition {
     val condition = "climate.is_on"
 }
@@ -110,7 +109,7 @@ data class ClimateIsOnCondition(
 data class ConditionOptions(
     val behavior: String = "any",
     @param:JsonProperty("for")
-    val duration: String = "00:00:00"
+    val duration: String = "00:00:00",
 )
 
 @JsonPropertyOrder("trigger", "target")

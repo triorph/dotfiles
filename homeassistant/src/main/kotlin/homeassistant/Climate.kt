@@ -4,8 +4,7 @@ private const val OFFICE_HEATPUMP_ENTITY_ID = "climate.mike_s_office_heatpump_mi
 private const val OFFICE_HEATPUMP_SWITCH_ENTITY_ID =
     "switch.mike_s_office_heatpump_mike_s_office_mike_s_office_heat_on_off"
 
-fun officeHeatpumpIsOn(): Condition =
-    ClimateIsOnCondition(EntityTarget(OFFICE_HEATPUMP_ENTITY_ID))
+fun officeHeatpumpIsOn(): Condition = ClimateIsOnCondition(EntityTarget(OFFICE_HEATPUMP_ENTITY_ID))
 
 fun turnOffOfficeHeatpumpEntity(): Action =
     ServiceAction(

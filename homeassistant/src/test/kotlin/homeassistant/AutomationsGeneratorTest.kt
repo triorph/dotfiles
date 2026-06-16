@@ -6,7 +6,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class AutomationsGeneratorTest {
@@ -47,7 +46,6 @@ class AutomationsGeneratorTest {
                 )
             }
     }
-
 
     private val expectedAliasesById =
         mapOf(
