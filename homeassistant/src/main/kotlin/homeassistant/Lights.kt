@@ -1,5 +1,10 @@
 package homeassistant
 
+fun toggleMikeLamp(): Action = toggleSwitchDevice(
+    deviceId = "9f60192a08622db8c597cea034d075b1",
+    entityId = "d3075c2bb97112a2bd9cdc4bd388ba7a",
+)
+
 fun turnOffLights(vararg entityIds: String): Action =
     lightAction(
         action = "light.turn_off",
@@ -32,12 +37,11 @@ fun adjustLightBrightness(
 
 fun turnOnLightWithRgbColour(
     entityId: String,
-    rgbColour: String,
 ): Action =
     lightAction(
         action = "light.turn_on",
         target = EntityTarget(entityId),
-        data = yamlObject("rgb_color" to rgbColour),
+        data = yamlObject("rgb_color" to NEXT_COLOUR_RGB_TEMPLATE),
     )
 
 fun lightTurnedOnTrigger(entityId: String): Trigger = LightTurnedOnTrigger(target = EntityTarget(entityId))
@@ -101,3 +105,46 @@ private fun lightEntityTarget(vararg entityIds: String): Target =
     } else {
         GenericTarget(yamlObject("entity_id" to yamlList(*entityIds)))
     }
+
+fun colourVariables(includeDefaultColour: Boolean = false): Map<String, Any?> =
+    if (includeDefaultColour) {
+        yamlObject(
+            "colour" to defaultColour,
+            "colour_cycle" to colourCycle,
+        )
+    } else {
+        yamlObject("colour_cycle" to colourCycle)
+    }
+
+private val colourCycle =
+    yamlList(
+        rgb(255, 137, 14),
+        rgb(255, 193, 142),
+        rgb(255, 229, 207),
+        rgb(255, 255, 251),
+        rgb(255, 112, 86),
+        rgb(112, 255, 86),
+        rgb(129, 173, 255),
+        rgb(215, 151, 255),
+        rgb(255, 159, 242),
+    )
+
+private val defaultColour = rgb(255, 0, 0)
+
+private fun rgb(
+    red: Int,
+    green: Int,
+    blue: Int,
+): List<Int> = listOf(red, green, blue)
+
+private const val NEXT_COLOUR_RGB_TEMPLATE =
+    "{% set idx = states('input_number.downstairs_light_colour_index') | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour = colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
+private const val NEXT_COLOUR_INDEX_TEMPLATE =
+    "{% set idx = states('input_number.downstairs_light_colour_index') | int + 1 %} {% set idx = idx % colour_cycle | length %} {{ idx }}\n"
+
+
+fun advanceDownstairsColourIndex(): Action =
+    setInputNumberValue(
+        entityId = "input_number.downstairs_light_colour_index",
+        value = NEXT_COLOUR_INDEX_TEMPLATE,
+    )

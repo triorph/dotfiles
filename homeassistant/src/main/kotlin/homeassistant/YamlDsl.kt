@@ -24,7 +24,7 @@ class AutomationBuilder(
     private val conditions = mutableListOf<Condition>()
     private var variables: Map<String, Any?> = emptyMap()
     private val actions = mutableListOf<Action>()
-    private var mode: String? = null
+    private var mode: String? = "single"
 
     fun description(value: String) {
         description = value

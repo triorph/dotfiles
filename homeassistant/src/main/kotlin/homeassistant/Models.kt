@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder("id", "alias", "description", "triggers", "conditions", "variables", "actions", "mode")
@@ -48,6 +49,7 @@ data class GenericCondition(
     fun properties(): Map<String, Any?> = values
 }
 
+
 data class GenericAction(
     @get:JsonIgnore
     val values: Map<String, Any?>,
@@ -88,6 +90,28 @@ data class StateTrigger(
 ) : Trigger {
     val trigger: String = "state"
 }
+
+@JsonPropertyOrder("condition", "target", "options")
+data class SwitchIsOnCondition(
+    val target: EntityTarget,
+    val options: ConditionOptions = ConditionOptions()
+) : Condition {
+    val condition = "switch.is_on"
+}
+
+@JsonPropertyOrder("condition", "target", "options")
+data class ClimateIsOnCondition(
+    val target: EntityTarget,
+    val options: ConditionOptions = ConditionOptions()
+) : Condition {
+    val condition = "climate.is_on"
+}
+
+data class ConditionOptions(
+    val behavior: String = "any",
+    @param:JsonProperty("for")
+    val duration: String = "00:00:00"
+)
 
 @JsonPropertyOrder("trigger", "target")
 data class LightTurnedOnTrigger(
@@ -190,7 +214,7 @@ data class EntityThresholdValue(
 data class TemperatureThresholdOptions(
     val behavior: String = "each",
     val threshold: AboveThreshold,
-    @get:com.fasterxml.jackson.annotation.JsonProperty("for")
+    @get:JsonProperty("for")
     @get:JsonInclude(JsonInclude.Include.NON_NULL)
     val duration: Duration? = null,
 )

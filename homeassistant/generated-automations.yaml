@@ -1,75 +1,25 @@
-- id: "1780894997877"
+- id: "timer_office_heatpump_off"
   alias: "Turn off office heatpump on timer"
   description: ""
   triggers:
   - trigger: "time"
     at: "17:00:00"
   conditions:
-  - condition: "or"
-    conditions:
-    - condition: "not"
-      conditions:
-      - condition: "device"
-        device_id: "568bf49c8bc0b3639c29221d9a96bae0"
-        domain: "climate"
-        entity_id: "4882560e0c73d5d1205927e49ea5f11e"
-        type: "is_hvac_mode"
-        hvac_mode: "off"
+  - condition: "climate.is_on"
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    options:
+      behavior: "any"
+      for: "00:00:00"
   actions:
   - action: "climate.turn_off"
     metadata: {}
     target:
-      device_id: "568bf49c8bc0b3639c29221d9a96bae0"
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
     data: {}
   mode: "single"
-- id: "1780963707995"
-  alias: "Stair lights off"
-  description: ""
-  triggers:
-  - trigger: "event"
-    event_type: "zha_event"
-    event_data:
-      device_ieee: "a4:c1:38:e3:14:42:b8:7a"
-      device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-      unique_id: "a4:c1:38:e3:14:42:b8:7a:1:0x0006"
-      endpoint_id: 1
-      cluster_id: 6
-      command: "remote_button_short_press"
-      args: []
-      params: {}
-  - trigger: "event"
-    event_type: "zha_event"
-    event_data:
-      device_ieee: "a4:c1:38:7e:82:21:7d:37"
-      device_id: "628977d0676426888a7f7c217a0710f9"
-      unique_id: "a4:c1:38:7e:82:21:7d:37:1:0x0006"
-      endpoint_id: 1
-      cluster_id: 6
-      command: "toggle"
-      args: []
-      params: {}
-  conditions:
-  - condition: "device"
-    type: "is_on"
-    device_id: "2c0f04abd6148843b1756b944ea925d7"
-    entity_id: "c76155248c42d7a29d57b0938dbd49de"
-    domain: "light"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 1
-  actions:
-  - action: "light.turn_off"
-    metadata: {}
-    target:
-      entity_id:
-      - "light.stair_light_1"
-      - "light.stair_light_2"
-      - "light.dining_room_lamp"
-    data: {}
-  mode: "single"
-- id: "1780963899292"
-  alias: "Decrease lamp brightness"
+- id: "decrease_downstairs_lamp_brightness"
+  alias: "Downstairs lamp - decrease brightness when turning button left"
   description: ""
   triggers:
   - trigger: "event"
@@ -91,8 +41,8 @@
     data:
       brightness_step_pct: -20
   mode: "single"
-- id: "1780964087146"
-  alias: "Increase lamp brightness"
+- id: "increase_downstairs_lamp_brightness"
+  alias: "Downstairs lamp - increase lamp brightness when turning button right"
   description: ""
   triggers:
   - trigger: "event"
@@ -110,26 +60,12 @@
   - action: "light.turn_on"
     metadata: {}
     target:
-      entity_id: "light.stair_light_1"
-    data:
-      brightness_step_pct: 50
-    continue_on_error: true
-  - action: "light.turn_on"
-    metadata: {}
-    target:
-      entity_id: "light.stair_light_2"
-    data:
-      brightness_step_pct: 50
-    continue_on_error: true
-  - action: "light.turn_on"
-    metadata: {}
-    target:
       entity_id: "light.dining_room_lamp"
     data:
       brightness_step_pct: 20
   mode: "single"
-- id: "1780965369367"
-  alias: "Toggle mike lamplight"
+- id: "toggle_mike_bedroom_lamp"
+  alias: "Mike bedroom lamp - toggle when press buttons"
   description: ""
   triggers:
   - trigger: "event"
@@ -143,43 +79,6 @@
       command: "toggle"
       args: []
       params: {}
-  actions:
-  - type: "toggle"
-    device_id: "9f60192a08622db8c597cea034d075b1"
-    entity_id: "d3075c2bb97112a2bd9cdc4bd388ba7a"
-    domain: "switch"
-  mode: "single"
-- id: "1780973542501"
-  alias: "Lights follow power off"
-  description: ""
-  triggers:
-  - device_id: "2c0f04abd6148843b1756b944ea925d7"
-    domain: "zha"
-    type: "device_offline"
-    subtype: "device_offline"
-    trigger: "device"
-  actions:
-  - action: "light.turn_off"
-    metadata: {}
-    target:
-      entity_id: "light.smartlight_4"
-    data: {}
-  mode: "single"
-- id: "1780975857816"
-  alias: "Stairs lights on"
-  description: ""
-  triggers:
-  - trigger: "event"
-    event_type: "zha_event"
-    event_data:
-      device_ieee: "a4:c1:38:e3:14:42:b8:7a"
-      device_id: "4a713f5c3c61ea99233c62a0c9928ece"
-      unique_id: "a4:c1:38:e3:14:42:b8:7a:1:0x0006"
-      endpoint_id: 1
-      cluster_id: 6
-      command: "remote_button_short_press"
-      args: []
-      params: {}
   - trigger: "event"
     event_type: "zha_event"
     event_data:
@@ -191,28 +90,14 @@
       command: "toggle"
       args: []
       params: {}
-  conditions:
-  - condition: "device"
-    type: "is_off"
-    device_id: "2c0f04abd6148843b1756b944ea925d7"
-    entity_id: "c76155248c42d7a29d57b0938dbd49de"
-    domain: "light"
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 1
   actions:
-  - action: "light.turn_on"
-    metadata: {}
-    target:
-      entity_id:
-      - "light.stair_light_1"
-      - "light.stair_light_2"
-      - "light.dining_room_lamp"
-    data: {}
+  - type: "toggle"
+    device_id: "9f60192a08622db8c597cea034d075b1"
+    entity_id: "d3075c2bb97112a2bd9cdc4bd388ba7a"
+    domain: "switch"
   mode: "single"
 - id: "toggle_downstairs_lamp"
-  alias: "Toggle downstairs lamp"
+  alias: "Downstairs lamp - toggle on when double press buttons"
   description: ""
   triggers:
   - trigger: "event"
@@ -244,114 +129,8 @@
       entity_id: "light.dining_room_lamp"
     data: {}
   mode: "single"
-- id: "stair_light_1_lamp_colour"
-  alias: "Set stair_light_1 to new colour"
-  description: ""
-  triggers:
-  - trigger: "state"
-    entity_id: "input_number.downstairs_light_colour_index"
-  conditions:
-  - condition: "light.is_on"
-    target:
-      entity_id: "light.stair_light_1"
-  variables:
-    colour:
-    - 255
-    - 0
-    - 0
-    colour_cycle:
-    - - 255
-      - 137
-      - 14
-    - - 255
-      - 193
-      - 142
-    - - 255
-      - 229
-      - 207
-    - - 255
-      - 255
-      - 251
-    - - 255
-      - 112
-      - 86
-    - - 112
-      - 255
-      - 86
-    - - 129
-      - 173
-      - 255
-    - - 215
-      - 151
-      - 255
-    - - 255
-      - 159
-      - 242
-  actions:
-  - action: "light.turn_on"
-    metadata: {}
-    target:
-      entity_id: "light.stair_light_1"
-    data:
-      rgb_color: "{% set idx = states('input_number.downstairs_light_colour_index')\
-        \ | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour =\
-        \ colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
-  mode: "single"
-- id: "stair_light_2_lamp_colour"
-  alias: "Set stair_light_2 to new colour"
-  description: ""
-  triggers:
-  - trigger: "state"
-    entity_id: "input_number.downstairs_light_colour_index"
-  conditions:
-  - condition: "light.is_on"
-    target:
-      entity_id: "light.stair_light_2"
-  variables:
-    colour:
-    - 255
-    - 0
-    - 0
-    colour_cycle:
-    - - 255
-      - 137
-      - 14
-    - - 255
-      - 193
-      - 142
-    - - 255
-      - 229
-      - 207
-    - - 255
-      - 255
-      - 251
-    - - 255
-      - 112
-      - 86
-    - - 112
-      - 255
-      - 86
-    - - 129
-      - 173
-      - 255
-    - - 215
-      - 151
-      - 255
-    - - 255
-      - 159
-      - 242
-  actions:
-  - action: "light.turn_on"
-    metadata: {}
-    target:
-      entity_id: "light.stair_light_2"
-    data:
-      rgb_color: "{% set idx = states('input_number.downstairs_light_colour_index')\
-        \ | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour =\
-        \ colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
-  mode: "single"
 - id: "dining_room_lamp_lamp_colour"
-  alias: "Set dining_room_lamp to new colour"
+  alias: "dining_room_lamp - Set to new colour"
   description: ""
   triggers:
   - trigger: "state"
@@ -403,8 +182,8 @@
         \ | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour =\
         \ colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
   mode: "single"
-- id: "1780986988887"
-  alias: "Cycle stair light colours"
+- id: "cycle_light_colours"
+  alias: "Cycle light colours"
   description: ""
   triggers:
   - trigger: "event"
@@ -465,155 +244,8 @@
       value: "{% set idx = states('input_number.downstairs_light_colour_index') |\
         \ int + 1 %} {% set idx = idx % colour_cycle | length %} {{ idx }}\n"
   mode: "single"
-- id: "set_stair_light_1_colour_when_on"
-  alias: "Set the stair_light_1 colour when turned on"
-  description: ""
-  triggers:
-  - trigger: "light.turned_on"
-    target:
-      entity_id: "light.stair_light_1"
-  variables:
-    colour:
-    - 255
-    - 0
-    - 0
-    colour_cycle:
-    - - 255
-      - 137
-      - 14
-    - - 255
-      - 193
-      - 142
-    - - 255
-      - 229
-      - 207
-    - - 255
-      - 255
-      - 251
-    - - 255
-      - 112
-      - 86
-    - - 112
-      - 255
-      - 86
-    - - 129
-      - 173
-      - 255
-    - - 215
-      - 151
-      - 255
-    - - 255
-      - 159
-      - 242
-  actions:
-  - action: "light.turn_on"
-    metadata: {}
-    target:
-      entity_id: "light.stair_light_1"
-    data:
-      rgb_color: "{% set idx = states('input_number.downstairs_light_colour_index')\
-        \ | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour =\
-        \ colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
-- id: "set_stair_light_2_colour_when_on"
-  alias: "Set the stair_light_2 colour when turned on"
-  description: ""
-  triggers:
-  - trigger: "light.turned_on"
-    target:
-      entity_id: "light.stair_light_2"
-  variables:
-    colour:
-    - 255
-    - 0
-    - 0
-    colour_cycle:
-    - - 255
-      - 137
-      - 14
-    - - 255
-      - 193
-      - 142
-    - - 255
-      - 229
-      - 207
-    - - 255
-      - 255
-      - 251
-    - - 255
-      - 112
-      - 86
-    - - 112
-      - 255
-      - 86
-    - - 129
-      - 173
-      - 255
-    - - 215
-      - 151
-      - 255
-    - - 255
-      - 159
-      - 242
-  actions:
-  - action: "light.turn_on"
-    metadata: {}
-    target:
-      entity_id: "light.stair_light_2"
-    data:
-      rgb_color: "{% set idx = states('input_number.downstairs_light_colour_index')\
-        \ | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour =\
-        \ colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
-- id: "set_dining_room_lamp_colour_when_on"
-  alias: "Set the dining_room_lamp colour when turned on"
-  description: ""
-  triggers:
-  - trigger: "light.turned_on"
-    target:
-      entity_id: "light.dining_room_lamp"
-  variables:
-    colour:
-    - 255
-    - 0
-    - 0
-    colour_cycle:
-    - - 255
-      - 137
-      - 14
-    - - 255
-      - 193
-      - 142
-    - - 255
-      - 229
-      - 207
-    - - 255
-      - 255
-      - 251
-    - - 255
-      - 112
-      - 86
-    - - 112
-      - 255
-      - 86
-    - - 129
-      - 173
-      - 255
-    - - 215
-      - 151
-      - 255
-    - - 255
-      - 159
-      - 242
-  actions:
-  - action: "light.turn_on"
-    metadata: {}
-    target:
-      entity_id: "light.dining_room_lamp"
-    data:
-      rgb_color: "{% set idx = states('input_number.downstairs_light_colour_index')\
-        \ | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour =\
-        \ colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
-- id: "1781210376062"
-  alias: "Notify heat pump can be turned off"
+- id: "heatpump_notify_turn_off"
+  alias: "Downstairs heat pump - notify can be turned off at 18 degrees"
   description: ""
   triggers:
   - trigger: "temperature.crossed_threshold"
@@ -643,41 +275,8 @@
     data:
       message: "Downstairs heat reached threshold "
   mode: "single"
-- id: "1781216970827"
-  alias: "Disable heatpump after reaching threshold"
-  description: ""
-  triggers:
-  - trigger: "temperature.crossed_threshold"
-    target:
-      area_id: "mike_s_office"
-    options:
-      behavior: "each"
-      threshold:
-        value:
-          active_choice: "entity"
-          entity: "input_number.mikes_office_target_heatpump_heat_temp"
-        type: "above"
-      for:
-        hours: 0
-        minutes: 5
-        seconds: 0
-  conditions:
-  - condition: "climate.is_hvac_mode"
-    target:
-      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
-    options:
-      behavior: "any"
-      hvac_mode:
-      - "heat"
-  actions:
-  - action: "climate.turn_off"
-    metadata: {}
-    target:
-      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
-    data: {}
-  mode: "single"
 - id: "turn_on_mikes_office_generic_thermostat"
-  alias: "Turn on Mike's office generic thermostat"
+  alias: "Mike's office thermostat - Turn on when clicking office dial"
   description: ""
   triggers:
   - trigger: "event"
@@ -699,7 +298,7 @@
     data: {}
   mode: "single"
 - id: "turn_off_mikes_office_generic_thermostat"
-  alias: "Turn off Mike's office generic thermostat"
+  alias: "Mike's office thermostat - turn off when double-clicking office dial"
   description: ""
   triggers:
   - trigger: "event"
@@ -721,7 +320,7 @@
     data: {}
   mode: "single"
 - id: "bring_in_washing"
-  alias: "Bring in the washing"
+  alias: "Washing machine - Bring in the washing"
   description: ""
   triggers:
   - trigger: "sun"
@@ -747,17 +346,18 @@
       device_id: "449719a7d011795e08e37c0f114f4771"
     data:
       message: "Bring in the washing"
+  mode: "single"
 - id: "hang_up_washing"
-  alias: "Hang up the washing"
+  alias: "Washing machine - Hang up the washing"
   description: ""
   triggers:
   - trigger: "numeric_state"
     entity_id: "sensor.tz3210_cehuw1lw_ts011f_current"
     for:
       hours: 0
-      minutes: 10
+      minutes: 20
       seconds: 0
-    below: 1
+    below: 0.1
   conditions:
   - condition: "switch.is_on"
     target:
@@ -775,8 +375,9 @@
       device_id: "449719a7d011795e08e37c0f114f4771"
     data:
       message: "The washing machine has finished. Hang up the washing."
+  mode: "single"
 - id: "washing_machine_ran"
-  alias: "Washing machine ran today"
+  alias: "Washing machine - Set ran today"
   description: ""
   triggers:
   - trigger: "numeric_state"
@@ -785,8 +386,9 @@
       hours: 0
       minutes: 20
       seconds: 0
-    above: 1
+    above: 0.1
   actions:
   - action: "input_boolean.turn_on"
     target:
       entity_id: "input_boolean.washing_machine_ran_today"
+  mode: "single"

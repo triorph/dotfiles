@@ -4,24 +4,24 @@ fun timeTrigger(at: String): Trigger = TimeTrigger(at = at)
 
 fun stateTrigger(entityId: String): Trigger = StateTrigger(entityId = entityId)
 
-fun washingMachineCurrentAboveThresholdTrigger(
-
-) = GenericTrigger(
+fun washingMachineCurrentAboveThresholdTrigger() =
+    GenericTrigger(
         mapOf(
             "trigger" to "numeric_state",
             "entity_id" to "sensor.tz3210_cehuw1lw_ts011f_current",
-            "for" to Duration(minutes=20),
-            "above" to 1
-        )
+            "for" to Duration(minutes = 20),
+            "above" to 0.1,
+        ),
     )
 
-fun washingMachineCurrentBelowThresholdTrigger() = GenericTrigger(
+fun washingMachineCurrentBelowThresholdTrigger() =
+    GenericTrigger(
         mapOf(
             "trigger" to "numeric_state",
             "entity_id" to "sensor.tz3210_cehuw1lw_ts011f_current",
-            "for" to Duration(minutes=10),
-            "below" to 1
-        )
+            "for" to Duration(minutes = 20),
+            "below" to 0.1,
+        ),
     )
 
 fun sunsetTrigger() = GenericTrigger(mapOf("trigger" to "sun", "event" to "sunset", "offset" to 0))

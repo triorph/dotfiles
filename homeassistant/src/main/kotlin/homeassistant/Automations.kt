@@ -1,188 +1,88 @@
 package homeassistant
 
-private val colourCycle =
-    yamlList(
-        rgb(255, 137, 14),
-        rgb(255, 193, 142),
-        rgb(255, 229, 207),
-        rgb(255, 255, 251),
-        rgb(255, 112, 86),
-        rgb(112, 255, 86),
-        rgb(129, 173, 255),
-        rgb(215, 151, 255),
-        rgb(255, 159, 242),
-    )
-
-private val defaultColour = rgb(255, 0, 0)
-
-private const val NEXT_COLOUR_RGB_TEMPLATE =
-    "{% set idx = states('input_number.downstairs_light_colour_index') | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour = colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
-private const val NEXT_COLOUR_INDEX_TEMPLATE =
-    "{% set idx = states('input_number.downstairs_light_colour_index') | int + 1 %} {% set idx = idx % colour_cycle | length %} {{ idx }}\n"
 
 fun turnOffOfficeHeatpumpOnTimer() =
     automation(
-        id = "1780894997877",
+        id = "timer_office_heatpump_off",
         alias = "Turn off office heatpump on timer",
     ) {
         triggers(timeTrigger("17:00:00"))
-        conditions(orCondition(officeHeatpumpIsNotOff()))
-        actions(turnOffOfficeHeatpumpDevice())
-        mode("single")
+        conditions(officeHeatpumpIsOn())
+        actions(turnOffOfficeHeatpumpEntity())
     }
 
-fun turnStairLightsOff() =
-    automation(
-        id = "1780963707995",
-        alias = "Stair lights off",
-    ) {
-        triggers(
-            ikeaShortcutButtonShortPress(),
-            downstairsButtonToggle(),
-        )
-        conditions(
-            lightDeviceIsOn(
-                deviceId = "2c0f04abd6148843b1756b944ea925d7",
-                entityId = "c76155248c42d7a29d57b0938dbd49de",
-                duration = duration(seconds = 1),
-            ),
-        )
-        actions(
-            turnOffLights(
-                "light.stair_light_1",
-                "light.stair_light_2",
-                "light.dining_room_lamp",
-            ),
-        )
-        mode("single")
-    }
 
 fun decreaseLampBrightness() =
     automation(
-        id = "1780963899292",
-        alias = "Decrease lamp brightness",
+        id = "decrease_downstairs_lamp_brightness",
+        alias = "Downstairs lamp - decrease brightness when turning button left",
     ) {
-        triggers(
-            ikeaShortcutButtonRotatedLeft(),
-        )
+        triggers(downstairsDialTurnLeft())
         actions(
             adjustLightBrightness("light.dining_room_lamp", brightnessStepPct = -20),
         )
-        mode("single")
     }
 
 fun increaseLampBrightness() =
     automation(
-        id = "1780964087146",
-        alias = "Increase lamp brightness",
+        id = "increase_downstairs_lamp_brightness",
+        alias = "Downstairs lamp - increase lamp brightness when turning button right",
     ) {
-        triggers(
-            ikeaShortcutButtonRotatedRight(),
-        )
+        triggers(downstairsDialTurnRight())
         actions(
-            adjustLightBrightness("light.stair_light_1", brightnessStepPct = 50, continueOnError = true),
-            adjustLightBrightness("light.stair_light_2", brightnessStepPct = 50, continueOnError = true),
             adjustLightBrightness("light.dining_room_lamp", brightnessStepPct = 20),
         )
-        mode("single")
     }
 
 fun toggleBedroomMikeLamplight() =
     automation(
-        id = "1780965369367",
-        alias = "Toggle mike lamplight",
+        id = "toggle_mike_bedroom_lamp",
+        alias = "Mike bedroom lamp - toggle when press buttons",
     ) {
         triggers(
-            bedroomMikeLamplightButtonToggle(),
+            bedroomButtonClick(),
+            upstairsButtonClick()
         )
-        actions(
-            toggleSwitchDevice(
-                deviceId = "9f60192a08622db8c597cea034d075b1",
-                entityId = "d3075c2bb97112a2bd9cdc4bd388ba7a",
-            ),
-        )
-        mode("single")
+        actions(toggleMikeLamp())
     }
 
-fun lightsFollowPowerOff() =
-    automation(
-        id = "1780973542501",
-        alias = "Lights follow power off",
-    ) {
-        triggers(
-            downstairsPowerSensorOffline(),
-        )
-        actions(
-            turnOffLights("light.smartlight_4"),
-        )
-        mode("single")
-    }
-
-fun stairLightsOn() =
-    automation(
-        id = "1780975857816",
-        alias = "Stairs lights on",
-    ) {
-        triggers(
-            ikeaShortcutButtonShortPress(),
-            downstairsButtonToggle(),
-        )
-        conditions(
-            lightDeviceIsOff(
-                deviceId = "2c0f04abd6148843b1756b944ea925d7",
-                entityId = "c76155248c42d7a29d57b0938dbd49de",
-                duration = duration(seconds = 1),
-            ),
-        )
-        actions(
-            turnOnLights(
-                "light.stair_light_1",
-                "light.stair_light_2",
-                "light.dining_room_lamp",
-            ),
-        )
-        mode("single")
-    }
 
 fun toggleDownstairsLamp() =
     automation(
         id = "toggle_downstairs_lamp",
-        alias = "Toggle downstairs lamp",
+        alias = "Downstairs lamp - toggle on when double press buttons",
     ) {
         triggers(
-            ikeaShortcutButtonDoublePress(),
-            downstairsButtonOn(),
+            downstairsDialDoubleClick(),
+            upstairsButtonDoubleClick(),
         )
         actions(
             toggleLight("light.dining_room_lamp"),
         )
-        mode("single")
     }
 
 fun setLightNewColour(lightName: String) =
     automation(
         id = "${lightName}_lamp_colour",
-        alias = "Set $lightName to new colour",
+        alias = "$lightName - Set to new colour",
     ) {
         triggers(stateTrigger("input_number.downstairs_light_colour_index"))
         variables(colourVariables(includeDefaultColour = true))
         conditions(lightIsOn("light.$lightName"))
-        actions(turnOnLightWithRgbColour("light.$lightName", NEXT_COLOUR_RGB_TEMPLATE))
-        mode("single")
+        actions(turnOnLightWithRgbColour("light.$lightName"))
     }
 
 fun advancedCycleColours() =
     automation(
-        id = "1780986988887",
-        alias = "Cycle stair light colours",
+        id = "cycle_light_colours",
+        alias = "Cycle light colours",
     ) {
         triggers(
-            ikeaShortcutButtonLongPress(),
-            downstairsButtonOff(),
+            downstairsDialHold(),
+            upstairsButtonHold(),
         )
         variables(colourVariables())
         actions(advanceDownstairsColourIndex())
-        mode("single")
     }
 
 fun setLightColourWhenOn(lightName: String) =
@@ -192,13 +92,13 @@ fun setLightColourWhenOn(lightName: String) =
     ) {
         triggers(lightTurnedOnTrigger("light.$lightName"))
         variables(colourVariables(includeDefaultColour = true))
-        actions(turnOnLightWithRgbColour("light.$lightName", NEXT_COLOUR_RGB_TEMPLATE))
+        actions(turnOnLightWithRgbColour("light.$lightName"))
     }
 
 fun notifyHeatpumpCanBeTurnedOff() =
     automation(
-        id = "1781210376062",
-        alias = "Notify heat pump can be turned off",
+        id = "heatpump_notify_turn_off",
+        alias = "Downstairs heat pump - notify can be turned off at 18 degrees",
     ) {
         triggers(
             temperatureCrossedThresholdTrigger(
@@ -213,123 +113,77 @@ fun notifyHeatpumpCanBeTurnedOff() =
                 message = "Downstairs heat reached threshold ",
             ),
         )
-        mode("single")
     }
 
-fun turnOffOfficeHeatpumpAutomatically() =
-    automation(
-        id = "1781216970827",
-        alias = "Disable heatpump after reaching threshold",
-    ) {
-        triggers(
-            temperatureCrossedThresholdTrigger(
-                target = areaTarget("mike_s_office"),
-                threshold = aboveEntityThreshold("input_number.mikes_office_target_heatpump_heat_temp"),
-                duration = duration(minutes = 5),
-            ),
-        )
-        conditions(officeHeatpumpIsHeating())
-        actions(turnOffOfficeHeatpumpEntity())
-        mode("single")
-    }
 
 fun turnOnMikesOfficeGenericThermostat() =
     automation(
         id = "turn_on_mikes_office_generic_thermostat",
-        alias = "Turn on Mike's office generic thermostat",
+        alias = "Mike's office thermostat - Turn on when clicking office dial"
     ) {
-        triggers(buttonWithDial2SingleClick())
+        triggers(officeDialClick())
         actions(turnOnOfficeHeatpumpEntity())
-        mode("single")
     }
 
 fun turnOffMikesOfficeGenericThermostat() =
     automation(
         id = "turn_off_mikes_office_generic_thermostat",
-        alias = "Turn off Mike's office generic thermostat",
+        alias = "Mike's office thermostat - turn off when double-clicking office dial",
     ) {
-        triggers(buttonWithDial2DoubleClick())
+        triggers(officeDialDoubleClick())
         actions(turnOffOfficeHeatpumpEntity())
-        mode("single")
     }
 
-fun washingMachineRan() = automation("washing_machine_ran", "Washing machine ran today") {
-    triggers(washingMachineCurrentAboveThresholdTrigger())
-    actions(
-        GenericAction(
-            mapOf(
-                "action" to "input_boolean.turn_on",
-                "target" to entityTarget("input_boolean.washing_machine_ran_today")
-            )
+fun washingMachineRan() =
+    automation("washing_machine_ran", "Washing machine - Set ran today") {
+        triggers(washingMachineCurrentAboveThresholdTrigger())
+        actions(
+            GenericAction(
+                mapOf(
+                    "action" to "input_boolean.turn_on",
+                    "target" to entityTarget("input_boolean.washing_machine_ran_today"),
+                ),
+            ),
         )
-    )
-}
+    }
 
-fun hangUpWashing() = automation("hang_up_washing", "Hang up the washing") {
-    triggers(washingMachineCurrentBelowThresholdTrigger())
-    conditions(washingMachineRanCondition())
-    actions(notifyMikesPhone("The washing machine has finished. Hang up the washing."))
-}
+fun hangUpWashing() =
+    automation("hang_up_washing", "Washing machine - Hang up the washing") {
+        triggers(washingMachineCurrentBelowThresholdTrigger())
+        conditions(washingMachineRanCondition())
+        actions(notifyMikesPhone("The washing machine has finished. Hang up the washing."))
+    }
 
-fun bringInWashing() = automation("bring_in_washing", "Bring in the washing") {
-    triggers(sunsetTrigger())
-    conditions(washingMachineRanCondition())
-    actions(
-        GenericAction(
-            mapOf(
-                "action" to "input_boolean.turn_off",
-                "target" to entityTarget("input_boolean.washing_machine_ran_today")
-            )
-        ),
-        notifyMikesPhone("Bring in the washing")
-    )
-}
-
+fun bringInWashing() =
+    automation("bring_in_washing", "Washing machine - Bring in the washing") {
+        triggers(sunsetTrigger())
+        conditions(washingMachineRanCondition())
+        actions(
+            GenericAction(
+                mapOf(
+                    "action" to "input_boolean.turn_off",
+                    "target" to entityTarget("input_boolean.washing_machine_ran_today"),
+                ),
+            ),
+            notifyMikesPhone("Bring in the washing"),
+        )
+    }
 
 fun automations(): List<Automation> =
     listOf(
         turnOffOfficeHeatpumpOnTimer(),
-        turnStairLightsOff(),
         decreaseLampBrightness(),
         increaseLampBrightness(),
         toggleBedroomMikeLamplight(),
-        lightsFollowPowerOff(),
-        stairLightsOn(),
         toggleDownstairsLamp(),
-        setLightNewColour("stair_light_1"),
-        setLightNewColour("stair_light_2"),
         setLightNewColour("dining_room_lamp"),
         advancedCycleColours(),
-        setLightColourWhenOn("stair_light_1"),
-        setLightColourWhenOn("stair_light_2"),
-        setLightColourWhenOn("dining_room_lamp"),
         notifyHeatpumpCanBeTurnedOff(),
-        turnOffOfficeHeatpumpAutomatically(),
         turnOnMikesOfficeGenericThermostat(),
         turnOffMikesOfficeGenericThermostat(),
         bringInWashing(),
         hangUpWashing(),
-        washingMachineRan()
+        washingMachineRan(),
     )
 
-private fun rgb(
-    red: Int,
-    green: Int,
-    blue: Int,
-): List<Int> = listOf(red, green, blue)
 
-private fun colourVariables(includeDefaultColour: Boolean = false): Map<String, Any?> =
-    if (includeDefaultColour) {
-        yamlObject(
-            "colour" to defaultColour,
-            "colour_cycle" to colourCycle,
-        )
-    } else {
-        yamlObject("colour_cycle" to colourCycle)
-    }
-
-private fun advanceDownstairsColourIndex(): Action =
-    setInputNumberValue(
-        entityId = "input_number.downstairs_light_colour_index",
-        value = NEXT_COLOUR_INDEX_TEMPLATE,
-    )
