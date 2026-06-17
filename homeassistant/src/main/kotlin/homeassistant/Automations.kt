@@ -99,7 +99,7 @@ fun notifyHeatpumpCanBeTurnedOff() =
     ) {
         triggers(
             temperatureCrossedThresholdTrigger(
-                target = entityTarget("sensor.temperature_humidity_sensor_1_temperature"),
+                target = entityTarget("sensor.living_room_temperature_temperature"),
                 threshold = aboveNumberThreshold(18, unitOfMeasurement = "°C"),
                 duration = duration(minutes = 10),
             ),

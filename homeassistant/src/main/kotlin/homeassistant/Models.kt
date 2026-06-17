@@ -76,6 +76,19 @@ data class EventTrigger(
     val trigger: String = "event"
 }
 
+@JsonPropertyOrder("trigger", "options")
+data class ZigbeeMqttTrigger(
+    val options: ZigbeeMqttOptions,
+) : Trigger {
+    val trigger: String = "mqtt"
+}
+
+@JsonPropertyOrder("payload", "topic")
+data class ZigbeeMqttOptions(
+    val payload: Any,
+    val topic: String,
+)
+
 @JsonPropertyOrder("trigger", "at")
 data class TimeTrigger(
     val at: String,

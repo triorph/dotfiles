@@ -1,5 +1,9 @@
 package homeassistant
 
+private data class ZigbeeMqttActionButton(
+    val deviceId: String,
+)
+
 private data class DeviceButton(
     val deviceId: String,
     val domain: String = "zha",
@@ -14,61 +18,40 @@ private data class ZhaEventButton(
 )
 
 private val downstairsDial =
-    ZhaEventButton(
-        deviceIeee = "a4:c1:38:e3:14:42:b8:7a",
-        deviceId = "4a713f5c3c61ea99233c62a0c9928ece",
-        uniqueId = "a4:c1:38:e3:14:42:b8:7a:1:0x0006",
-    )
-
-private val downstairsPowerSensor = DeviceButton(deviceId = "2c0f04abd6148843b1756b944ea925d7")
+    ZigbeeMqttActionButton("downstairs_dial")
 
 private val officeDial =
-    ZhaEventButton(
-        deviceIeee = "a4:c1:38:a6:32:e2:44:b5",
-        deviceId = "16447bd2ede6b4941627e3bc14f58c13",
-        uniqueId = "a4:c1:38:a6:32:e2:44:b5:1:0x0006",
-    )
+    ZigbeeMqttActionButton("mikes_office_dial")
 
 private val bedroomMikeLamplightButton =
-    ZhaEventButton(
-        deviceIeee = "a4:c1:38:ab:c9:62:1d:b1",
-        deviceId = "2fd11b2eac90c1daa1d41a596dd4a57a",
-        uniqueId = "a4:c1:38:ab:c9:62:1d:b1:1:0x0006",
-    )
+    ZigbeeMqttActionButton("mikes_bedside_button")
 
 private val upstairsButton =
-    ZhaEventButton(
-        deviceIeee = "a4:c1:38:7e:82:21:7d:37",
-        deviceId = "628977d0676426888a7f7c217a0710f9",
-        uniqueId = "a4:c1:38:7e:82:21:7d:37:1:0x0006",
-    )
+    ZigbeeMqttActionButton("upstairs_button")
 
-fun downstairsDialClick(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "remote_button_short_press")
+fun downstairsDialClick(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "single")
 
-fun downstairsDialDoubleClick(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "remote_button_double_press")
+fun downstairsDialDoubleClick(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "double")
 
-fun downstairsDialHold(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "remote_button_long_press")
+fun downstairsDialHold(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "hold")
 
-fun downstairsDialTurnLeft(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "left")
+fun downstairsDialTurnLeft(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "rotate_left")
 
-fun downstairsDialTurnRight(): Trigger = zhaEventButtonTrigger(downstairsDial, command = "right")
+fun downstairsDialTurnRight(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "rotate_right")
 
-fun downstairsPowerSensorOffline(): Trigger =
-    deviceButtonTrigger(downstairsPowerSensor, type = "device_offline", subtype = "device_offline")
+fun officeDialClick(): Trigger = zigbeeMqttActionButtonTrigger(officeDial, action = "single")
 
-fun officeDialClick(): Trigger = zhaEventButtonTrigger(officeDial, command = "remote_button_short_press")
+fun officeDialDoubleClick(): Trigger = zigbeeMqttActionButtonTrigger(officeDial, action = "double")
 
-fun officeDialDoubleClick(): Trigger = zhaEventButtonTrigger(officeDial, command = "remote_button_double_press")
+fun bedroomButtonClick(): Trigger = zigbeeMqttActionButtonTrigger(bedroomMikeLamplightButton, action = "single")
 
-fun bedroomButtonClick(): Trigger = zhaEventButtonTrigger(bedroomMikeLamplightButton, command = "toggle")
+fun bedroomButtonDoubleClick(): Trigger = zigbeeMqttActionButtonTrigger(bedroomMikeLamplightButton, action = "double")
 
-fun bedroomButtonDoubleClick(): Trigger = zhaEventButtonTrigger(bedroomMikeLamplightButton, command = "on")
+fun upstairsButtonClick(): Trigger = zigbeeMqttActionButtonTrigger(upstairsButton, action = "single")
 
-fun upstairsButtonClick(): Trigger = zhaEventButtonTrigger(upstairsButton, command = "toggle")
+fun upstairsButtonDoubleClick(): Trigger = zigbeeMqttActionButtonTrigger(upstairsButton, action = "double")
 
-fun upstairsButtonDoubleClick(): Trigger = zhaEventButtonTrigger(upstairsButton, command = "on")
-
-fun upstairsButtonHold(): Trigger = zhaEventButtonTrigger(upstairsButton, command = "off")
+fun upstairsButtonHold(): Trigger = zigbeeMqttActionButtonTrigger(upstairsButton, action = "hold")
 
 private fun deviceButtonTrigger(
     button: DeviceButton,
@@ -98,5 +81,17 @@ private fun zhaEventButtonTrigger(
                 "command" to command,
                 "args" to yamlList(),
                 "params" to yamlObject(),
+            ),
+    )
+
+private fun zigbeeMqttActionButtonTrigger(
+    button: ZigbeeMqttActionButton,
+    action: String,
+): Trigger =
+    ZigbeeMqttTrigger(
+        options =
+            ZigbeeMqttOptions(
+                payload = action,
+                topic = "zigbee2mqtt/${button.deviceId}/action",
             ),
     )

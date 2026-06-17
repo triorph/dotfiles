@@ -2,8 +2,8 @@ package homeassistant
 
 fun toggleMikeLamp(): Action =
     toggleSwitchDevice(
-        deviceId = "9f60192a08622db8c597cea034d075b1",
-        entityId = "d3075c2bb97112a2bd9cdc4bd388ba7a",
+        deviceId = "031c1ac1d2d680ac6e1e46c6e6d3aa02",
+        entityId = "e69405549714c4cac9d823a8d62d6a02",
     )
 
 fun turnOffLights(vararg entityIds: String): Action =

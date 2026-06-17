@@ -8,8 +8,8 @@ fun washingMachineCurrentAboveThresholdTrigger() =
     GenericTrigger(
         mapOf(
             "trigger" to "numeric_state",
-            "entity_id" to "sensor.tz3210_cehuw1lw_ts011f_current",
-            "for" to Duration(minutes = 20),
+            "entity_id" to "sensor.washing_machine_plug_current",
+            "for" to Duration(minutes = 2),
             "above" to 0.1,
         ),
     )
@@ -18,7 +18,7 @@ fun washingMachineCurrentBelowThresholdTrigger() =
     GenericTrigger(
         mapOf(
             "trigger" to "numeric_state",
-            "entity_id" to "sensor.tz3210_cehuw1lw_ts011f_current",
+            "entity_id" to "sensor.washing_machine_plug_current",
             "for" to Duration(minutes = 20),
             "below" to 0.1,
         ),
