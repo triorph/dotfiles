@@ -36,6 +36,7 @@ local toggle_window = function(opts, key, name, window_config, launcher_name)
 			end
 		else
 			-- launch app if doesn't exist
+			debug_log.log("Launching app " .. launcher_name)
 			app = hs.application.open(launcher_name, 2.0, true)
 		end
 		-- set app size and position
@@ -70,7 +71,7 @@ end
 toggle_window({ "ctrl" }, "`", "kitty")
 toggle_window({ "ctrl", "alt" }, "s", "Spotify", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
 toggle_window({ "ctrl" }, "s", "Slack", { x = 0.1, y = 0.1, w = 0.8, h = 0.8 })
-toggle_window({ "ctrl", "alt" }, "z", "zoom.us")
+toggle_window({ "ctrl", "alt" }, "z", "Zoom", nil, "zoom.us")
 -- notes app
 toggle_window({ "ctrl", "alt" }, "tab", "Emacs", { mode = "fixed", default_path = { 1 } })
 -- hammerspoon console

@@ -69,6 +69,19 @@ local toggle_floating = function()
 	virtual_screens.reapply_window(window)
 end
 
+local log_active_application = function()
+	local window = frontmost_window()
+	if window == nil then
+		return
+	end
+	local application = window:application()
+	if application == nil then
+		debug_log.log("No application for frontmost window")
+		return
+	end
+	debug_log.log("Active application: " .. application:name())
+end
+
 local increase_gap = function()
 	virtual_screens.increase_gap()
 	virtual_screens.reapply_all_windows()
@@ -86,6 +99,7 @@ hs.hotkey.bind({ "ctrl", "alt" }, "=", increase_virtual_screens)
 hs.hotkey.bind({ "ctrl", "alt" }, "-", decrease_virtual_screens)
 hs.hotkey.bind({ "ctrl", "alt" }, "]", increase_gap)
 hs.hotkey.bind({ "ctrl", "alt" }, "[", decrease_gap)
+hs.hotkey.bind({ "ctrl", "alt" }, "i", log_active_application)
 
 require("toggle_window")
 require("newwp")
