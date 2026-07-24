@@ -1,2 +1,4 @@
 kitty.conf.bak
 kitty-mac.conf.bak
+__pycache__
+.pyc
