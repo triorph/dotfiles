@@ -71,7 +71,7 @@ def test_find_book_row_returns_book(tmp_path):
     conn = _open(db)
     row = kp.find_book_row(conn, BOOK_CID)
     assert row is not None
-    assert row["ContentType"] == "6"
+    assert row["ContentType"] == kp.CONTENT_TYPE_BOOK
     assert row["___FileSize"] == 1000
 
 
@@ -157,7 +157,13 @@ def test_is_finished_false_midbook():
 # ----------------------------- 6/7. compute_resume_pointer -----------------------------
 
 
-def test_case_a_midbook_keeps_exact_pointer(tmp_path):
+def test_case_a_midbook_returns_no_pointer_changes(tmp_path):
+    """Mid-book: the progress row must NOT be touched (returns no fields to write).
+
+    Writing the pointer back, even 'verbatim', was clobbering the intra-chapter
+    position (jumped to the start of the chapter). The safe fix is to leave the
+    book row untouched for non-finished books.
+    """
     epub = str(tmp_path / "book.epub")
     make_epub(epub, num_chapters=110)  # appended new chapters
     snap = {
@@ -170,11 +176,7 @@ def test_case_a_midbook_keeps_exact_pointer(tmp_path):
         "chapter_progress": {103: 3},
     }
     out = kp.compute_resume_pointer(snap, epub, prev_max_split=103)
-    assert out["ChapterIDBookmarked"] == _ptr(_chapter_frag(103))
-    assert out["ReadStatus"] == 1
-    assert out["___PercentRead"] == 99
-    assert out["ParagraphBookmarked"] == 2
-    assert out["BookmarkWordOffset"] == 5
+    assert out == {}
 
 
 def test_case_b_finished_jumps_to_first_new_chapter(tmp_path):
@@ -211,7 +213,7 @@ def test_unread_book_keeps_titlepage_pointer(tmp_path):
         "chapter_progress": {},
     }
     out = kp.compute_resume_pointer(snap, epub, prev_max_split=103)
-    assert out["ChapterIDBookmarked"] == "titlepage.xhtml#"
+    assert out == {}  # unread & not finished -> leave the row untouched
 
 
 def test_finished_no_new_chapters_is_noop(tmp_path):
@@ -227,9 +229,7 @@ def test_finished_no_new_chapters_is_noop(tmp_path):
         "chapter_progress": {103: 100},
     }
     out = kp.compute_resume_pointer(snap, epub, prev_max_split=103)
-    assert out["ChapterIDBookmarked"] == "titlepage.xhtml#"  # unchanged
-    assert out["ReadStatus"] == 2  # stays finished
-    assert out["___PercentRead"] == 100  # unchanged
+    assert out == {}  # finished but nothing new -> leave the row untouched
 
 
 # ----------------------------- 8. apply_update -----------------------------
@@ -329,42 +329,44 @@ def test_apply_update_missing_book_raises(tmp_path):
 # ----------------------------- 12. end-to-end Case A after a reset -----------------------------
 
 
-def test_end_to_end_case_a_restores_after_reset(tmp_path):
-    """Simulate: mid-book, device reset the row (percent 0, titlepage), tool restores it."""
+def test_end_to_end_midbook_leaves_row_but_syncs_filesize(tmp_path):
+    """Mid-book: the book row is untouched except ___FileSize (no-reset preserves it)."""
     db = str(tmp_path / "k.sqlite")
     epub = str(tmp_path / "book.epub")
     make_epub(epub, num_chapters=110)
 
-    # Snapshot represents the pre-update mid-book state.
-    snap = {
-        "ReadStatus": 1,
-        "___PercentRead": 99,
-        "ChapterIDBookmarked": _ptr(_chapter_frag(103)),
-        "ParagraphBookmarked": 1,
-        "BookmarkWordOffset": 4,
-        "CurrentChapterProgress": 0.5,
-        "chapter_progress": {103: 3},
-    }
-
-    # DB currently in a *reset* state (as if device re-imported).
+    # DB holds the real mid-book position (mid-chapter offsets present).
     make_db(
         db,
         BOOK_CID,
-        num_chapters=110,
-        file_size=9999,
-        read_status=0,
-        percent=0,
-        chapter_bookmarked="titlepage.xhtml#",
+        num_chapters=104,
+        file_size=1000,
+        read_status=1,
+        percent=99,
+        chapter_bookmarked=_ptr(_chapter_frag(103)),
     )
     conn = _open(db)
+    # Simulate a mid-chapter position saved on the row.
+    conn.execute(
+        "UPDATE content SET ParagraphBookmarked=7, BookmarkWordOffset=12 "
+        "WHERE ContentID=? AND ContentType=?",
+        (BOOK_CID, kp.CONTENT_TYPE_BOOK),
+    )
+    conn.commit()
 
+    snap = kp.snapshot_progress(conn, BOOK_CID)
     pointer = kp.compute_resume_pointer(snap, epub, prev_max_split=103)
+    assert pointer == {}  # nothing to change for a mid-book book
     kp.apply_update(conn, BOOK_CID, pointer, new_file_size=os.path.getsize(epub))
 
     row = kp.find_book_row(conn, BOOK_CID)
+    # Position untouched, including intra-chapter offsets.
     assert row["ChapterIDBookmarked"] == _ptr(_chapter_frag(103))
     assert row["ReadStatus"] == 1
     assert row["___PercentRead"] == 99
+    assert row["ParagraphBookmarked"] == 7
+    assert row["BookmarkWordOffset"] == 12
+    # Only the file size was synced.
     assert row["___FileSize"] == os.path.getsize(epub)
 
 

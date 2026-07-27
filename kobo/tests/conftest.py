@@ -18,6 +18,12 @@ import pytest
 # Make the package importable when running from the repo root.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from kobo_progress.kobo_progress import (  # noqa: E402
+    CONTENT_TYPE_BOOK,
+    CONTENT_TYPE_CHAPTER,
+    CONTENT_TYPE_TOC,
+)
+
 ONBOARD_PREFIX = "file:///mnt/onboard/"
 CHAPTER_STEM = "cleaned-testbook_split_"
 # Chapter rows store ContentID as "<mnt path without scheme>!!<frag>".
@@ -113,7 +119,7 @@ def make_db(
     conn = sqlite3.connect(path)
     try:
         _build_content_schema(conn)
-        # Book row (ContentType 6): ChapterIDBookmarked is a BARE fragment + '#'.
+        # Book row (CONTENT_TYPE_BOOK): ChapterIDBookmarked is a BARE fragment + '#'.
         # NumShortcovers holds the chapter count.
         conn.execute(
             """INSERT INTO content
@@ -122,10 +128,11 @@ def make_db(
                 ___UserID, ChapterIDBookmarked, ParagraphBookmarked, BookmarkWordOffset,
                 CurrentChapterProgress, adobe_location, TimeSpentReading,
                 TimesStartedReading, DateLastRead)
-               VALUES (?, '6', NULL, 'Test Book', 'application/x-kobo-epub+zip', -1,
+               VALUES (?, ?, NULL, 'Test Book', 'application/x-kobo-epub+zip', -1,
                        ?, ?, ?, -1, ?, '', ?, 0, 0, 0.0, '', 100, 1, '2026-07-26T21:04:00Z')""",
             (
                 content_id,
+                CONTENT_TYPE_BOOK,
                 read_status,
                 percent,
                 file_size,
@@ -133,13 +140,17 @@ def make_db(
                 chapter_bookmarked,
             ),
         )
-        # Chapter rows (ContentType 9): ContentID uses "<mnt path>!!<frag>".
+        # Chapter rows (CONTENT_TYPE_CHAPTER): ContentID uses "<mnt path>!!<frag>".
         # VolumeIndex 0 = page.xhtml, then splits. ___UserID mirrors the device (NOT NULL).
         conn.execute(
             """INSERT INTO content (ContentID, ContentType, MimeType, BookID, VolumeIndex,
                 ___PercentRead, ReadStatus, ___UserID)
-               VALUES (?, '9', 'application/xhtml+xml', ?, 0, 0, 0, '')""",
-            (_chapter_content_id(content_id, "page.xhtml"), content_id),
+               VALUES (?, ?, 'application/xhtml+xml', ?, 0, 0, 0, '')""",
+            (
+                _chapter_content_id(content_id, "page.xhtml"),
+                CONTENT_TYPE_CHAPTER,
+                content_id,
+            ),
         )
         chapter_progress = chapter_progress or {}
         for n in range(num_chapters):
@@ -148,13 +159,33 @@ def make_db(
                 """INSERT INTO content
                    (ContentID, ContentType, MimeType, BookID, VolumeIndex, Title,
                     ___PercentRead, ReadStatus, ___UserID)
-                   VALUES (?, '9', 'application/xhtml+xml', ?, ?, ?, ?, 0, '')""",
+                   VALUES (?, ?, 'application/xhtml+xml', ?, ?, ?, ?, 0, '')""",
                 (
                     _chapter_content_id(content_id, frag),
+                    CONTENT_TYPE_CHAPTER,
                     content_id,
                     n + 1,
                     frag,
                     chapter_progress.get(n, 0),
+                ),
+            )
+            # TOC/navigation row (CONTENT_TYPE_TOC): ContentID has a "-1" suffix,
+            # VolumeIndex == split_number, Depth=1, human-readable Title. This is
+            # what the reader lists in the table of contents.
+            conn.execute(
+                """INSERT INTO content
+                   (ContentID, ContentType, MimeType, BookID, VolumeIndex, Title,
+                    Depth, ___FileSize, ___FileOffset, WordCount, ___PercentRead,
+                    ReadStatus, ___UserID, ChapterIDBookmarked)
+                   VALUES (?, ?, 'application/x-kobo-epub+zip', ?, ?, ?, 1, 0, 0,
+                           -1, 0, 0, '', ?)""",
+                (
+                    _chapter_content_id(content_id, frag) + "-1",
+                    CONTENT_TYPE_TOC,
+                    content_id,
+                    n,
+                    f"Chapter {n} - Title",
+                    _chapter_content_id(content_id, frag),
                 ),
             )
         conn.commit()

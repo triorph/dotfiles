@@ -26,6 +26,11 @@ _log = logging.getLogger("kobo_progress")
 
 DEFAULT_ONBOARD_PREFIX = "file:///mnt/onboard/"
 
+# KoboReader `content.ContentType` values (only these three exist in the DB):
+CONTENT_TYPE_BOOK = "6"  # the book row; holds the reading pointer + NumShortcovers
+CONTENT_TYPE_CHAPTER = "9"  # a chapter's content (one xhtml file)
+CONTENT_TYPE_TOC = "899"  # a navigation/table-of-contents entry (per chapter)
+
 
 _SPLIT_RE = re.compile(r"_split_(\d+)\.x?html")
 
@@ -54,10 +59,10 @@ def derive_content_id(
 
 
 def find_book_row(conn: sqlite3.Connection, content_id: str) -> dict | None:
-    """Return the ``ContentType='6'`` book row for ``content_id`` as a dict, or None."""
+    """Return the book row (``ContentType`` BOOK) for ``content_id`` as a dict, or None."""
     cur = conn.execute(
-        "SELECT * FROM content WHERE ContentID = ? AND ContentType = '6'",
-        (content_id,),
+        "SELECT * FROM content WHERE ContentID = ? AND ContentType = ?",
+        (content_id, CONTENT_TYPE_BOOK),
     )
     row = cur.fetchone()
     return dict(row) if row is not None else None
@@ -77,8 +82,8 @@ def snapshot_progress(conn: sqlite3.Connection, content_id: str) -> dict:
     chapter_progress: dict[int, int] = {}
     cur = conn.execute(
         "SELECT ContentID, ___PercentRead FROM content "
-        "WHERE BookID = ? AND ContentType = '9'",
-        (content_id,),
+        "WHERE BookID = ? AND ContentType = ?",
+        (content_id, CONTENT_TYPE_CHAPTER),
     )
     for chapter_id, percent in cur.fetchall():
         n = _split_number(chapter_id)
@@ -100,8 +105,8 @@ def max_split_number(epub_path: str) -> int:
 def prev_max_split_from_db(conn: sqlite3.Connection, content_id: str) -> int:
     """Return the highest ``split_NNN`` number among the book's chapter rows."""
     cur = conn.execute(
-        "SELECT ContentID FROM content WHERE BookID = ? AND ContentType = '9'",
-        (content_id,),
+        "SELECT ContentID FROM content WHERE BookID = ? AND ContentType = ?",
+        (content_id, CONTENT_TYPE_CHAPTER),
     )
     numbers = [n for (cid,) in cur.fetchall() if (n := _split_number(cid)) is not None]
     return max(numbers) if numbers else -1
@@ -124,28 +129,32 @@ def _fragment_for_split(new_epub_path: str, split_number: int) -> str:
 def compute_resume_pointer(
     snapshot: dict, new_epub_path: str, prev_max_split: int
 ) -> dict:
-    """Return the pointer fields to write after an update (Case A vs Case B).
+    """Return the pointer fields to write after an update.
 
-    - Not finished (mid-book or unread): keep the existing pointer verbatim.
+    Returns an EMPTY dict (leave the book row's progress untouched) unless the
+    book was *finished* and new chapters were added. This avoids clobbering a
+    live intra-chapter position for mid-book/unread books.
+
+    - Not finished (mid-book or unread): {} (no changes).
+    - Finished with no new chapters: {} (no changes).
     - Finished with new chapters: jump to the first new chapter, un-finish.
-    - Finished with no new chapters: no-op (leave everything as-is).
     """
-    out = {field: snapshot.get(field) for field in _POINTER_FIELDS}
     if not is_finished(snapshot):
-        return out
+        return {}
     new_max_split = max_split_number(new_epub_path)
     if new_max_split <= prev_max_split:
-        return out  # finished, nothing new -> leave unchanged
+        return {}  # finished, nothing new -> leave unchanged
     first_new = prev_max_split + 1
-    out["ChapterIDBookmarked"] = _fragment_for_split(new_epub_path, first_new) + "#"
-    out["ReadStatus"] = 1
-    # Approximate progress: position of the first new chapter within the new
-    # total, computed in floating point before rounding.
-    out["___PercentRead"] = round(float(first_new) / float(new_max_split) * 100)
-    out["ParagraphBookmarked"] = 0
-    out["BookmarkWordOffset"] = 0
-    out["CurrentChapterProgress"] = 0.0
-    return out
+    return {
+        "ChapterIDBookmarked": _fragment_for_split(new_epub_path, first_new) + "#",
+        "ReadStatus": 1,
+        # Approximate progress: position of the first new chapter within the new
+        # total, computed in floating point before rounding.
+        "___PercentRead": round(float(first_new) / float(new_max_split) * 100),
+        "ParagraphBookmarked": 0,
+        "BookmarkWordOffset": 0,
+        "CurrentChapterProgress": 0.0,
+    }
 
 
 def apply_update(
@@ -160,9 +169,9 @@ def apply_update(
     updates = {k: v for k, v in pointer_fields.items() if v is not None}
     updates["___FileSize"] = new_file_size
     assignments = ", ".join(f'"{col}" = ?' for col in updates)
-    params = list(updates.values()) + [content_id]
+    params = list(updates.values()) + [content_id, CONTENT_TYPE_BOOK]
     conn.execute(
-        f"UPDATE content SET {assignments} WHERE ContentID = ? AND ContentType = '6'",
+        f"UPDATE content SET {assignments} WHERE ContentID = ? AND ContentType = ?",
         params,
     )
     conn.commit()
@@ -173,17 +182,32 @@ def restore_mtime(file_path: str, original_mtime: float) -> None:
     os.utime(file_path, (original_mtime, original_mtime))
 
 
-def count_words(epub_path: str, fragment: str) -> int:
-    """Return the number of words in the given chapter fragment of the EPUB."""
+def _read_fragment(epub_path: str, fragment: str) -> str:
+    """Return the decoded HTML of the given chapter fragment in the EPUB."""
     with zipfile.ZipFile(epub_path) as zf:
         for name in zf.namelist():
             if os.path.basename(name) == fragment:
-                html = zf.read(name).decode("utf-8", "ignore")
-                break
-        else:
-            raise LookupError(f"{fragment} not found in {epub_path}")
-    text = re.sub(r"<[^>]+>", " ", html)
+                return zf.read(name).decode("utf-8", "ignore")
+    raise LookupError(f"{fragment} not found in {epub_path}")
+
+
+def count_words(epub_path: str, fragment: str) -> int:
+    """Return the number of words in the given chapter fragment of the EPUB."""
+    text = re.sub(r"<[^>]+>", " ", _read_fragment(epub_path, fragment))
     return len(text.split())
+
+
+def chapter_title(epub_path: str, fragment: str) -> str:
+    """Return the chapter's human-readable title (its ``<h1>``), else the fragment.
+
+    The reader lists this text in the table of contents.
+    """
+    m = re.search(
+        r"<h1[^>]*>(.*?)</h1>", _read_fragment(epub_path, fragment), re.I | re.S
+    )
+    if m is None:
+        return fragment
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", m.group(1))).strip()
 
 
 def _mnt_path(content_id: str) -> str:
@@ -214,8 +238,8 @@ def missing_chapter_splits(
     """Return split numbers present in the EPUB but absent from the DB chapter rows."""
     have = set()
     cur = conn.execute(
-        "SELECT ContentID FROM content WHERE BookID = ? AND ContentType = '9'",
-        (content_id,),
+        "SELECT ContentID FROM content WHERE BookID = ? AND ContentType = ?",
+        (content_id, CONTENT_TYPE_CHAPTER),
     )
     for (cid,) in cur.fetchall():
         n = _split_number(cid)
@@ -227,9 +251,10 @@ def missing_chapter_splits(
 def register_new_chapters(
     conn: sqlite3.Connection, content_id: str, new_epub_path: str
 ) -> int:
-    """Insert ContentType='9' rows for appended chapters and bump NumShortcovers.
+    """Insert content + TOC rows for appended chapters and bump NumShortcovers.
 
-    Returns the number of chapters registered.
+    For each new chapter we add a CHAPTER content row and a matching TOC
+    (navigation) row. Returns the number registered.
     """
     book = find_book_row(conn, content_id)
     if book is None:
@@ -237,14 +262,16 @@ def register_new_chapters(
     missing = missing_chapter_splits(conn, content_id, new_epub_path)
     if not missing:
         return 0
-    template = _template_chapter_row(conn, content_id)
+    template = _template_chapter_row(conn, content_id, CONTENT_TYPE_CHAPTER)
+    toc_template = _template_chapter_row(conn, content_id, CONTENT_TYPE_TOC)
     fragments = _epub_splits(new_epub_path)
     for split in missing:
         frag = fragments[split]
+        chapter_cid = _chapter_content_id(content_id, frag)
         row = dict(template)
         # Per-chapter fields; everything else is inherited from the template so
         # NOT NULL / device-specific columns (e.g. ___UserID) are satisfied.
-        row["ContentID"] = _chapter_content_id(content_id, frag)
+        row["ContentID"] = chapter_cid
         row["Title"] = frag
         row["VolumeIndex"] = split + 1
         row["ReadStatus"] = 0
@@ -253,33 +280,48 @@ def register_new_chapters(
         row["___FileOffset"] = 99
         row["___FileSize"] = _chapter_weight(new_epub_path, frag)
         row["WordCount"] = count_words(new_epub_path, frag)
-        cols = list(row)
-        col_list = ", ".join('"' + c + '"' for c in cols)
-        placeholders = ", ".join("?" for _ in cols)
-        conn.execute(
-            f"INSERT INTO content ({col_list}) VALUES ({placeholders})",
-            [row[c] for c in cols],
-        )
+        _insert_content_row(conn, row)
+
+        # Matching table-of-contents row: without it the chapter is reachable by
+        # paging but never listed in the reader's TOC.
+        toc = dict(toc_template)
+        toc["ContentID"] = chapter_cid + "-1"
+        toc["ChapterIDBookmarked"] = chapter_cid
+        toc["Title"] = chapter_title(new_epub_path, frag)
+        toc["VolumeIndex"] = split
+        _insert_content_row(conn, toc)
     new_count = (book["NumShortcovers"] or 0) + len(missing)
     conn.execute(
-        "UPDATE content SET NumShortcovers = ? WHERE ContentID = ? AND ContentType = '6'",
-        (new_count, content_id),
+        "UPDATE content SET NumShortcovers = ? WHERE ContentID = ? AND ContentType = ?",
+        (new_count, content_id, CONTENT_TYPE_BOOK),
     )
     conn.commit()
     return len(missing)
 
 
-def _template_chapter_row(conn: sqlite3.Connection, content_id: str) -> dict:
-    """Return an existing chapter row (as a dict) to use as an insert template."""
+def _template_chapter_row(
+    conn: sqlite3.Connection, content_id: str, content_type: str
+) -> dict:
+    """Return an existing row of ``content_type`` (as a dict) as an insert template."""
     cur = conn.execute(
-        "SELECT * FROM content WHERE BookID = ? AND ContentType = '9' "
+        "SELECT * FROM content WHERE BookID = ? AND ContentType = ? "
         "ORDER BY VolumeIndex DESC LIMIT 1",
-        (content_id,),
+        (content_id, content_type),
     )
     row = cur.fetchone()
     if row is None:
         raise LookupError(f"No existing chapter rows to template for: {content_id}")
     return dict(row)
+
+
+def _insert_content_row(conn: sqlite3.Connection, row: dict) -> None:
+    cols = list(row)
+    col_list = ", ".join('"' + c + '"' for c in cols)
+    placeholders = ", ".join("?" for _ in cols)
+    conn.execute(
+        f"INSERT INTO content ({col_list}) VALUES ({placeholders})",
+        [row[c] for c in cols],
+    )
 
 
 def _chapter_weight(epub_path: str, fragment: str) -> float:
@@ -329,9 +371,7 @@ def preserve_progress(
 
         chapters_registered = register_new_chapters(conn, content_id, dest_path)
         pointer = compute_resume_pointer(snapshot, dest_path, prev_max_split)
-        pointer_changed = pointer.get("ChapterIDBookmarked") != snapshot.get(
-            "ChapterIDBookmarked"
-        )
+        pointer_changed = bool(pointer)  # non-empty -> we moved the pointer
         apply_update(conn, content_id, pointer, os.path.getsize(dest_path))
         restore_mtime(dest_path, original_mtime)
     finally:

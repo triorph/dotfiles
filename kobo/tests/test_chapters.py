@@ -2,7 +2,7 @@
 
 Background (from the real device): when we prevent a re-import (the no-reset
 trick), the KOBO never learns about appended chapters. We must insert a
-``ContentType='9'`` row per new chapter and bump the book row's
+chapter (``CONTENT_TYPE_CHAPTER``) row per new chapter and bump the book row's
 ``NumShortcovers`` (the chapter count), so the reader shows them.
 
 Real chapter-row semantics we decoded:
@@ -42,8 +42,17 @@ def _open(db_path):
 
 def _chapter_rows(conn):
     cur = conn.execute(
-        "SELECT * FROM content WHERE ContentType='9' AND BookID=? ORDER BY VolumeIndex",
-        (BOOK_CID,),
+        "SELECT * FROM content WHERE ContentType=? AND BookID=? ORDER BY VolumeIndex",
+        (kp.CONTENT_TYPE_CHAPTER, BOOK_CID),
+    )
+    return [dict(r) for r in cur.fetchall()]
+
+
+def _toc_rows(conn):
+    """TOC (navigation) rows are the table-of-contents entries."""
+    cur = conn.execute(
+        "SELECT * FROM content WHERE ContentType=? AND BookID=? ORDER BY VolumeIndex",
+        (kp.CONTENT_TYPE_TOC, BOOK_CID),
     )
     return [dict(r) for r in cur.fetchall()]
 
@@ -123,7 +132,7 @@ def test_register_inserts_rows_with_correct_shape(tmp_path):
 
     r = new[frag105]
     assert r["ContentID"] == _chapter_content_id(BOOK_CID, frag105)
-    assert r["ContentType"] == "9"
+    assert r["ContentType"] == kp.CONTENT_TYPE_CHAPTER
     assert r["BookID"] == BOOK_CID
     assert r["MimeType"] == "application/xhtml+xml"
     assert r["VolumeIndex"] == 106  # split_number + 1
@@ -200,3 +209,109 @@ def test_register_no_new_chapters_is_noop(tmp_path):
     after = len(_chapter_rows(conn))
     assert before == after
     assert kp.find_book_row(conn, BOOK_CID)["NumShortcovers"] == 104
+
+
+# ----------------------------- table of contents (899 rows) -----------------------------
+
+
+def _epub_with_titles(path, num_chapters):
+    """An EPUB whose chapters carry an <h1> title, like the real device files."""
+    import zipfile
+
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("mimetype", "application/epub+zip")
+        z.writestr("titlepage.xhtml", "<html><body><div>cover</div></body></html>")
+        for n in range(num_chapters):
+            z.writestr(
+                _chapter_frag(n),
+                f"<html><body><h1>Chapter {n} - The Title</h1><p>body</p></body></html>",
+            )
+
+
+def test_chapter_title_from_h1(tmp_path):
+    """The human-readable TOC title comes from the chapter HTML's <h1>."""
+    epub = str(tmp_path / "book.epub")
+    _epub_with_titles(epub, num_chapters=3)
+    assert kp.chapter_title(epub, _chapter_frag(2)) == "Chapter 2 - The Title"
+
+
+def test_chapter_title_falls_back_to_fragment(tmp_path):
+    """With no <h1>, fall back to the bare fragment name."""
+    epub = str(tmp_path / "book.epub")
+    make_epub(epub, num_chapters=3)  # make_epub chapters have no <h1>
+    assert kp.chapter_title(epub, _chapter_frag(2)) == _chapter_frag(2)
+
+
+def test_register_inserts_toc_rows_with_correct_shape(tmp_path):
+    db = str(tmp_path / "k.sqlite")
+    make_db(
+        db,
+        BOOK_CID,
+        num_chapters=104,
+        file_size=1000,
+        read_status=2,
+        percent=100,
+        chapter_bookmarked="titlepage.xhtml#",
+    )
+    epub = str(tmp_path / "book.epub")
+    _epub_with_titles(epub, num_chapters=106)  # new: split_104, split_105
+    conn = _open(db)
+
+    kp.register_new_chapters(conn, BOOK_CID, epub)
+
+    toc = {r["VolumeIndex"]: r for r in _toc_rows(conn)}
+    frag105 = _chapter_frag(105)
+    # A TOC row must exist for the new chapter, at VolumeIndex == split_number.
+    assert 105 in toc
+    r = toc[105]
+    assert r["ContentType"] == kp.CONTENT_TYPE_TOC
+    assert r["BookID"] == BOOK_CID
+    assert r["ContentID"] == _chapter_content_id(BOOK_CID, frag105) + "-1"
+    assert r["ChapterIDBookmarked"] == _chapter_content_id(BOOK_CID, frag105)
+    assert r["Title"] == "Chapter 105 - The Title"
+    assert r["MimeType"] == "application/x-kobo-epub+zip"
+    assert r["Depth"] == 1
+
+
+def test_register_adds_one_toc_row_per_new_chapter(tmp_path):
+    db = str(tmp_path / "k.sqlite")
+    make_db(
+        db,
+        BOOK_CID,
+        num_chapters=104,
+        file_size=1000,
+        read_status=2,
+        percent=100,
+        chapter_bookmarked="titlepage.xhtml#",
+    )
+    epub = str(tmp_path / "book.epub")
+    _epub_with_titles(epub, num_chapters=107)  # 3 new chapters
+    conn = _open(db)
+
+    before = len(_toc_rows(conn))
+    kp.register_new_chapters(conn, BOOK_CID, epub)
+    after = len(_toc_rows(conn))
+    assert after - before == 3
+
+
+def test_register_toc_rows_are_idempotent(tmp_path):
+    db = str(tmp_path / "k.sqlite")
+    make_db(
+        db,
+        BOOK_CID,
+        num_chapters=104,
+        file_size=1000,
+        read_status=2,
+        percent=100,
+        chapter_bookmarked="titlepage.xhtml#",
+    )
+    epub = str(tmp_path / "book.epub")
+    _epub_with_titles(epub, num_chapters=106)
+    conn = _open(db)
+
+    kp.register_new_chapters(conn, BOOK_CID, epub)
+    kp.register_new_chapters(conn, BOOK_CID, epub)  # second run: nothing new
+
+    ids = [r["ContentID"] for r in _toc_rows(conn)]
+    assert len(ids) == len(set(ids))  # no duplicate TOC rows
+    assert len(_toc_rows(conn)) == 106
