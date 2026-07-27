@@ -30,7 +30,7 @@ def _chapter_frag(n: int) -> str:
 
 def _mnt_path(book_cid: str) -> str:
     """Book ContentID without the file:// scheme (chapter rows use this form)."""
-    return book_cid[len("file://"):] if book_cid.startswith("file://") else book_cid
+    return book_cid[len("file://") :] if book_cid.startswith("file://") else book_cid
 
 
 def _chapter_content_id(book_cid: str, frag: str) -> str:
@@ -49,26 +49,37 @@ def make_epub(path: str, num_chapters: int) -> None:
         z.writestr("titlepage.xhtml", "<html><body><div>cover</div></body></html>")
         z.writestr("page.xhtml", "<html><body><p>front matter</p></body></html>")
         for n in range(num_chapters):
+            # Varied, deterministic word counts so WordCount logic can be tested.
+            words = " ".join(f"word{i}" for i in range(10 + n))
             z.writestr(
                 _chapter_frag(n),
-                f"<html><body><p>chapter {n}</p></body></html>",
+                f"<html><body><p>{words}</p></body></html>",
             )
 
 
 def _build_content_schema(conn: sqlite3.Connection) -> None:
     """Create a minimal ``content`` table with the columns the tool touches."""
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE content (
             ContentID TEXT PRIMARY KEY,
             ContentType TEXT,
             BookID TEXT,
+            BookTitle TEXT,
+            MimeType TEXT,
             VolumeIndex INTEGER,
             Title TEXT,
             ReadStatus INTEGER,
             ___PercentRead INTEGER,
-            ___FileSize INTEGER,
+            ___FileSize REAL,
+            ___FileOffset INTEGER,
             ___NumPages INTEGER,
+            NumShortcovers INTEGER,
+            WordCount INTEGER,
+            Depth INTEGER,
+            FavouritesIndex INTEGER,
+            IsDownloaded TEXT,
+            FirstTimeReading TEXT,
+            ___UserID TEXT NOT NULL,
             ChapterIDBookmarked TEXT,
             ParagraphBookmarked INTEGER,
             BookmarkWordOffset INTEGER,
@@ -78,8 +89,7 @@ def _build_content_schema(conn: sqlite3.Connection) -> None:
             TimesStartedReading INTEGER,
             DateLastRead TEXT
         )
-        """
-    )
+        """)
     conn.execute("CREATE TABLE Bookmark (BookmarkID TEXT, VolumeID TEXT)")
 
 
@@ -104,20 +114,31 @@ def make_db(
     try:
         _build_content_schema(conn)
         # Book row (ContentType 6): ChapterIDBookmarked is a BARE fragment + '#'.
+        # NumShortcovers holds the chapter count.
         conn.execute(
             """INSERT INTO content
-               (ContentID, ContentType, BookID, VolumeIndex, ReadStatus, ___PercentRead,
-                ___FileSize, ___NumPages, ChapterIDBookmarked, ParagraphBookmarked,
-                BookmarkWordOffset, CurrentChapterProgress, adobe_location,
-                TimeSpentReading, TimesStartedReading, DateLastRead)
-               VALUES (?, '6', NULL, -1, ?, ?, ?, -1, ?, 0, 0, 0.0, '', 100, 1, '2026-07-26T21:04:00Z')""",
-            (content_id, read_status, percent, file_size, chapter_bookmarked),
+               (ContentID, ContentType, BookID, BookTitle, MimeType, VolumeIndex,
+                ReadStatus, ___PercentRead, ___FileSize, ___NumPages, NumShortcovers,
+                ___UserID, ChapterIDBookmarked, ParagraphBookmarked, BookmarkWordOffset,
+                CurrentChapterProgress, adobe_location, TimeSpentReading,
+                TimesStartedReading, DateLastRead)
+               VALUES (?, '6', NULL, 'Test Book', 'application/x-kobo-epub+zip', -1,
+                       ?, ?, ?, -1, ?, '', ?, 0, 0, 0.0, '', 100, 1, '2026-07-26T21:04:00Z')""",
+            (
+                content_id,
+                read_status,
+                percent,
+                file_size,
+                num_chapters,
+                chapter_bookmarked,
+            ),
         )
         # Chapter rows (ContentType 9): ContentID uses "<mnt path>!!<frag>".
-        # VolumeIndex 0 = page.xhtml, then splits.
+        # VolumeIndex 0 = page.xhtml, then splits. ___UserID mirrors the device (NOT NULL).
         conn.execute(
-            """INSERT INTO content (ContentID, ContentType, BookID, VolumeIndex, ___PercentRead, ReadStatus)
-               VALUES (?, '9', ?, 0, 0, 0)""",
+            """INSERT INTO content (ContentID, ContentType, MimeType, BookID, VolumeIndex,
+                ___PercentRead, ReadStatus, ___UserID)
+               VALUES (?, '9', 'application/xhtml+xml', ?, 0, 0, 0, '')""",
             (_chapter_content_id(content_id, "page.xhtml"), content_id),
         )
         chapter_progress = chapter_progress or {}
@@ -125,10 +146,16 @@ def make_db(
             frag = _chapter_frag(n)
             conn.execute(
                 """INSERT INTO content
-                   (ContentID, ContentType, BookID, VolumeIndex, Title, ___PercentRead, ReadStatus)
-                   VALUES (?, '9', ?, ?, ?, ?, 0)""",
-                (_chapter_content_id(content_id, frag), content_id, n + 1, frag,
-                 chapter_progress.get(n, 0)),
+                   (ContentID, ContentType, MimeType, BookID, VolumeIndex, Title,
+                    ___PercentRead, ReadStatus, ___UserID)
+                   VALUES (?, '9', 'application/xhtml+xml', ?, ?, ?, ?, 0, '')""",
+                (
+                    _chapter_content_id(content_id, frag),
+                    content_id,
+                    n + 1,
+                    frag,
+                    chapter_progress.get(n, 0),
+                ),
             )
         conn.commit()
     finally:

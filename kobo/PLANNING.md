@@ -2,7 +2,7 @@
 
 > Purpose: give a fresh session (human or AI) enough context to continue this
 > project, verify the assumptions we made, and fix issues as they surface.
-> Last updated: 2026-07-27.
+> Last updated: 2026-07-27 (session 2: chapter registration added).
 
 ## 1. Goal
 
@@ -12,18 +12,32 @@ the KOBO re-import it as a new/"Unread" book, losing the reading position.
 
 ## 2. Current status
 
-**Done (working, 27 tests passing, TDD red→green→refactor):**
+**Done (working, 35 tests passing, TDD red→green→refactor):**
 - Core logic + `preserve_progress` orchestrator + argparse CLI with a `uv` PEP 723
   run shim, all stdlib-only, in `kobo_progress/kobo_progress.py`.
-- Tests in `tests/` (`test_kobo_progress.py` core, `test_orchestration.py` flow).
+- **Chapter registration** (session 2): inserts `ContentType='9'` rows for
+  appended chapters and bumps `NumShortcovers`. Verified against a copy of the
+  real DB + a real book.
+- `logging` module output; `preserve_progress` returns a rich result dict.
+- JSON snapshot sidecar written **next to the source EPUB**.
+- Tests in `tests/` (`test_kobo_progress.py` core, `test_orchestration.py` flow,
+  `test_chapters.py` chapter registration).
 - `README.md` for usage.
+
+**Confirmed since session 1:**
+- **The no-reset trick WORKED on-device** (matching `___FileSize` + restoring
+  mtime → no re-import → progress preserved). But that exposed the follow-on bug:
+  the device never learns about new chapters, hence chapter registration.
 
 **Not done / next candidates:**
 - Wiring into the user's existing Python EPUB-building script + a batch aggregator
   (back up DB once, then loop with `backup=False`).
 - A guard for an absolute `dest` that is NOT under `onboard_root` (currently
   `os.path.relpath` would yield a `../..` path instead of erroring).
-- Validating the untested device assumptions (see §5) — **most important**.
+- Tuning approximate chapter weights (`___FileSize`/`___FileOffset`) if the
+  on-device progress bar looks off (see §5E).
+- Isolating the no-reset trigger (mtime vs size) — it held once but wasn't
+  isolated (see §5A).
 
 ## 3. How things actually work (verified on the user's real device)
 
@@ -39,11 +53,28 @@ Confirmed by inspecting a real `KoboReader.sqlite` + real `.kepub.epub` files:
   fragment + '#'**, e.g. `cleaned-..._split_103.html#` (NOT a full path, no `!!`).
   Other fields: `___PercentRead`, `ReadStatus` (0 unread / 1 reading / 2 finished),
   `ParagraphBookmarked`, `BookmarkWordOffset`, `CurrentChapterProgress`.
-- **`Bookmark` table was EMPTY** for the user's books — position is entirely on the
-  `content` book row. (Keep code tolerant if some book DOES have Bookmark rows.)
+- **`Bookmark` table** holds only user **dog-ears/highlights** (`Type='dogear'`);
+  just 2 rows in the whole DB, none for the serials. It is NOT reading-position
+  state — we deliberately leave it untouched.
 - **Chapters** are Calibre-style `cleaned-..._split_NNN.html`; order is by the
   numeric `NNN` suffix (DB `VolumeIndex` == split number + 1 due to front matter).
   The OPF spine was in reverse order — do NOT rely on OPF order; use `split_NNN`.
+- **Chapter-row schema (for registration).** Each chapter has a `ContentType='9'`
+  row. Key columns and how we fill them for a NEW chapter:
+  - `ContentID` = `<mnt path>!!<frag>`; `BookID` = book `ContentID`; `Title` = frag.
+  - `VolumeIndex` = split_number + 1.
+  - `WordCount` = words in the chapter HTML (we compute; ~close to Kobo's).
+  - `___FileSize` on a chapter row is NOT bytes — it's a **fractional weight**;
+    the sum across chapters ≈ 100. We approximate as word-count share * 100.
+  - `___FileOffset` is an integer bucket that **saturates at 99** near book end;
+    we hardcode 99 for appended-at-end chapters.
+  - `ReadStatus=0`, `___PercentRead=0`, `___NumPages=-1`, `MimeType='application/xhtml+xml'`.
+  - The `content` table has **NOT NULL columns without defaults** (notably
+    **`___UserID`**, real value `''`). To be robust we **copy an existing chapter
+    row of the same book as a template** and override only per-chapter fields, so
+    required/device-specific columns are inherited automatically.
+- **`NumShortcovers`** on the BOOK row = the chapter count. Must be incremented
+  by the number of newly-registered chapters, or new chapters won't display.
 - **The KOBO injects `koboSpan` markup itself at import** (proven: the DB stored
   `titlepage.xhtml#kobo.1.1` while the on-disk titlepage file contained no spans;
   file size matched the DB `___FileSize`, ruling out a stale row). The user's
@@ -77,21 +108,32 @@ Confirmed by inspecting a real `KoboReader.sqlite` + real `.kepub.epub` files:
   `backup=False` and back up once up front.
 - **CLI arg order** is cp-like: `<onboard_root> <src> <dest>` where `src` is the
   local new EPUB and `dest` is the on-device path (relative OR absolute-under-root).
+- **Chapter registration is independent of the pointer logic.** `preserve_progress`
+  ALWAYS calls `register_new_chapters` when there are missing splits — even for a
+  mid-book book (which keeps its pointer). Registration = "make the device aware
+  new chapters exist"; the pointer logic = "where to resume". Two separate steps.
+- **JSON snapshot sidecar** is written next to the SOURCE epub as
+  `<name>.kobo_progress.json` (travels with your build, not the device).
+- **Result dict / logging.** `preserve_progress` returns `snapshot_path`,
+  `backup_path`, `chapters_registered`, `pointer_changed`, `filesize_synced`, and
+  logs a one-line summary via the `logging` module (`kobo_progress` logger).
+- **Approx percent (Case B)** = `round(first_new_split / new_max_split * 100)`,
+  computed in floating point BEFORE rounding (int division would give 0).
+- **Bookmark table left untouched** (dog-ears only, not progress).
 
 ## 5. KEY ASSUMPTIONS (unverified — check these if things break)
 
-**A. The "no-reset" bet (biggest risk).** We assume that setting the DB
-`___FileSize` to match the new file AND restoring the file's original **mtime** is
-enough that the KOBO does NOT re-import the changed file. This was NOT tested on
-the device (user couldn't run experiments at the time).
-- If FALSE, the device re-imports anyway. Mitigation already in place: we also
-  write the correct pointer back, so progress should still be restored after a
-  re-import. But if the re-import happens *after* our DB write and zeroes it, the
-  ordering breaks — see §6.
-- **Experiment to run:** on one book, overwrite with original mtime restored vs.
-  changed; see if progress survives. Then repeat changing file size. This
-  isolates whether mtime and/or size trigger the rescan. There is NO content-hash
-  column in the schema, so hashing is unlikely to be the trigger.
+**A. The "no-reset" bet — CONFIRMED ONCE, not isolated.** Setting the DB
+`___FileSize` to match the new file AND restoring the file's original **mtime**
+stopped a re-import on the tested device: progress was preserved and the book did
+NOT go Unread. Not yet isolated which signal (mtime vs size) is the trigger.
+- Mitigation still in place: we also write the pointer back, so progress is
+  restored even if a future firmware re-imports.
+- **Experiment to isolate:** on one book, overwrite with original mtime restored
+  vs. changed; then repeat changing file size. There is NO content-hash column in
+  the schema, so hashing is unlikely to be the trigger.
+- Consequence of no-reset: the device never learns new chapters → we register
+  them ourselves (see §3 chapter-row schema + `register_new_chapters`).
 
 **B. Deterministic span injection.** We assume unchanged chapters get identical
 device-injected `koboSpan` ids, so a saved pointer resolves post-update. Strongly
@@ -104,10 +146,18 @@ pipeline re-splits or renumbers, both the pointer AND `first new chapter` logic
 break. Verify the pipeline preserves split filenames.
 
 **D. Timing/ordering.** The tool does everything in one invocation while mounted
-(snapshot → backup → overwrite → DB write → mtime restore). It assumes the device
-is NOT actively importing during the DB write, and that no import happens after we
-write. If the KOBO scans on eject and wipes our write, we may need a different
-approach (see §6).
+(snapshot → backup → overwrite → register chapters → DB write → mtime restore).
+It assumes the device is NOT actively importing during the DB write, and that no
+import happens after we write. If the KOBO scans on eject and wipes our write, we
+may need a different approach (see §6).
+
+**E. Approximate chapter weights (registration).** Inserted chapter rows use a
+word-count-proportional `___FileSize` weight and a fixed `___FileOffset=99`. We do
+NOT re-normalise existing chapters' weights (so the total weight can drift above
+100 after several updates). This only affects the **progress-bar proportions**,
+not whether chapters appear. If the on-device progress bar looks wrong, revisit
+`_chapter_weight`/`___FileOffset` (and consider recomputing offsets/weights for
+all chapter rows). Our `WordCount` also differs slightly from Kobo's own parse.
 
 ## 6. If assumptions fail — next-step options
 
@@ -129,15 +179,25 @@ approach (see §6).
 ## 7. Repo map
 
 ```
-kobo_progress/kobo_progress.py   # tool: core fns + preserve_progress + main() CLI
+kobo_progress/kobo_progress.py   # tool: core fns + register_new_chapters +
+                                 #       preserve_progress + main() CLI
 tests/conftest.py                # builds synthetic KoboReader.sqlite + fake EPUBs
-tests/test_kobo_progress.py      # 20 core-logic tests
-tests/test_orchestration.py      # 7 orchestration/flow tests
+tests/test_kobo_progress.py      # core-logic tests (pointer/percent/snapshot)
+tests/test_orchestration.py      # orchestration/flow tests (preserve_progress)
+tests/test_chapters.py           # chapter-registration tests
 README.md                        # user-facing usage
 PLANNING.md                      # this file
 ```
 
-Run tests: `python3 -m pytest tests/ -q`
+Run tests: `python3 -m pytest tests/ -q`  (35 tests). Note: the repo now uses a
+`.venv` via `mise.toml` (python 3.10); if pytest is missing, `uv pip install pytest`.
+
+Key functions in `kobo_progress.py`:
+- `preserve_progress(root, dest, src, backup=)` — the orchestrator/entry point.
+- `register_new_chapters(conn, cid, epub)` — inserts missing chapter rows +
+  bumps `NumShortcovers`; uses `_template_chapter_row` to inherit NOT NULL cols.
+- `missing_chapter_splits`, `count_words`, `_chapter_weight`, `_epub_splits`.
+- `compute_resume_pointer` (Case A/B/no-op), `snapshot_progress`, `apply_update`.
 
 ## 8. Working agreement (from user's global memory)
 
