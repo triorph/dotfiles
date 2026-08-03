@@ -28,7 +28,7 @@ from conftest import (
     make_epub,
 )
 
-from kobo_progress import kobo_progress as kp
+from kobo_progress import BookRow, ChapterRegistrar, ContentType, Epub
 
 BOOK_REL = "onedayokay/Test Book.kepub.epub"
 BOOK_CID = ONBOARD_PREFIX + BOOK_REL
@@ -40,10 +40,18 @@ def _open(db_path):
     return conn
 
 
+def _registrar(conn, epub_path):
+    return ChapterRegistrar(conn, BookRow.from_database(conn, BOOK_CID), Epub(epub_path))
+
+
+def _register(conn, epub_path):
+    return _registrar(conn, epub_path).register()
+
+
 def _chapter_rows(conn):
     cur = conn.execute(
         "SELECT * FROM content WHERE ContentType=? AND BookID=? ORDER BY VolumeIndex",
-        (kp.CONTENT_TYPE_CHAPTER, BOOK_CID),
+        (ContentType.CHAPTER.value, BOOK_CID),
     )
     return [dict(r) for r in cur.fetchall()]
 
@@ -52,7 +60,7 @@ def _toc_rows(conn):
     """TOC (navigation) rows are the table-of-contents entries."""
     cur = conn.execute(
         "SELECT * FROM content WHERE ContentType=? AND BookID=? ORDER BY VolumeIndex",
-        (kp.CONTENT_TYPE_TOC, BOOK_CID),
+        (ContentType.TOC.value, BOOK_CID),
     )
     return [dict(r) for r in cur.fetchall()]
 
@@ -63,7 +71,7 @@ def _toc_rows(conn):
 def test_count_words_in_chapter(tmp_path):
     epub = str(tmp_path / "book.epub")
     make_epub(epub, num_chapters=3)  # chapter n has (10 + n) words
-    assert kp.count_words(epub, _chapter_frag(2)) == 12
+    assert Epub(epub).word_count(_chapter_frag(2)) == 12
 
 
 # ----------------------------- detect missing chapters -----------------------------
@@ -84,7 +92,7 @@ def test_missing_chapter_splits(tmp_path):
     epub = str(tmp_path / "book.epub")
     make_epub(epub, num_chapters=107)  # EPUB has 000..106
     conn = _open(db)
-    assert kp.missing_chapter_splits(conn, BOOK_CID, epub) == [104, 105, 106]
+    assert _registrar(conn, epub).missing_splits() == [104, 105, 106]
 
 
 def test_no_missing_chapters(tmp_path):
@@ -101,7 +109,7 @@ def test_no_missing_chapters(tmp_path):
     epub = str(tmp_path / "book.epub")
     make_epub(epub, num_chapters=104)
     conn = _open(db)
-    assert kp.missing_chapter_splits(conn, BOOK_CID, epub) == []
+    assert _registrar(conn, epub).missing_splits() == []
 
 
 # ----------------------------- register new chapters -----------------------------
@@ -122,7 +130,7 @@ def test_register_inserts_rows_with_correct_shape(tmp_path):
     make_epub(epub, num_chapters=106)  # new: split_104, split_105
     conn = _open(db)
 
-    kp.register_new_chapters(conn, BOOK_CID, epub)
+    _register(conn, epub)
 
     rows = _chapter_rows(conn)
     # split_105 is the new last chapter -> VolumeIndex 106
@@ -132,7 +140,7 @@ def test_register_inserts_rows_with_correct_shape(tmp_path):
 
     r = new[frag105]
     assert r["ContentID"] == _chapter_content_id(BOOK_CID, frag105)
-    assert r["ContentType"] == kp.CONTENT_TYPE_CHAPTER
+    assert r["ContentType"] == ContentType.CHAPTER.value
     assert r["BookID"] == BOOK_CID
     assert r["MimeType"] == "application/xhtml+xml"
     assert r["VolumeIndex"] == 106  # split_number + 1
@@ -157,10 +165,10 @@ def test_register_bumps_numshortcovers(tmp_path):
     make_epub(epub, num_chapters=107)  # 3 new chapters
     conn = _open(db)
 
-    kp.register_new_chapters(conn, BOOK_CID, epub)
+    _register(conn, epub)
 
-    row = kp.find_book_row(conn, BOOK_CID)
-    assert row["NumShortcovers"] == 107
+    book = BookRow.from_database(conn, BOOK_CID)
+    assert book.num_shortcovers == 107
 
 
 def test_register_is_idempotent(tmp_path):
@@ -178,15 +186,15 @@ def test_register_is_idempotent(tmp_path):
     make_epub(epub, num_chapters=106)
     conn = _open(db)
 
-    kp.register_new_chapters(conn, BOOK_CID, epub)
-    kp.register_new_chapters(conn, BOOK_CID, epub)  # second run: nothing new
+    _register(conn, epub)
+    _register(conn, epub)  # second run: nothing new
 
     rows = _chapter_rows(conn)
     titles = [r["Title"] for r in rows]
     # no duplicates
     assert len(titles) == len(set(titles))
-    row = kp.find_book_row(conn, BOOK_CID)
-    assert row["NumShortcovers"] == 106
+    book = BookRow.from_database(conn, BOOK_CID)
+    assert book.num_shortcovers == 106
 
 
 def test_register_no_new_chapters_is_noop(tmp_path):
@@ -205,10 +213,10 @@ def test_register_no_new_chapters_is_noop(tmp_path):
     conn = _open(db)
 
     before = len(_chapter_rows(conn))
-    kp.register_new_chapters(conn, BOOK_CID, epub)
+    _register(conn, epub)
     after = len(_chapter_rows(conn))
     assert before == after
-    assert kp.find_book_row(conn, BOOK_CID)["NumShortcovers"] == 104
+    assert BookRow.from_database(conn, BOOK_CID).num_shortcovers == 104
 
 
 # ----------------------------- table of contents (899 rows) -----------------------------
@@ -232,14 +240,14 @@ def test_chapter_title_from_h1(tmp_path):
     """The human-readable TOC title comes from the chapter HTML's <h1>."""
     epub = str(tmp_path / "book.epub")
     _epub_with_titles(epub, num_chapters=3)
-    assert kp.chapter_title(epub, _chapter_frag(2)) == "Chapter 2 - The Title"
+    assert Epub(epub).title(_chapter_frag(2)) == "Chapter 2 - The Title"
 
 
 def test_chapter_title_falls_back_to_fragment(tmp_path):
     """With no <h1>, fall back to the bare fragment name."""
     epub = str(tmp_path / "book.epub")
     make_epub(epub, num_chapters=3)  # make_epub chapters have no <h1>
-    assert kp.chapter_title(epub, _chapter_frag(2)) == _chapter_frag(2)
+    assert Epub(epub).title(_chapter_frag(2)) == _chapter_frag(2)
 
 
 def test_register_inserts_toc_rows_with_correct_shape(tmp_path):
@@ -257,14 +265,14 @@ def test_register_inserts_toc_rows_with_correct_shape(tmp_path):
     _epub_with_titles(epub, num_chapters=106)  # new: split_104, split_105
     conn = _open(db)
 
-    kp.register_new_chapters(conn, BOOK_CID, epub)
+    _register(conn, epub)
 
     toc = {r["VolumeIndex"]: r for r in _toc_rows(conn)}
     frag105 = _chapter_frag(105)
     # A TOC row must exist for the new chapter, at VolumeIndex == split_number.
     assert 105 in toc
     r = toc[105]
-    assert r["ContentType"] == kp.CONTENT_TYPE_TOC
+    assert r["ContentType"] == ContentType.TOC.value
     assert r["BookID"] == BOOK_CID
     assert r["ContentID"] == _chapter_content_id(BOOK_CID, frag105) + "-1"
     assert r["ChapterIDBookmarked"] == _chapter_content_id(BOOK_CID, frag105)
@@ -289,7 +297,7 @@ def test_register_adds_one_toc_row_per_new_chapter(tmp_path):
     conn = _open(db)
 
     before = len(_toc_rows(conn))
-    kp.register_new_chapters(conn, BOOK_CID, epub)
+    _register(conn, epub)
     after = len(_toc_rows(conn))
     assert after - before == 3
 
@@ -309,8 +317,8 @@ def test_register_toc_rows_are_idempotent(tmp_path):
     _epub_with_titles(epub, num_chapters=106)
     conn = _open(db)
 
-    kp.register_new_chapters(conn, BOOK_CID, epub)
-    kp.register_new_chapters(conn, BOOK_CID, epub)  # second run: nothing new
+    _register(conn, epub)
+    _register(conn, epub)  # second run: nothing new
 
     ids = [r["ContentID"] for r in _toc_rows(conn)]
     assert len(ids) == len(set(ids))  # no duplicate TOC rows

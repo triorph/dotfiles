@@ -8,9 +8,9 @@ agent:
   # Temperature setting for AI model responses (0.0-1.0)
   temperature: 0.3
   # Model ID to use for the agent. See /models command to list available models.
-  modelId: openai-responses-api:gpt-5.5-2026-04-23
+  modelId: anthropic:claude-opus-4-8
   # Optional model variant key selected from dynamic configuration.
-  modelVariant: xhigh
+  modelVariant: null
   # Per-model inference parameter overrides keyed by model ID.
   inferenceConfig: null
   # Enable the deep planning tool for complex task planning

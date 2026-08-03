@@ -12,16 +12,19 @@ the KOBO re-import it as a new/"Unread" book, losing the reading position.
 
 ## 2. Current status
 
-**Done (working, 35 tests passing, TDD red→green→refactor):**
+**Done (working, 54 tests passing, TDD red→green→refactor):**
 - Core logic + `preserve_progress` orchestrator + argparse CLI with a `uv` PEP 723
-  run shim, all stdlib-only, in `kobo_progress/kobo_progress.py`.
-- **Chapter registration** (session 2): inserts `ContentType='9'` rows for
-  appended chapters and bumps `NumShortcovers`. Verified against a copy of the
-  real DB + a real book.
-- `logging` module output; `preserve_progress` returns a rich result dict.
+  run shim, all stdlib-only. **Session 3 split the old single-file module into a
+  package of small classes** (see the repo map in §7); run via
+  `python -m kobo_progress` or `./kobo_progress/__main__.py`.
+- **Chapter registration** (session 2): inserts chapter (`ContentType='9'`) rows
+  for appended chapters and bumps `NumShortcovers`. **Session 3 also inserts the
+  matching TOC (`ContentType='899'`) rows** so new chapters appear in the table
+  of contents. Verified against a copy of the real DB + a real book.
+- `logging` module output; `preserve_progress` returns a `PreserveResult` dataclass.
 - JSON snapshot sidecar written **next to the source EPUB**.
 - Tests in `tests/` (`test_kobo_progress.py` core, `test_orchestration.py` flow,
-  `test_chapters.py` chapter registration).
+  `test_chapters.py` chapter + TOC registration, `test_classes.py` per-class units).
 - `README.md` for usage.
 
 **Confirmed since session 1:**
@@ -179,25 +182,36 @@ all chapter rows). Our `WordCount` also differs slightly from Kobo's own parse.
 ## 7. Repo map
 
 ```
-kobo_progress/kobo_progress.py   # tool: core fns + register_new_chapters +
-                                 #       preserve_progress + main() CLI
+kobo_progress/paths.py           # ContentID / on-device path helpers
+kobo_progress/epub.py            # Epub: reads splits/titles/word counts from the EPUB
+kobo_progress/content_rows.py    # BookRow/ChapterRow/TocChapterRow + ContentType enum
+kobo_progress/progress.py        # Snapshot + compute_resume_pointer (pure logic)
+kobo_progress/orchestrator.py    # preserve_progress + ChapterRegistrar + PreserveResult
+kobo_progress/__init__.py        # public API re-exports
+kobo_progress/__main__.py        # CLI entry point (python -m kobo_progress / direct)
 tests/conftest.py                # builds synthetic KoboReader.sqlite + fake EPUBs
 tests/test_kobo_progress.py      # core-logic tests (pointer/percent/snapshot)
 tests/test_orchestration.py      # orchestration/flow tests (preserve_progress)
-tests/test_chapters.py           # chapter-registration tests
+tests/test_chapters.py           # chapter + TOC registration tests
+tests/test_classes.py            # per-class unit tests (Epub/rows/Snapshot/paths)
 README.md                        # user-facing usage
 PLANNING.md                      # this file
 ```
 
-Run tests: `python3 -m pytest tests/ -q`  (35 tests). Note: the repo now uses a
+Run tests: `python3 -m pytest tests/ -q`  (54 tests). Note: the repo now uses a
 `.venv` via `mise.toml` (python 3.10); if pytest is missing, `uv pip install pytest`.
 
-Key functions in `kobo_progress.py`:
-- `preserve_progress(root, dest, src, backup=)` — the orchestrator/entry point.
-- `register_new_chapters(conn, cid, epub)` — inserts missing chapter rows +
-  bumps `NumShortcovers`; uses `_template_chapter_row` to inherit NOT NULL cols.
-- `missing_chapter_splits`, `count_words`, `_chapter_weight`, `_epub_splits`.
-- `compute_resume_pointer` (Case A/B/no-op), `snapshot_progress`, `apply_update`.
+Key types/functions (session 3: refactored into a package of small classes):
+- `orchestrator.preserve_progress(root, dest, src, backup=)` — entry point;
+  returns a `PreserveResult` dataclass.
+- `orchestrator.ChapterRegistrar` — registers missing chapter + TOC rows and
+  bumps `NumShortcovers`.
+- `content_rows.BookRow/ChapterRow/TocChapterRow` — typed `content`-table rows,
+  each with `from_database`/insert/update; new rows copy a same-kind template
+  row to inherit NOT NULL cols. `ContentType` enum (BOOK=6/CHAPTER=9/TOC=899).
+- `epub.Epub` — `splits`, `max_split`, `title` (from `<h1>`), `word_count`,
+  `chapter_weight`.
+- `progress.Snapshot` + `compute_resume_pointer` (Case A/B/no-op).
 
 ## 8. Working agreement (from user's global memory)
 

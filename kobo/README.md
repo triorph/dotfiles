@@ -19,15 +19,17 @@ While the KOBO is mounted over USB, `kobo_progress`:
    JSON sidecar next to the source EPUB for auditing).
 2. **Backs up** the database (skippable for batch runs).
 3. **Overwrites** the on-device file with your updated EPUB.
-4. **Registers the new chapters** — inserts a `content` row per appended chapter
-   and bumps the book's chapter count (`NumShortcovers`). This is required
-   because the no-reset trick means the device never re-parses the file itself.
+4. **Registers the new chapters** — for each appended chapter it inserts a
+   chapter content row *and* a table-of-contents row, then bumps the book's
+   chapter count (`NumShortcovers`). This is required because the no-reset trick
+   means the device never re-parses the file itself.
 5. **Syncs** the book row's pointer and `___FileSize`, and **restores the file's
    mtime**, so the device does not re-import.
 
 > **Why step 4 matters:** preventing the re-import preserves your progress, but it
 > also means the KOBO never discovers the new chapters on its own. We add them to
-> the database directly so they show up in the reader.
+> the database directly — both the chapter content and the TOC entry — so they
+> show up in the reader *and* in the table of contents.
 
 ### Resume behaviour
 
@@ -42,21 +44,34 @@ While the KOBO is mounted over USB, `kobo_progress`:
 
 ```bash
 # <onboard_root> <src> <dest>   (cp-like ordering: source then destination)
-python3 -m kobo_progress.kobo_progress /Volumes/KOBOeReader ./new_build.epub "onedayokay/Book.kepub.epub"
+python3 -m kobo_progress /Volumes/KOBOeReader ./new_build.epub "onedayokay/Book.kepub.epub"
 
 # dest may also be an absolute path under the onboard root:
-python3 -m kobo_progress.kobo_progress /Volumes/KOBOeReader ./new_build.epub /Volumes/KOBOeReader/onedayokay/Book.kepub.epub
+python3 -m kobo_progress /Volumes/KOBOeReader ./new_build.epub /Volumes/KOBOeReader/onedayokay/Book.kepub.epub
 ```
 
-Direct execution via [uv](https://docs.astral.sh/uv/) (the file carries a PEP 723
-inline-script shim and is executable):
+Direct execution via [uv](https://docs.astral.sh/uv/) (the entry point carries a
+PEP 723 inline-script shim and is executable):
 
 ```bash
-./kobo_progress/kobo_progress.py /Volumes/KOBOeReader ./new_build.epub "onedayokay/Book.kepub.epub"
+./kobo_progress/__main__.py /Volumes/KOBOeReader ./new_build.epub "onedayokay/Book.kepub.epub"
 ```
 
 The tool is standard-library only, so `python3 -m ...` works with no dependencies
 even without uv.
+
+### Code layout
+
+The package is split by responsibility:
+
+| Module | Responsibility |
+| --- | --- |
+| `paths.py` | ContentID / on-device path helpers |
+| `epub.py` | `Epub` — reads chapters, titles, word counts from the EPUB |
+| `content_rows.py` | `BookRow`, `ChapterRow`, `TocChapterRow` + the `ContentType` enum |
+| `progress.py` | `Snapshot` + resume routing (pure logic) |
+| `orchestrator.py` | `preserve_progress` flow + `ChapterRegistrar` + `PreserveResult` |
+| `__main__.py` | CLI entry point |
 
 ### Batch use
 

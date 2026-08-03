@@ -18,11 +18,11 @@ import pytest
 # Make the package importable when running from the repo root.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from kobo_progress.kobo_progress import (  # noqa: E402
-    CONTENT_TYPE_BOOK,
-    CONTENT_TYPE_CHAPTER,
-    CONTENT_TYPE_TOC,
-)
+from kobo_progress import ContentType  # noqa: E402
+
+CONTENT_TYPE_BOOK = ContentType.BOOK.value
+CONTENT_TYPE_CHAPTER = ContentType.CHAPTER.value
+CONTENT_TYPE_TOC = ContentType.TOC.value
 
 ONBOARD_PREFIX = "file:///mnt/onboard/"
 CHAPTER_STEM = "cleaned-testbook_split_"
