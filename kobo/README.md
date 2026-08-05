@@ -19,9 +19,10 @@ While the KOBO is mounted over USB, `kobo_progress`:
    JSON sidecar next to the source EPUB for auditing).
 2. **Backs up** the database (skippable for batch runs).
 3. **Overwrites** the on-device file with your updated EPUB.
-4. **Registers the new chapters** — for each appended chapter it inserts a
-   chapter content row *and* a table-of-contents row, then bumps the book's
-   chapter count (`NumShortcovers`). This is required because the no-reset trick
+4. **Registers the new chapters** — reconciles the database against the EPUB and
+   inserts whatever is missing: a chapter content row and/or a table-of-contents
+   row per chapter, then bumps the book's chapter count (`NumShortcovers`) by the
+   number of genuinely new chapters. This is required because the no-reset trick
    means the device never re-parses the file itself.
 5. **Syncs** the book row's pointer and `___FileSize`, and **restores the file's
    mtime**, so the device does not re-import.
@@ -30,6 +31,12 @@ While the KOBO is mounted over USB, `kobo_progress`:
 > also means the KOBO never discovers the new chapters on its own. We add them to
 > the database directly — both the chapter content and the TOC entry — so they
 > show up in the reader *and* in the table of contents.
+>
+> The content and TOC rows are reconciled **independently**: a chapter gets a
+> content row if it lacks one and a TOC row if it lacks one. So if an earlier run
+> (or an older, buggier version of this tool) added a chapter's content but not
+> its TOC entry, a later run **backfills the missing TOC row** — including gaps in
+> the middle of the book — without needing a full re-import.
 
 ### Resume behaviour
 
@@ -68,9 +75,9 @@ The package is split by responsibility:
 | --- | --- |
 | `paths.py` | ContentID / on-device path helpers |
 | `epub.py` | `Epub` — reads chapters, titles, word counts from the EPUB |
-| `content_rows.py` | `BookRow`, `ChapterRow`, `TocChapterRow` + the `ContentType` enum |
+| `content_rows.py` | `BookRow`, `Pointer`, `ChapterRow`, `TocChapterRow`, the `ContentType` enum, and `existing_chapter_splits`/`existing_toc_splits` |
 | `progress.py` | `Snapshot` + resume routing (pure logic) |
-| `orchestrator.py` | `preserve_progress` flow + `ChapterRegistrar` + `PreserveResult` |
+| `orchestrator.py` | `preserve_progress` flow + `ChapterRegistrar` (independent 9/899 reconcile) + `PreserveResult` |
 | `__main__.py` | CLI entry point |
 
 ### Batch use

@@ -92,7 +92,7 @@ def test_missing_chapter_splits(tmp_path):
     epub = str(tmp_path / "book.epub")
     make_epub(epub, num_chapters=107)  # EPUB has 000..106
     conn = _open(db)
-    assert _registrar(conn, epub).missing_splits() == [104, 105, 106]
+    assert _registrar(conn, epub).missing_chapter_splits() == [104, 105, 106]
 
 
 def test_no_missing_chapters(tmp_path):
@@ -109,7 +109,7 @@ def test_no_missing_chapters(tmp_path):
     epub = str(tmp_path / "book.epub")
     make_epub(epub, num_chapters=104)
     conn = _open(db)
-    assert _registrar(conn, epub).missing_splits() == []
+    assert _registrar(conn, epub).missing_chapter_splits() == []
 
 
 # ----------------------------- register new chapters -----------------------------
@@ -322,4 +322,134 @@ def test_register_toc_rows_are_idempotent(tmp_path):
 
     ids = [r["ContentID"] for r in _toc_rows(conn)]
     assert len(ids) == len(set(ids))  # no duplicate TOC rows
+    assert len(_toc_rows(conn)) == 106
+
+
+def _delete_toc_rows(conn, splits):
+    """Simulate the old buggy tool: chapter (9) rows exist but their 899 rows don't."""
+    for n in splits:
+        conn.execute(
+            "DELETE FROM content WHERE ContentType=? AND ContentID=?",
+            (ContentType.TOC.value, _chapter_content_id(BOOK_CID, _chapter_frag(n)) + "-1"),
+        )
+    conn.commit()
+
+
+def test_register_backfills_toc_for_existing_chapter_rows(tmp_path):
+    """A chapter with a 9 row but no 899 row must still get its TOC row backfilled.
+
+    This is the state left by the previously-buggy tool: it inserted chapter
+    content rows but never the matching TOC rows, so those chapters were missing
+    from the table of contents permanently.
+    """
+    db = str(tmp_path / "k.sqlite")
+    make_db(
+        db,
+        BOOK_CID,
+        num_chapters=104,
+        file_size=1000,
+        read_status=2,
+        percent=100,
+        chapter_bookmarked="titlepage.xhtml#",
+    )
+    conn = _open(db)
+    # Chapters 98..103 have 9 rows but their 899 rows are missing.
+    missing_toc = [98, 99, 100, 101, 102, 103]
+    _delete_toc_rows(conn, missing_toc)
+
+    epub = str(tmp_path / "book.epub")
+    _epub_with_titles(epub, num_chapters=104)  # no NEW chapters vs the DB
+
+    _register(conn, epub)
+
+    toc = {r["VolumeIndex"]: r for r in _toc_rows(conn)}
+    for n in missing_toc:
+        assert n in toc, f"TOC row for split_{n} was not backfilled"
+        assert toc[n]["Title"] == f"Chapter {n} - The Title"
+
+
+def test_register_backfills_interior_toc_gap(tmp_path):
+    """TOC rows for 100 and 104 exist, but 101/102/103 are missing in the middle.
+
+    Backfilling must fill the interior gap, not just append past the last TOC row.
+    """
+    db = str(tmp_path / "k.sqlite")
+    make_db(
+        db,
+        BOOK_CID,
+        num_chapters=105,
+        file_size=1000,
+        read_status=2,
+        percent=100,
+        chapter_bookmarked="titlepage.xhtml#",
+    )
+    conn = _open(db)
+    # Interior gap: 100 and 104 keep their TOC rows; 101/102/103 lose theirs.
+    _delete_toc_rows(conn, [101, 102, 103])
+
+    epub = str(tmp_path / "book.epub")
+    _epub_with_titles(epub, num_chapters=105)  # no genuinely new chapters
+
+    _register(conn, epub)
+
+    toc = {r["VolumeIndex"]: r for r in _toc_rows(conn)}
+    for n in (101, 102, 103):
+        assert n in toc, f"interior TOC gap at split_{n} was not backfilled"
+        assert toc[n]["Title"] == f"Chapter {n} - The Title"
+    # No count change: these chapters already had their content (9) rows.
+    assert BookRow.from_database(conn, BOOK_CID).num_shortcovers == 105
+
+
+def test_register_backfill_toc_does_not_bump_numshortcovers(tmp_path):
+    """Backfilling only TOC rows (9 rows already exist) must not change the count."""
+    db = str(tmp_path / "k.sqlite")
+    make_db(
+        db,
+        BOOK_CID,
+        num_chapters=104,
+        file_size=1000,
+        read_status=2,
+        percent=100,
+        chapter_bookmarked="titlepage.xhtml#",
+    )
+    conn = _open(db)
+    _delete_toc_rows(conn, [100, 101, 102, 103])
+
+    epub = str(tmp_path / "book.epub")
+    _epub_with_titles(epub, num_chapters=104)  # no new chapters
+
+    _register(conn, epub)
+
+    assert BookRow.from_database(conn, BOOK_CID).num_shortcovers == 104
+
+
+def test_register_backfills_toc_and_adds_new_chapters_together(tmp_path):
+    """Mixed case: backfill missing TOC rows AND add genuinely new chapters."""
+    db = str(tmp_path / "k.sqlite")
+    make_db(
+        db,
+        BOOK_CID,
+        num_chapters=104,
+        file_size=1000,
+        read_status=2,
+        percent=100,
+        chapter_bookmarked="titlepage.xhtml#",
+    )
+    conn = _open(db)
+    _delete_toc_rows(conn, [102, 103])  # existing chapters missing TOC rows
+
+    epub = str(tmp_path / "book.epub")
+    _epub_with_titles(epub, num_chapters=106)  # split_104, split_105 are new
+
+    _register(conn, epub)
+
+    toc = {r["VolumeIndex"]: r for r in _toc_rows(conn)}
+    # Backfilled TOC rows for the pre-existing chapters...
+    assert 102 in toc and 103 in toc
+    # ...and new TOC rows for the genuinely new chapters.
+    assert 104 in toc and 105 in toc
+    # Only the 2 genuinely-new chapters count toward NumShortcovers.
+    assert BookRow.from_database(conn, BOOK_CID).num_shortcovers == 106
+    # Every EPUB split now has both a chapter row and a TOC row.
+    assert len(_chapter_rows(conn)) == 106 + 1  # +1 for page.xhtml
     assert len(_toc_rows(conn)) == 106

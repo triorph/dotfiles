@@ -12,7 +12,7 @@ the KOBO re-import it as a new/"Unread" book, losing the reading position.
 
 ## 2. Current status
 
-**Done (working, 54 tests passing, TDD red→green→refactor):**
+**Done (working, 59 tests passing, TDD red→green→refactor):**
 - Core logic + `preserve_progress` orchestrator + argparse CLI with a `uv` PEP 723
   run shim, all stdlib-only. **Session 3 split the old single-file module into a
   package of small classes** (see the repo map in §7); run via
@@ -21,8 +21,23 @@ the KOBO re-import it as a new/"Unread" book, losing the reading position.
   for appended chapters and bumps `NumShortcovers`. **Session 3 also inserts the
   matching TOC (`ContentType='899'`) rows** so new chapters appear in the table
   of contents. Verified against a copy of the real DB + a real book.
+- **Independent 9/899 reconcile + TOC backfill** (session 5): `ChapterRegistrar`
+  now diffs the EPUB against the chapter rows and the TOC rows *separately*
+  (`missing_chapter_splits` / `missing_toc_splits`), inserting whichever is
+  missing per split. This **backfills TOC rows** for chapters an earlier/buggier
+  run gave a content row but no TOC entry — including gaps in the middle of the
+  book. `NumShortcovers` bumps only by the count of new chapter (9) rows; a
+  TOC-only backfill does not change it.
+- **Typed rows + explicit SQL** (session 4): the `content` table is accessed
+  through typed dataclasses (`BookRow`, `Pointer`) rather than raw dicts. Reads do
+  `SELECT *` and pull out only the fields we use; writes are plain, hand-written
+  `UPDATE`/`INSERT` (no dynamic string building except the template-copy insert,
+  which must inherit unknown NOT NULL columns). `BookRow.apply_pointer` has two
+  explicit states via `update_pointer: bool` — write the whole pointer +
+  `___FileSize`, or sync `___FileSize` only (leaving the reading position alone).
 - `logging` module output; `preserve_progress` returns a `PreserveResult` dataclass.
-- JSON snapshot sidecar written **next to the source EPUB**.
+- JSON snapshot sidecar written **next to the source EPUB** (keyed by SQLite
+  column names, via `Pointer.as_snapshot_dict`).
 - Tests in `tests/` (`test_kobo_progress.py` core, `test_orchestration.py` flow,
   `test_chapters.py` chapter + TOC registration, `test_classes.py` per-class units).
 - `README.md` for usage.
@@ -198,14 +213,16 @@ README.md                        # user-facing usage
 PLANNING.md                      # this file
 ```
 
-Run tests: `python3 -m pytest tests/ -q`  (54 tests). Note: the repo now uses a
+Run tests: `python3 -m pytest tests/ -q`  (59 tests). Note: the repo now uses a
 `.venv` via `mise.toml` (python 3.10); if pytest is missing, `uv pip install pytest`.
 
 Key types/functions (session 3: refactored into a package of small classes):
 - `orchestrator.preserve_progress(root, dest, src, backup=)` — entry point;
   returns a `PreserveResult` dataclass.
-- `orchestrator.ChapterRegistrar` — registers missing chapter + TOC rows and
-  bumps `NumShortcovers`.
+- `orchestrator.ChapterRegistrar` — reconciles chapter (9) and TOC (899) rows
+  against the EPUB *independently* (`missing_chapter_splits`/`missing_toc_splits`),
+  inserting whichever is missing per split (backfills TOC-only gaps). Bumps
+  `NumShortcovers` only by the count of new chapter rows.
 - `content_rows.BookRow/ChapterRow/TocChapterRow` — typed `content`-table rows,
   each with `from_database`/insert/update; new rows copy a same-kind template
   row to inherit NOT NULL cols. `ContentType` enum (BOOK=6/CHAPTER=9/TOC=899).

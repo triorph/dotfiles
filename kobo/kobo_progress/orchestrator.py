@@ -16,6 +16,7 @@ from .content_rows import (
     ChapterRow,
     TocChapterRow,
     existing_chapter_splits,
+    existing_toc_splits,
 )
 from .epub import Epub
 from .progress import Snapshot, compute_resume_pointer
@@ -35,11 +36,13 @@ class PreserveResult:
 
 
 class ChapterRegistrar:
-    """Registers appended chapters (content + TOC rows) for a book.
+    """Reconciles a book's chapter (9) and TOC (899) rows against the EPUB.
 
     Preventing the device re-import means the KOBO never learns about new
-    chapters, so we insert the rows it would have created and bump the book's
-    chapter count (``NumShortcovers``).
+    chapters, so we insert the rows it would have created. The two row types are
+    reconciled *independently*: a chapter needs a content row if it lacks one and
+    a TOC row if it lacks one. This also backfills TOC rows for chapters an older
+    (buggy) run added content rows for but never gave a TOC entry.
     """
 
     def __init__(self, conn: sqlite3.Connection, book: BookRow, epub: Epub) -> None:
@@ -47,30 +50,38 @@ class ChapterRegistrar:
         self.book = book
         self.epub = epub
 
-    def missing_splits(self) -> list[int]:
-        """Split numbers present in the EPUB but absent from the DB chapter rows."""
+    def missing_chapter_splits(self) -> list[int]:
+        """EPUB splits with no chapter (9) row yet."""
         have = existing_chapter_splits(self.conn, self.book.content_id)
         return sorted(n for n in self.epub.splits() if n not in have)
 
+    def missing_toc_splits(self) -> list[int]:
+        """EPUB splits with no TOC (899) row yet."""
+        have = existing_toc_splits(self.conn, self.book.content_id)
+        return sorted(n for n in self.epub.splits() if n not in have)
+
     def register(self) -> int:
-        """Insert a chapter + TOC row for each missing split; bump NumShortcovers."""
-        missing = self.missing_splits()
-        if not missing:
-            return 0
+        """Insert any missing chapter/TOC rows; bump NumShortcovers per new chapter.
+
+        Returns the number of new chapter (9) rows inserted. TOC backfills do not
+        count as new chapters and do not change NumShortcovers.
+        """
         fragments = self.epub.splits()
-        for split in missing:
-            frag = fragments[split]
+        new_chapters = self.missing_chapter_splits()
+        for split in new_chapters:
             ChapterRow.for_split(
-                self.conn, self.book.content_id, self.epub, split, frag
+                self.conn, self.book.content_id, self.epub, split, fragments[split]
             ).insert(self.conn)
+        for split in self.missing_toc_splits():
             TocChapterRow.for_split(
-                self.conn, self.book.content_id, self.epub, split, frag
+                self.conn, self.book.content_id, self.epub, split, fragments[split]
             ).insert(self.conn)
-        self.book.set_num_shortcovers(
-            self.conn, self.book.num_shortcovers + len(missing)
-        )
+        if new_chapters:
+            self.book.set_num_shortcovers(
+                self.conn, self.book.num_shortcovers + len(new_chapters)
+            )
         self.conn.commit()
-        return len(missing)
+        return len(new_chapters)
 
 
 def prev_max_split(conn: sqlite3.Connection, book_content_id: str) -> int:

@@ -114,6 +114,9 @@ console:
 logging:
   # Path to the log file
   path: /Users/mwalsh2/.rovo/logs/.rovo.log
+  # Minimum severity printed to stderr in non-interactive mode; 'NONE' disables
+  # it. Does not affect the log file. Overridable via ROVO_DEV_STDERR_LOG_LEVEL.
+  stderrLevel: ERROR
 # Model Context Protocol server configuration
 mcp:
   # Path to the MCP (Model Context Protocol) configuration file

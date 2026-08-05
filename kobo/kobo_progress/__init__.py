@@ -15,6 +15,7 @@ from .content_rows import (
     TocChapterRow,
     chapter_progress,
     existing_chapter_splits,
+    existing_toc_splits,
 )
 from .epub import Epub, split_number
 from .orchestrator import (
@@ -49,6 +50,7 @@ __all__ = [
     "compute_resume_pointer",
     "derive_content_id",
     "existing_chapter_splits",
+    "existing_toc_splits",
     "mnt_path",
     "prev_max_split",
     "preserve_progress",

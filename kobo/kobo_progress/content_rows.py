@@ -207,15 +207,29 @@ def _insert_row(conn: sqlite3.Connection, row: dict) -> None:
     )
 
 
+def _existing_splits(
+    conn: sqlite3.Connection, book_content_id: str, content_type: ContentType
+) -> set[int]:
+    """Return the split numbers already present for a given row type."""
+    cur = conn.execute(
+        "SELECT ContentID FROM content WHERE BookID = ? AND ContentType = ?",
+        (book_content_id, content_type.value),
+    )
+    return {n for (cid,) in cur.fetchall() if (n := split_number(cid)) is not None}
+
+
 def existing_chapter_splits(
     conn: sqlite3.Connection, book_content_id: str
 ) -> set[int]:
-    """Return the split numbers that already have a chapter row."""
-    cur = conn.execute(
-        "SELECT ContentID FROM content WHERE BookID = ? AND ContentType = ?",
-        (book_content_id, ContentType.CHAPTER.value),
-    )
-    return {n for (cid,) in cur.fetchall() if (n := split_number(cid)) is not None}
+    """Return the split numbers that already have a chapter (9) row."""
+    return _existing_splits(conn, book_content_id, ContentType.CHAPTER)
+
+
+def existing_toc_splits(
+    conn: sqlite3.Connection, book_content_id: str
+) -> set[int]:
+    """Return the split numbers that already have a TOC (899) row."""
+    return _existing_splits(conn, book_content_id, ContentType.TOC)
 
 
 def chapter_progress(
