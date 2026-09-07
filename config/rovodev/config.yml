@@ -229,9 +229,9 @@ eventHooks:
   events:
     - name: on_tool_start
       commands:
-        - command: /Users/mwalsh2/.rovodev/hooks/aloc-managed/post_to_aloc.sh
         - command: /Users/mwalsh2/.rovo/hooks/aloc-managed/post_to_aloc.sh
+        - command: /Users/mwalsh2/.rovodev/hooks/aloc-managed/post_to_aloc.sh
     - name: on_tool_end
       commands:
-        - command: /Users/mwalsh2/.rovodev/hooks/aloc-managed/post_to_aloc.sh
         - command: /Users/mwalsh2/.rovo/hooks/aloc-managed/post_to_aloc.sh
+        - command: /Users/mwalsh2/.rovodev/hooks/aloc-managed/post_to_aloc.sh

@@ -1,11 +1,11 @@
 package homeassistant
 
-fun turnOffOfficeHeatpumpOnTimer() =
+fun turnOffOfficeHeatpumpOnTimer(time: String = "17:00:00") =
     automation(
-        id = "timer_office_heatpump_off",
-        alias = "Turn off office heatpump on timer",
+        id = "timer_office_heatpump_off_${time.take(2)}",
+        alias = "Turn off office heatpump on timer - $time",
     ) {
-        triggers(timeTrigger("17:00:00"))
+        triggers(timeTrigger(time))
         conditions(officeHeatpumpIsOn())
         actions(turnOffOfficeHeatpumpEntity())
     }
@@ -137,7 +137,8 @@ fun washingMachineRan() =
             GenericAction(
                 mapOf(
                     "action" to "input_boolean.turn_on",
-                    "target" to entityTarget("input_boolean.washing_machine_ran_today"),
+                    "target" to
+                        entityTarget("input_boolean.washing_machine_ran_today"),
                 ),
             ),
         )
@@ -158,7 +159,8 @@ fun bringInWashing() =
             GenericAction(
                 mapOf(
                     "action" to "input_boolean.turn_off",
-                    "target" to entityTarget("input_boolean.washing_machine_ran_today"),
+                    "target" to
+                        entityTarget("input_boolean.washing_machine_ran_today"),
                 ),
             ),
             notifyMikesPhone("Bring in the washing"),
@@ -167,14 +169,18 @@ fun bringInWashing() =
 
 fun automations(): List<Automation> =
     listOf(
-        turnOffOfficeHeatpumpOnTimer(),
+        turnOffOfficeHeatpumpOnTimer("17:00:00"),
+        turnOffOfficeHeatpumpOnTimer("18:00:00"),
+        turnOffOfficeHeatpumpOnTimer("20:00:00"),
+        turnOffOfficeHeatpumpOnTimer("22:00:00"),
+        turnOffOfficeHeatpumpOnTimer("00:00:00"),
         decreaseLampBrightness(),
         increaseLampBrightness(),
         toggleBedroomMikeLamplight(),
         toggleDownstairsLamp(),
         setLightNewColour("dining_room_lamp"),
         advancedCycleColours(),
-        notifyHeatpumpCanBeTurnedOff(),
+        // notifyHeatpumpCanBeTurnedOff(),
         turnOnMikesOfficeGenericThermostat(),
         turnOffMikesOfficeGenericThermostat(),
         bringInWashing(),

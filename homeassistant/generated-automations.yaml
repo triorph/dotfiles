@@ -1,9 +1,89 @@
-- id: "timer_office_heatpump_off"
-  alias: "Turn off office heatpump on timer"
+- id: "timer_office_heatpump_off_17"
+  alias: "Turn off office heatpump on timer - 17:00:00"
   description: ""
   triggers:
   - trigger: "time"
     at: "17:00:00"
+  conditions:
+  - condition: "climate.is_on"
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    options:
+      behavior: "any"
+      for: "00:00:00"
+  actions:
+  - action: "climate.turn_off"
+    metadata: {}
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    data: {}
+  mode: "single"
+- id: "timer_office_heatpump_off_18"
+  alias: "Turn off office heatpump on timer - 18:00:00"
+  description: ""
+  triggers:
+  - trigger: "time"
+    at: "18:00:00"
+  conditions:
+  - condition: "climate.is_on"
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    options:
+      behavior: "any"
+      for: "00:00:00"
+  actions:
+  - action: "climate.turn_off"
+    metadata: {}
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    data: {}
+  mode: "single"
+- id: "timer_office_heatpump_off_20"
+  alias: "Turn off office heatpump on timer - 20:00:00"
+  description: ""
+  triggers:
+  - trigger: "time"
+    at: "20:00:00"
+  conditions:
+  - condition: "climate.is_on"
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    options:
+      behavior: "any"
+      for: "00:00:00"
+  actions:
+  - action: "climate.turn_off"
+    metadata: {}
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    data: {}
+  mode: "single"
+- id: "timer_office_heatpump_off_22"
+  alias: "Turn off office heatpump on timer - 22:00:00"
+  description: ""
+  triggers:
+  - trigger: "time"
+    at: "22:00:00"
+  conditions:
+  - condition: "climate.is_on"
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    options:
+      behavior: "any"
+      for: "00:00:00"
+  actions:
+  - action: "climate.turn_off"
+    metadata: {}
+    target:
+      entity_id: "climate.mike_s_office_heatpump_mike_s_office_mike_s_office_heater"
+    data: {}
+  mode: "single"
+- id: "timer_office_heatpump_off_00"
+  alias: "Turn off office heatpump on timer - 00:00:00"
+  description: ""
+  triggers:
+  - trigger: "time"
+    at: "00:00:00"
   conditions:
   - condition: "climate.is_on"
     target:
@@ -188,37 +268,6 @@
       value: "{% set idx = states('input_number.downstairs_light_colour_index') |\
         \ int + 1 %} {% set idx = idx % colour_cycle | length %} {{ idx }}\n"
   mode: "single"
-- id: "heatpump_notify_turn_off"
-  alias: "Downstairs heat pump - notify can be turned off at 18 degrees"
-  description: ""
-  triggers:
-  - trigger: "temperature.crossed_threshold"
-    target:
-      entity_id: "sensor.living_room_temperature_temperature"
-    options:
-      behavior: "each"
-      threshold:
-        value:
-          active_choice: "number"
-          number: 18
-          unit_of_measurement: "°C"
-        type: "above"
-      for:
-        hours: 0
-        minutes: 10
-        seconds: 0
-  conditions:
-  - condition: "time"
-    after: "09:00:00"
-    before: "17:00:00"
-  actions:
-  - action: "notify.send_message"
-    metadata: {}
-    target:
-      device_id: "449719a7d011795e08e37c0f114f4771"
-    data:
-      message: "Downstairs heat reached threshold "
-  mode: "single"
 - id: "turn_on_mikes_office_generic_thermostat"
   alias: "Mike's office thermostat - Turn on when clicking office dial"
   description: ""
@@ -255,7 +304,7 @@
   triggers:
   - trigger: "sun"
     event: "sunset"
-    offset: 0
+    offset: -10
   conditions:
   - condition: "switch.is_on"
     target:
