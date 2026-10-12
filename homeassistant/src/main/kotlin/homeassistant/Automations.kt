@@ -160,12 +160,8 @@ fun bringInWashing() =
         triggers(sunsetTrigger())
         conditions(washingMachineRanCondition())
         actions(
-            GenericAction(
-                mapOf(
-                    "action" to "input_boolean.turn_off",
-                    "target" to
-                        entityTarget("input_boolean.washing_machine_ran_today"),
-                ),
+            InputBooleanTurnOffAction(
+                EntityTarget("input_boolean.washing_machine_ran_today"),
             ),
             notifyMikesPhone("Bring in the washing"),
         )
@@ -174,14 +170,7 @@ fun bringInWashing() =
 fun markBertieDone() =
     automation("mark_bertie_done", "Mark bertie as done after 3 hours of idle activity") {
         triggers(TimerFinishedTrigger(EntityTarget("timer.mark_bertie_done")))
-        actions(
-            GenericAction(
-                mapOf(
-                    "action" to "input_boolean.turn_off",
-                    "target" to entityTarget("input_boolean.bertie_state"),
-                ),
-            ),
-        )
+        actions(InputBooleanTurnOffAction(EntityTarget("input_boolean.bertie_state")))
     }
 
 fun automations(): List<Automation> =

@@ -305,7 +305,7 @@
   triggers:
   - trigger: "sun"
     event: "sunset"
-    offset: -10
+    offset: -60
   conditions:
   - condition: "switch.is_on"
     target:
@@ -371,4 +371,18 @@
   - action: "input_boolean.turn_on"
     target:
       entity_id: "input_boolean.washing_machine_ran_today"
+  mode: "single"
+- id: "mark_bertie_done"
+  alias: "Mark bertie as done after 3 hours of idle activity"
+  description: ""
+  triggers:
+  - trigger: "timer.finished"
+    target:
+      entity_id: "timer.mark_bertie_done"
+    options:
+      for: "00:00:00"
+  actions:
+  - action: "input_boolean.turn_off"
+    target:
+      entity_id: "input_boolean.bertie_state"
   mode: "single"

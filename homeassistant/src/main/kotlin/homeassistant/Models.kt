@@ -107,7 +107,7 @@ data class TimerFinishedTrigger(
 
 @JsonPropertyOrder("for")
 data class TimerOptions(
-    @param:JsonProperty("for") val duration: Duration = Duration(),
+    @param:JsonProperty("for") val duration: String = "00:00:00",
 )
 
 @JsonPropertyOrder("trigger", "entity_id")
@@ -294,4 +294,13 @@ data class SwitchDeviceAction(
     val entityId: String,
 ) : Action {
     val domain: String = "switch"
+}
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonPropertyOrder("action", "target", "continue_on_error")
+data class InputBooleanTurnOffAction(
+    val target: EntityTarget,
+    override val continueOnError: Boolean? = null,
+) : BaseAction(continueOnError) {
+    val action: String = "input_boolean.turn_off"
 }
