@@ -24,7 +24,7 @@ fun washingMachineCurrentBelowThresholdTrigger() =
         ),
     )
 
-fun sunsetTrigger() = GenericTrigger(mapOf("trigger" to "sun", "event" to "sunset", "offset" to -10))
+fun sunsetTrigger() = GenericTrigger(mapOf("trigger" to "sun", "event" to "sunset", "offset" to -60))
 
 fun temperatureCrossedThresholdTrigger(
     target: Target,

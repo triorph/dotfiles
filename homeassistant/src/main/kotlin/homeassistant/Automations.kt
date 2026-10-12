@@ -1,5 +1,7 @@
 package homeassistant
 
+const val DINING_ROOM_LAMPS = "dining_room_lamps"
+
 fun turnOffOfficeHeatpumpOnTimer(time: String = "17:00:00") =
     automation(
         id = "timer_office_heatpump_off_${time.take(2)}",
@@ -17,7 +19,7 @@ fun decreaseLampBrightness() =
     ) {
         triggers(downstairsDialTurnLeft())
         actions(
-            adjustLightBrightness("light.dining_room_lamp", brightnessStepPct = -20),
+            adjustLightBrightness("light.$DINING_ROOM_LAMPS", brightnessStepPct = -20),
         )
     }
 
@@ -28,7 +30,7 @@ fun increaseLampBrightness() =
     ) {
         triggers(downstairsDialTurnRight())
         actions(
-            adjustLightBrightness("light.dining_room_lamp", brightnessStepPct = 20),
+            adjustLightBrightness("light.$DINING_ROOM_LAMPS", brightnessStepPct = 20),
         )
     }
 
@@ -41,7 +43,9 @@ fun toggleBedroomMikeLamplight() =
             bedroomButtonClick(),
             upstairsButtonClick(),
         )
-        actions(toggleMikeLamp())
+        actions(
+            toggleLight("light.mike_bedroom_lamp_bulb"),
+        )
     }
 
 fun toggleDownstairsLamp() =
@@ -54,7 +58,7 @@ fun toggleDownstairsLamp() =
             upstairsButtonDoubleClick(),
         )
         actions(
-            toggleLight("light.dining_room_lamp"),
+            toggleLight("light.$DINING_ROOM_LAMPS"),
         )
     }
 
@@ -167,6 +171,19 @@ fun bringInWashing() =
         )
     }
 
+fun markBertieDone() =
+    automation("mark_bertie_done", "Mark bertie as done after 3 hours of idle activity") {
+        triggers(TimerFinishedTrigger(EntityTarget("timer.mark_bertie_done")))
+        actions(
+            GenericAction(
+                mapOf(
+                    "action" to "input_boolean.turn_off",
+                    "target" to entityTarget("input_boolean.bertie_state"),
+                ),
+            ),
+        )
+    }
+
 fun automations(): List<Automation> =
     listOf(
         turnOffOfficeHeatpumpOnTimer("17:00:00"),
@@ -178,7 +195,7 @@ fun automations(): List<Automation> =
         increaseLampBrightness(),
         toggleBedroomMikeLamplight(),
         toggleDownstairsLamp(),
-        setLightNewColour("dining_room_lamp"),
+        setLightNewColour(DINING_ROOM_LAMPS),
         advancedCycleColours(),
         // notifyHeatpumpCanBeTurnedOff(),
         turnOnMikesOfficeGenericThermostat(),
@@ -186,4 +203,5 @@ fun automations(): List<Automation> =
         bringInWashing(),
         hangUpWashing(),
         washingMachineRan(),
+        markBertieDone(),
     )

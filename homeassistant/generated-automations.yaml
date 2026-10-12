@@ -110,7 +110,7 @@
   - action: "light.turn_on"
     metadata: {}
     target:
-      entity_id: "light.dining_room_lamp"
+      entity_id: "light.dining_room_lamps"
     data:
       brightness_step_pct: -20
   mode: "single"
@@ -126,7 +126,7 @@
   - action: "light.turn_on"
     metadata: {}
     target:
-      entity_id: "light.dining_room_lamp"
+      entity_id: "light.dining_room_lamps"
     data:
       brightness_step_pct: 20
   mode: "single"
@@ -143,10 +143,11 @@
       payload: "single"
       topic: "zigbee2mqtt/upstairs_button/action"
   actions:
-  - type: "toggle"
-    device_id: "031c1ac1d2d680ac6e1e46c6e6d3aa02"
-    entity_id: "e69405549714c4cac9d823a8d62d6a02"
-    domain: "switch"
+  - action: "light.toggle"
+    metadata: {}
+    target:
+      entity_id: "light.mike_bedroom_lamp_bulb"
+    data: {}
   mode: "single"
 - id: "toggle_downstairs_lamp"
   alias: "Downstairs lamp - toggle on when double press buttons"
@@ -164,11 +165,11 @@
   - action: "light.toggle"
     metadata: {}
     target:
-      entity_id: "light.dining_room_lamp"
+      entity_id: "light.dining_room_lamps"
     data: {}
   mode: "single"
-- id: "dining_room_lamp_lamp_colour"
-  alias: "dining_room_lamp - Set to new colour"
+- id: "dining_room_lamps_lamp_colour"
+  alias: "dining_room_lamps - Set to new colour"
   description: ""
   triggers:
   - trigger: "state"
@@ -176,7 +177,7 @@
   conditions:
   - condition: "light.is_on"
     target:
-      entity_id: "light.dining_room_lamp"
+      entity_id: "light.dining_room_lamps"
   variables:
     colour:
     - 255
@@ -214,7 +215,7 @@
   - action: "light.turn_on"
     metadata: {}
     target:
-      entity_id: "light.dining_room_lamp"
+      entity_id: "light.dining_room_lamps"
     data:
       rgb_color: "{% set idx = states('input_number.downstairs_light_colour_index')\
         \ | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour =\

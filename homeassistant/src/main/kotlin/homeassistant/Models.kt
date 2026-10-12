@@ -7,12 +7,20 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder("id", "alias", "description", "triggers", "conditions", "variables", "actions", "mode")
+@JsonPropertyOrder(
+    "id",
+    "alias",
+    "description",
+    "triggers",
+    "conditions",
+    "variables",
+    "actions",
+    "mode",
+)
 data class Automation(
     val id: String,
     val alias: String? = null,
-    @get:JsonInclude(JsonInclude.Include.ALWAYS)
-    val description: String = "",
+    @get:JsonInclude(JsonInclude.Include.ALWAYS) val description: String = "",
     val triggers: List<Trigger> = emptyList(),
     val conditions: List<Condition> = emptyList(),
     val variables: Map<String, Any?> = emptyMap(),
@@ -29,33 +37,26 @@ interface Variable
 interface Action
 
 abstract class BaseAction(
-    @get:JsonInclude(JsonInclude.Include.NON_NULL)
-    open val continueOnError: Boolean? = null,
+    @get:JsonInclude(JsonInclude.Include.NON_NULL) open val continueOnError: Boolean? = null,
 ) : Action
 
 data class GenericTrigger(
-    @get:JsonIgnore
-    val values: Map<String, Any?>,
+    @get:JsonIgnore val values: Map<String, Any?>,
 ) : Trigger {
-    @JsonAnyGetter
-    fun properties(): Map<String, Any?> = values
+    @JsonAnyGetter fun properties(): Map<String, Any?> = values
 }
 
 data class GenericCondition(
-    @get:JsonIgnore
-    val values: Map<String, Any?>,
+    @get:JsonIgnore val values: Map<String, Any?>,
 ) : Condition {
-    @JsonAnyGetter
-    fun properties(): Map<String, Any?> = values
+    @JsonAnyGetter fun properties(): Map<String, Any?> = values
 }
 
 data class GenericAction(
-    @get:JsonIgnore
-    val values: Map<String, Any?>,
+    @get:JsonIgnore val values: Map<String, Any?>,
     override val continueOnError: Boolean? = null,
 ) : BaseAction(continueOnError) {
-    @JsonAnyGetter
-    fun properties(): Map<String, Any?> = values
+    @JsonAnyGetter fun properties(): Map<String, Any?> = values
 }
 
 @JsonPropertyOrder("device_id", "domain", "type", "subtype", "trigger")
@@ -96,6 +97,19 @@ data class TimeTrigger(
     val trigger: String = "time"
 }
 
+@JsonPropertyOrder("trigger", "target", "options")
+data class TimerFinishedTrigger(
+    val target: EntityTarget,
+    val options: TimerOptions = TimerOptions(),
+) : Trigger {
+    val trigger: String = "timer.finished"
+}
+
+@JsonPropertyOrder("for")
+data class TimerOptions(
+    @param:JsonProperty("for") val duration: Duration = Duration(),
+)
+
 @JsonPropertyOrder("trigger", "entity_id")
 data class StateTrigger(
     val entityId: String,
@@ -121,8 +135,7 @@ data class ClimateIsOnCondition(
 
 data class ConditionOptions(
     val behavior: String = "any",
-    @param:JsonProperty("for")
-    val duration: String = "00:00:00",
+    @param:JsonProperty("for") val duration: String = "00:00:00",
 )
 
 @JsonPropertyOrder("trigger", "target")
@@ -157,11 +170,9 @@ data class LightIsOnCondition(
 @JsonPropertyOrder("action", "metadata", "target", "data", "continue_on_error")
 data class LightAction(
     val action: String,
-    @get:JsonInclude(JsonInclude.Include.ALWAYS)
-    val metadata: Map<String, Any?> = emptyMap(),
+    @get:JsonInclude(JsonInclude.Include.ALWAYS) val metadata: Map<String, Any?> = emptyMap(),
     val target: Target,
-    @get:JsonInclude(JsonInclude.Include.ALWAYS)
-    val data: Map<String, Any?> = emptyMap(),
+    @get:JsonInclude(JsonInclude.Include.ALWAYS) val data: Map<String, Any?> = emptyMap(),
     override val continueOnError: Boolean? = null,
 ) : BaseAction(continueOnError)
 
@@ -169,11 +180,9 @@ data class LightAction(
 @JsonPropertyOrder("action", "metadata", "target", "data", "continue_on_error")
 data class ServiceAction(
     val action: String,
-    @get:JsonInclude(JsonInclude.Include.ALWAYS)
-    val metadata: Map<String, Any?> = emptyMap(),
+    @get:JsonInclude(JsonInclude.Include.ALWAYS) val metadata: Map<String, Any?> = emptyMap(),
     val target: Target? = null,
-    @get:JsonInclude(JsonInclude.Include.ALWAYS)
-    val data: Map<String, Any?> = emptyMap(),
+    @get:JsonInclude(JsonInclude.Include.ALWAYS) val data: Map<String, Any?> = emptyMap(),
     override val continueOnError: Boolean? = null,
 ) : BaseAction(continueOnError)
 
@@ -192,11 +201,9 @@ data class DeviceTarget(
 ) : Target
 
 data class GenericTarget(
-    @get:JsonIgnore
-    val values: Map<String, Any?>,
+    @get:JsonIgnore val values: Map<String, Any?>,
 ) : Target {
-    @JsonAnyGetter
-    fun properties(): Map<String, Any?> = values
+    @JsonAnyGetter fun properties(): Map<String, Any?> = values
 }
 
 data class Duration(
