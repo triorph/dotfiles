@@ -34,17 +34,61 @@ fun increaseLampBrightness() =
         )
     }
 
-fun toggleBedroomMikeLamplight() =
+fun turnOnBedroomMikeLamplight() =
     automation(
-        id = "toggle_mike_bedroom_lamp",
-        alias = "Mike bedroom lamp - toggle when press buttons",
+        id = "turn_on_mike_bedroom_lamp",
+        alias = "Mike bedroom lamp - turn on when press buttons",
     ) {
         triggers(
             bedroomButtonClick(),
             upstairsButtonClick(),
         )
+        conditions(lightIsOff("light.mike_bedroom_lamp_bulb"))
         actions(
-            toggleLight("light.mike_bedroom_lamp_bulb"),
+            turnOnLightWithTemp("light.mike_bedroom_lamp_bulb", 2000),
+        )
+    }
+
+fun turnOnBedroomMikeLamplightColour() =
+    automation(
+        id = "turn_on_mike_bedroom_lamp_color",
+        alias = "Mike bedroom lamp - turn on with colour when hold bedroom button",
+    ) {
+        triggers(
+            bedroomButtonHold(),
+        )
+        // conditions(lightIsOff("light.mike_bedroom_lamp_bulb"))
+        actions(
+            turnOnLightWithColor("light.mike_bedroom_lamp_bulb"),
+        )
+    }
+
+fun turnOnBedroomMikeLamplightColourRed() =
+    automation(
+        id = "turn_on_mike_bedroom_lamp_color_red",
+        alias = "Mike bedroom lamp - turn on with colour red when double-clicked bedroom buttons",
+    ) {
+        triggers(
+            bedroomButtonDoubleClick(),
+        )
+        // conditions(lightIsOff("light.mike_bedroom_lamp_bulb"))
+        actions(
+            turnOnLightWithColor("light.mike_bedroom_lamp_bulb", listOf(255, 0, 0)),
+        )
+    }
+
+fun turnOffBedroomMikeLamplight() =
+    automation(
+        id = "turn_off_mike_bedroom_lamp",
+        alias = "Mike bedroom lamp - turn off when press buttons",
+    ) {
+        triggers(
+            bedroomButtonClick(),
+            upstairsButtonClick(),
+        )
+        conditions(lightIsOn("light.mike_bedroom_lamp_bulb"))
+        actions(
+            turnOffLights("light.mike_bedroom_lamp_bulb"),
         )
     }
 
@@ -70,7 +114,7 @@ fun setLightNewColour(lightName: String) =
         triggers(stateTrigger("input_number.downstairs_light_colour_index"))
         variables(colourVariables(includeDefaultColour = true))
         conditions(lightIsOn("light.$lightName"))
-        actions(turnOnLightWithRgbColour("light.$lightName"))
+        actions(turnOnLightWithRgbColourAutomatic("light.$lightName"))
     }
 
 fun advancedCycleColours() =
@@ -93,7 +137,7 @@ fun setLightColourWhenOn(lightName: String) =
     ) {
         triggers(lightTurnedOnTrigger("light.$lightName"))
         variables(colourVariables(includeDefaultColour = true))
-        actions(turnOnLightWithRgbColour("light.$lightName"))
+        actions(turnOnLightWithRgbColourAutomatic("light.$lightName"))
     }
 
 fun notifyHeatpumpCanBeTurnedOff() =
@@ -182,9 +226,12 @@ fun automations(): List<Automation> =
         turnOffOfficeHeatpumpOnTimer("00:00:00"),
         decreaseLampBrightness(),
         increaseLampBrightness(),
-        toggleBedroomMikeLamplight(),
+        turnOnBedroomMikeLamplight(),
+        turnOffBedroomMikeLamplight(),
+        turnOnBedroomMikeLamplightColour(),
+        turnOnBedroomMikeLamplightColourRed(),
         toggleDownstairsLamp(),
-        setLightNewColour(DINING_ROOM_LAMPS),
+        // setLightNewColour(DINING_ROOM_LAMPS),
         advancedCycleColours(),
         // notifyHeatpumpCanBeTurnedOff(),
         turnOnMikesOfficeGenericThermostat(),

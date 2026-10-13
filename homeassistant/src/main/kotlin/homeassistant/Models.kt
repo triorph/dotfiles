@@ -166,6 +166,13 @@ data class LightIsOnCondition(
     val condition: String = "light.is_on"
 }
 
+@JsonPropertyOrder("condition", "target")
+data class LightIsOffCondition(
+    val target: Target,
+) : Condition {
+    val condition: String = "light.is_off"
+}
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder("action", "metadata", "target", "data", "continue_on_error")
 data class LightAction(

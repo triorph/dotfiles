@@ -24,6 +24,26 @@ fun toggleLight(entityId: String): Action =
         target = EntityTarget(entityId),
     )
 
+fun turnOnLightWithTemp(
+    entityId: String,
+    temp: Int = 2000,
+): Action =
+    lightAction(
+        action = "light.turn_on",
+        target = EntityTarget(entityId),
+        data = yamlObject("color_temp_kelvin" to temp),
+    )
+
+fun turnOnLightWithColor(
+    entityId: String,
+    color: List<Int> = listOf(205, 0, 255),
+): Action =
+    lightAction(
+        action = "light.turn_on",
+        target = EntityTarget(entityId),
+        data = yamlObject("rgb_color" to color),
+    )
+
 fun adjustLightBrightness(
     entityId: String,
     brightnessStepPct: Int,
@@ -36,7 +56,7 @@ fun adjustLightBrightness(
         continueOnError = continueOnError,
     )
 
-fun turnOnLightWithRgbColour(entityId: String): Action =
+fun turnOnLightWithRgbColourAutomatic(entityId: String): Action =
     lightAction(
         action = "light.turn_on",
         target = EntityTarget(entityId),
@@ -46,6 +66,8 @@ fun turnOnLightWithRgbColour(entityId: String): Action =
 fun lightTurnedOnTrigger(entityId: String): Trigger = LightTurnedOnTrigger(target = EntityTarget(entityId))
 
 fun lightIsOn(entityId: String): Condition = LightIsOnCondition(target = EntityTarget(entityId))
+
+fun lightIsOff(entityId: String): Condition = LightIsOffCondition(target = EntityTarget(entityId))
 
 fun lightDeviceIsOn(
     deviceId: String,

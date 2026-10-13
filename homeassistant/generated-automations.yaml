@@ -130,8 +130,8 @@
     data:
       brightness_step_pct: 20
   mode: "single"
-- id: "toggle_mike_bedroom_lamp"
-  alias: "Mike bedroom lamp - toggle when press buttons"
+- id: "turn_on_mike_bedroom_lamp"
+  alias: "Mike bedroom lamp - turn on when press buttons"
   description: ""
   triggers:
   - trigger: "mqtt"
@@ -142,12 +142,79 @@
     options:
       payload: "single"
       topic: "zigbee2mqtt/upstairs_button/action"
+  conditions:
+  - condition: "light.is_off"
+    target:
+      entity_id: "light.mike_bedroom_lamp_bulb"
   actions:
-  - action: "light.toggle"
+  - action: "light.turn_on"
+    metadata: {}
+    target:
+      entity_id: "light.mike_bedroom_lamp_bulb"
+    data:
+      color_temp_kelvin: 2000
+  mode: "single"
+- id: "turn_off_mike_bedroom_lamp"
+  alias: "Mike bedroom lamp - turn off when press buttons"
+  description: ""
+  triggers:
+  - trigger: "mqtt"
+    options:
+      payload: "single"
+      topic: "zigbee2mqtt/mikes_bedside_button/action"
+  - trigger: "mqtt"
+    options:
+      payload: "single"
+      topic: "zigbee2mqtt/upstairs_button/action"
+  conditions:
+  - condition: "light.is_on"
+    target:
+      entity_id: "light.mike_bedroom_lamp_bulb"
+  actions:
+  - action: "light.turn_off"
     metadata: {}
     target:
       entity_id: "light.mike_bedroom_lamp_bulb"
     data: {}
+  mode: "single"
+- id: "turn_on_mike_bedroom_lamp_color"
+  alias: "Mike bedroom lamp - turn on with colour when hold bedroom button"
+  description: ""
+  triggers:
+  - trigger: "mqtt"
+    options:
+      payload: "long"
+      topic: "zigbee2mqtt/mikes_bedside_button/action"
+  actions:
+  - action: "light.turn_on"
+    metadata: {}
+    target:
+      entity_id: "light.mike_bedroom_lamp_bulb"
+    data:
+      rgb_color:
+      - 205
+      - 0
+      - 255
+  mode: "single"
+- id: "turn_on_mike_bedroom_lamp_color_red"
+  alias: "Mike bedroom lamp - turn on with colour red when double-clicked bedroom\
+    \ buttons"
+  description: ""
+  triggers:
+  - trigger: "mqtt"
+    options:
+      payload: "double"
+      topic: "zigbee2mqtt/mikes_bedside_button/action"
+  actions:
+  - action: "light.turn_on"
+    metadata: {}
+    target:
+      entity_id: "light.mike_bedroom_lamp_bulb"
+    data:
+      rgb_color:
+      - 255
+      - 0
+      - 0
   mode: "single"
 - id: "toggle_downstairs_lamp"
   alias: "Downstairs lamp - toggle on when double press buttons"
@@ -168,59 +235,6 @@
       entity_id: "light.dining_room_lamps"
     data: {}
   mode: "single"
-- id: "dining_room_lamps_lamp_colour"
-  alias: "dining_room_lamps - Set to new colour"
-  description: ""
-  triggers:
-  - trigger: "state"
-    entity_id: "input_number.downstairs_light_colour_index"
-  conditions:
-  - condition: "light.is_on"
-    target:
-      entity_id: "light.dining_room_lamps"
-  variables:
-    colour:
-    - 255
-    - 0
-    - 0
-    colour_cycle:
-    - - 255
-      - 137
-      - 14
-    - - 255
-      - 193
-      - 142
-    - - 255
-      - 229
-      - 207
-    - - 255
-      - 255
-      - 251
-    - - 255
-      - 112
-      - 86
-    - - 112
-      - 255
-      - 86
-    - - 129
-      - 173
-      - 255
-    - - 215
-      - 151
-      - 255
-    - - 255
-      - 159
-      - 242
-  actions:
-  - action: "light.turn_on"
-    metadata: {}
-    target:
-      entity_id: "light.dining_room_lamps"
-    data:
-      rgb_color: "{% set idx = states('input_number.downstairs_light_colour_index')\
-        \ | int + 1 %} {% set idx = idx % colour_cycle | length %} {% set colour =\
-        \ colour_cycle[idx] %} [{{colour[0]-}}, {{colour[1]-}}, {{colour[2]-}}]\n"
-  mode: "single"
 - id: "cycle_light_colours"
   alias: "Cycle light colours"
   description: ""
@@ -231,7 +245,7 @@
       topic: "zigbee2mqtt/downstairs_dial/action"
   - trigger: "mqtt"
     options:
-      payload: "hold"
+      payload: "long"
       topic: "zigbee2mqtt/upstairs_button/action"
   variables:
     colour_cycle:

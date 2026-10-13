@@ -47,11 +47,13 @@ fun bedroomButtonClick(): Trigger = zigbeeMqttActionButtonTrigger(bedroomMikeLam
 
 fun bedroomButtonDoubleClick(): Trigger = zigbeeMqttActionButtonTrigger(bedroomMikeLamplightButton, action = "double")
 
+fun bedroomButtonHold(): Trigger = zigbeeMqttActionButtonTrigger(bedroomMikeLamplightButton, action = "long")
+
 fun upstairsButtonClick(): Trigger = zigbeeMqttActionButtonTrigger(upstairsButton, action = "single")
 
 fun upstairsButtonDoubleClick(): Trigger = zigbeeMqttActionButtonTrigger(upstairsButton, action = "double")
 
-fun upstairsButtonHold(): Trigger = zigbeeMqttActionButtonTrigger(upstairsButton, action = "hold")
+fun upstairsButtonHold(): Trigger = zigbeeMqttActionButtonTrigger(upstairsButton, action = "long")
 
 private fun deviceButtonTrigger(
     button: DeviceButton,
