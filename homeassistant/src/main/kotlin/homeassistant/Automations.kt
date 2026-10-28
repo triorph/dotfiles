@@ -117,17 +117,15 @@ fun setLightNewColour(lightName: String) =
         actions(turnOnLightWithRgbColourAutomatic("light.$lightName"))
     }
 
-fun advancedCycleColours() =
+fun toggleKiaraLivingRoomLamp() =
     automation(
-        id = "cycle_light_colours",
-        alias = "Cycle light colours",
+        id = "toggle_kiara_living_room_lamp",
+        alias = "Toggle kiara living room lamp on downstairs dial hold",
     ) {
         triggers(
-            downstairsDialHold(),
-            upstairsButtonHold(),
+            downstairsDialClick(),
         )
-        variables(colourVariables())
-        actions(advanceDownstairsColourIndex())
+        actions(toggleLight("light.kiara_living_room_lamp"))
     }
 
 fun setLightColourWhenOn(lightName: String) =
@@ -232,7 +230,7 @@ fun automations(): List<Automation> =
         turnOnBedroomMikeLamplightColourRed(),
         toggleDownstairsLamp(),
         // setLightNewColour(DINING_ROOM_LAMPS),
-        advancedCycleColours(),
+        toggleKiaraLivingRoomLamp(),
         // notifyHeatpumpCanBeTurnedOff(),
         turnOnMikesOfficeGenericThermostat(),
         turnOffMikesOfficeGenericThermostat(),

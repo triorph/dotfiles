@@ -29,17 +29,17 @@ private val bedroomMikeLamplightButton =
 private val upstairsButton =
     ZigbeeMqttActionButton("upstairs_button")
 
-fun downstairsDialClick(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "single")
+fun downstairsDialClick(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "toggle")
 
 fun downstairsDialDoubleClick(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "double")
 
-fun downstairsDialHold(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "hold")
+fun downstairsDialHold(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "hue_move")
 
 fun downstairsDialTurnLeft(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "rotate_left")
 
 fun downstairsDialTurnRight(): Trigger = zigbeeMqttActionButtonTrigger(downstairsDial, action = "rotate_right")
 
-fun officeDialClick(): Trigger = zigbeeMqttActionButtonTrigger(officeDial, action = "single")
+fun officeDialClick(): Trigger = zigbeeMqttActionButtonTrigger(officeDial, action = "toggle")
 
 fun officeDialDoubleClick(): Trigger = zigbeeMqttActionButtonTrigger(officeDial, action = "double")
 

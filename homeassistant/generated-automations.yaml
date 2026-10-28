@@ -235,53 +235,20 @@
       entity_id: "light.dining_room_lamps"
     data: {}
   mode: "single"
-- id: "cycle_light_colours"
-  alias: "Cycle light colours"
+- id: "toggle_kiara_living_room_lamp"
+  alias: "Toggle kiara living room lamp on downstairs dial hold"
   description: ""
   triggers:
   - trigger: "mqtt"
     options:
-      payload: "hold"
+      payload: "toggle"
       topic: "zigbee2mqtt/downstairs_dial/action"
-  - trigger: "mqtt"
-    options:
-      payload: "long"
-      topic: "zigbee2mqtt/upstairs_button/action"
-  variables:
-    colour_cycle:
-    - - 255
-      - 137
-      - 14
-    - - 255
-      - 193
-      - 142
-    - - 255
-      - 229
-      - 207
-    - - 255
-      - 255
-      - 251
-    - - 255
-      - 112
-      - 86
-    - - 112
-      - 255
-      - 86
-    - - 129
-      - 173
-      - 255
-    - - 215
-      - 151
-      - 255
-    - - 255
-      - 159
-      - 242
   actions:
-  - action: "input_number.set_value"
-    entity_id: "input_number.downstairs_light_colour_index"
-    data:
-      value: "{% set idx = states('input_number.downstairs_light_colour_index') |\
-        \ int + 1 %} {% set idx = idx % colour_cycle | length %} {{ idx }}\n"
+  - action: "light.toggle"
+    metadata: {}
+    target:
+      entity_id: "light.kiara_living_room_lamp"
+    data: {}
   mode: "single"
 - id: "turn_on_mikes_office_generic_thermostat"
   alias: "Mike's office thermostat - Turn on when clicking office dial"
@@ -289,7 +256,7 @@
   triggers:
   - trigger: "mqtt"
     options:
-      payload: "single"
+      payload: "toggle"
       topic: "zigbee2mqtt/mikes_office_dial/action"
   actions:
   - action: "climate.turn_on"
